@@ -1,0 +1,187 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Özellik kartları (teknoloji bölümü)
+  ---------------------------------------------------------------------------
+  Multicolumn'da başlık sola yaslanıyordu, "OS1st ve FootBalance." alt satırı
+  yoktu ve gövde metni renk şemasından kahverengi çıkıyordu. Referanstaki
+  beyaz kart + küçük görsel düzeni için ayrı bölüm yazıldı.
+
+  Alt satırdaki "ve" turuncu gösterilir — "Alt satır" alanına
+  "OS1st ve FootBalance." yazıp "Vurgulanacak kelime" alanına "ve" yazın.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-feats {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #shopify-section-{{ section.id }} .fb-feats__grid {
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+  }
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .fb-feats__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media screen and (max-width: 589px) {
+    #shopify-section-{{ section.id }} .fb-feats__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="fb-feats page-width">
+    <div class="fb-feats__head">
+      {%- if section.settings.overline != blank -%}
+        <span class="fb-overline">{{ section.settings.overline | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="fb-feats__title">{{ section.settings.title | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        {%- assign sub = section.settings.subtitle -%}
+        {%- if section.settings.subtitle_highlight != blank -%}
+          {%- assign hw = section.settings.subtitle_highlight -%}
+          {%- capture hw_markup -%}<span class="fb-feats__accent">{{ hw }}</span>{%- endcapture -%}
+          {%- assign sub = sub | replace: hw, hw_markup -%}
+        {%- endif -%}
+        <p class="fb-feats__subtitle">{{ sub }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="fb-feats__grid">
+      {%- for block in section.blocks -%}
+        <div class="fb-feat" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <span class="fb-feat__media">
+              <img
+                src="{{ block.settings.image | image_url: width: 240 }}"
+                alt="{{ block.settings.title | escape }}"
+                width="96"
+                height="96"
+                loading="lazy"
+              >
+            </span>
+          {%- endif -%}
+
+          {%- if block.settings.title != blank -%}
+            <h3 class="fb-feat__title">{{ block.settings.title | escape }}</h3>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <div class="fb-feat__text">{{ block.settings.text }}</div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FB Özellik kartları",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Turuncu üst etiket"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Başlık",
+      "default": "Global Deneyim. Eşsiz teknoloji"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Alt satır",
+      "default": "OS1st ve FootBalance."
+    },
+    {
+      "type": "text",
+      "id": "subtitle_highlight",
+      "label": "Vurgulanacak kelime",
+      "info": "Alt satırda geçen bu kelime turuncu gösterilir.",
+      "default": "ve"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Masaüstü sütun sayısı",
+      "default": 3
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Renk şeması",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Boşluklar"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Üst boşluk",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Alt boşluk",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Özellik",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Görsel"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Başlık"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Açıklama"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "FB Özellik kartları",
+      "blocks": [
+        { "type": "feature" },
+        { "type": "feature" },
+        { "type": "feature" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,110 @@
+{%- comment -%}
+  Ürün bazlı beden tablosu modalı.
+  Kaynak metafield: product.metafields.custom.beden_tablosu (Dosya / tek görsel)
+{%- endcomment -%}
+
+{%- assign fb_size_chart_file = product.metafields.custom.beden_tablosu.value -%}
+{%- if fb_size_chart_file != blank -%}
+  {%- assign fb_size_chart_image = fb_size_chart_file.preview_image -%}
+  {%- if fb_size_chart_image == blank -%}
+    {%- assign fb_size_chart_image = fb_size_chart_file -%}
+  {%- endif -%}
+  {%- assign fb_size_chart_id = 'FB-SizeChart-' | append: section.id | append: '-' | append: product.id -%}
+
+  <div class="fb-size-chart" data-fb-size-chart>
+    <button
+      type="button"
+      class="fb-size-chart__trigger"
+      data-fb-size-chart-open
+      aria-haspopup="dialog"
+      aria-controls="{{ fb_size_chart_id }}"
+    >
+      <span>{% if localization.language.iso_code == 'en' %}Size chart{% else %}Beden Tablosu{% endif %}</span>
+    </button>
+
+    <dialog id="{{ fb_size_chart_id }}" class="fb-size-chart__dialog" data-fb-size-chart-dialog aria-labelledby="{{ fb_size_chart_id }}-title">
+      <div class="fb-size-chart__modal">
+        <div class="fb-size-chart__head">
+          <div>
+            <span class="fb-size-chart__eyebrow">{% if localization.language.iso_code == 'en' %}SIZE GUIDE{% else %}BEDEN SEÇİM REHBERİ{% endif %}</span>
+            <h2 id="{{ fb_size_chart_id }}-title">{{ product.title | escape }} {% if localization.language.iso_code == 'en' %}size chart{% else %}beden tablosu{% endif %}</h2>
+          </div>
+          <button type="button" class="fb-size-chart__close" data-fb-size-chart-close aria-label="{% if localization.language.iso_code == 'en' %}Close size chart{% else %}Beden tablosunu kapat{% endif %}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="fb-size-chart__image-wrap">
+          <img
+            src="{{ fb_size_chart_image | image_url: width: 1800 }}"
+            srcset="
+              {{ fb_size_chart_image | image_url: width: 720 }} 720w,
+              {{ fb_size_chart_image | image_url: width: 1200 }} 1200w,
+              {{ fb_size_chart_image | image_url: width: 1800 }} 1800w
+            "
+            sizes="(max-width: 749px) 94vw, 900px"
+            alt="{{ product.title | escape }} {% if localization.language.iso_code == 'en' %}size and measurement chart{% else %}beden ve ölçü tablosu{% endif %}"
+            width="1800"
+            height="1200"
+            loading="lazy"
+          >
+        </div>
+      </div>
+    </dialog>
+  </div>
+
+  <style>
+    #shopify-section-{{ section.id }} .fb-size-chart { margin: 2px 0 14px; }
+    #shopify-section-{{ section.id }} .fb-size-chart__trigger {
+      display: inline; min-height: 0; padding: 0; border: 0; border-radius: 0;
+      background: transparent; color: #0f2f4b; font: inherit; font-weight: 600;
+      text-align: left; text-decoration: underline; text-underline-offset: 3px;
+      cursor: pointer; transition: color .2s ease;
+    }
+    #shopify-section-{{ section.id }} .fb-size-chart__trigger:hover {
+      color: #ff7900;
+    }
+    #shopify-section-{{ section.id }} .fb-size-chart__dialog {
+      width: min(960px, calc(100vw - 32px)); max-width: none; max-height: calc(100vh - 32px);
+      margin: auto; padding: 0; border: 0; border-radius: 18px; background: transparent; color: #0f2f4b;
+      overflow: visible;
+    }
+    #shopify-section-{{ section.id }} .fb-size-chart__dialog::backdrop { background: rgba(4, 20, 34, .72); backdrop-filter: blur(3px); }
+    #shopify-section-{{ section.id }} .fb-size-chart__modal { max-height: calc(100vh - 32px); overflow: auto; border-radius: 18px; background: #fff; box-shadow: 0 25px 80px rgba(0, 0, 0, .28); }
+    #shopify-section-{{ section.id }} .fb-size-chart__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 20px 22px; border-bottom: 1px solid #eee6de; }
+    #shopify-section-{{ section.id }} .fb-size-chart__eyebrow { display: block; margin-bottom: 4px; color: #ff7900; font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+    #shopify-section-{{ section.id }} .fb-size-chart__head h2 { margin: 0; color: #0f2f4b; font-size: clamp(18px, 2.2vw, 25px); line-height: 1.25; }
+    #shopify-section-{{ section.id }} .fb-size-chart__close { width: 40px; height: 40px; display: grid; place-items: center; flex: 0 0 40px; padding: 0; border: 1px solid #e5ddd5; border-radius: 50%; background: #fff; color: #0f2f4b; cursor: pointer; }
+    #shopify-section-{{ section.id }} .fb-size-chart__close:hover { border-color: #ff7900; color: #ff7900; }
+    #shopify-section-{{ section.id }} .fb-size-chart__close svg { width: 20px; height: 20px; }
+    #shopify-section-{{ section.id }} .fb-size-chart__image-wrap { padding: 18px; background: #faf8f6; }
+    #shopify-section-{{ section.id }} .fb-size-chart__image-wrap img { display: block; width: 100%; height: auto; max-height: calc(100vh - 150px); object-fit: contain; border-radius: 10px; background: #fff; }
+    @media screen and (max-width: 749px) {
+      #shopify-section-{{ section.id }} .fb-size-chart__dialog { width: calc(100vw - 18px); max-height: calc(100vh - 18px); }
+      #shopify-section-{{ section.id }} .fb-size-chart__modal { max-height: calc(100vh - 18px); }
+      #shopify-section-{{ section.id }} .fb-size-chart__head { padding: 15px; }
+      #shopify-section-{{ section.id }} .fb-size-chart__image-wrap { padding: 8px; }
+      #shopify-section-{{ section.id }} .fb-size-chart__image-wrap img { max-height: calc(100vh - 112px); }
+    }
+  </style>
+
+  <script>
+    (function () {
+      var root = document.currentScript.previousElementSibling.previousElementSibling;
+      if (!root || !root.matches('[data-fb-size-chart]') || root.dataset.bound === 'true') return;
+      root.dataset.bound = 'true';
+      var dialog = root.querySelector('[data-fb-size-chart-dialog]');
+      var openButton = root.querySelector('[data-fb-size-chart-open]');
+      var closeButton = root.querySelector('[data-fb-size-chart-close]');
+      if (!dialog || !openButton || typeof dialog.showModal !== 'function') return;
+      openButton.addEventListener('click', function () { dialog.showModal(); });
+      if (closeButton) closeButton.addEventListener('click', function () { dialog.close(); });
+      dialog.addEventListener('click', function (event) {
+        var rect = dialog.getBoundingClientRect();
+        var inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+        if (!inside) dialog.close();
+      });
+    })();
+  </script>
+{%- endif -%}

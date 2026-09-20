@@ -1,0 +1,298 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Kullanıcı yorumları
+  ---------------------------------------------------------------------------
+  Dawn'ın Multicolumn'unda yıldız yok, isim ile rol tek satıra sıkışıyordu ve
+  turuncu üst etiket verilemiyordu. Referanstaki düzen için ayrı bölüm yazıldı.
+
+  Yorumun içinde bir kısmı turuncu vurgulamak için "Vurgulanacak metin"
+  alanını doldurun — yorumda geçen o ifade turuncuya döner.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-quotes {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #shopify-section-{{ section.id }} .fb-quotes__grid {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - {{ section.settings.columns_desktop | minus: 1 | times: 20 }}px) / {{ section.settings.columns_desktop }});
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    padding-bottom: 8px;
+  }
+  #shopify-section-{{ section.id }} .fb-quotes__grid > .fb-quote {
+    min-width: 0;
+    width: auto;
+    margin: 0;
+    scroll-snap-align: start;
+    overflow-wrap: anywhere;
+  }
+  #shopify-section-{{ section.id }} fb-quotes-carousel { display: block; }
+  #shopify-section-{{ section.id }} .fb-quotes__controls {
+    display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 20px;
+  }
+  #shopify-section-{{ section.id }} .fb-quotes__controls[hidden] { display: none; }
+  #shopify-section-{{ section.id }} .fb-quotes__arrow {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; padding: 0; border: 1px solid #d8dee3;
+    border-radius: 50%; background: transparent; color: #123653; font-size: 24px; cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .fb-quotes__arrow:disabled { opacity: .35; cursor: default; }
+  #shopify-section-{{ section.id }} .fb-quotes__arrow:focus-visible,
+  #shopify-section-{{ section.id }} .fb-quotes__grid:focus-visible { outline: 2px solid #ff7900; outline-offset: 3px; }
+  #shopify-section-{{ section.id }} .fb-quotes__position { font-size: 13px; color: #626b73; }
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .fb-quotes__grid { grid-auto-columns: calc((100% - 20px) / 2); }
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .fb-quotes__grid {
+      grid-auto-columns: 100%;
+    }
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="fb-quotes page-width">
+    {%- if section.settings.overline != blank or section.settings.title != blank -%}
+      <div class="fb-quotes__head">
+        {%- if section.settings.overline != blank -%}
+          <span class="fb-overline">{{ section.settings.overline | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.title != blank -%}
+          <h2 class="fb-quotes__title">{{ section.settings.title | escape }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <fb-quotes-carousel>
+    <div class="fb-quotes__grid" id="FBQuotes-{{ section.id }}" tabindex="0" role="region" aria-label="{{ section.settings.title | default: 'Müşteri yorumları' | escape }}">
+      {%- for block in section.blocks -%}
+        <figure class="fb-quote" {{ block.shopify_attributes }}>
+          {%- if block.settings.stars > 0 -%}
+            <span class="fb-quote__stars" aria-label="{{ block.settings.stars }}/5">
+              {%- for i in (1..block.settings.stars) -%}
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+              {%- endfor -%}
+            </span>
+          {%- endif -%}
+
+          {%- if block.settings.quote != blank -%}
+            {%- assign quote_text = block.settings.quote -%}
+            {%- if block.settings.highlight != blank -%}
+              {%- assign hl = block.settings.highlight -%}
+              {%- capture hl_markup -%}<span class="fb-quote__hl">{{ hl }}</span>{%- endcapture -%}
+              {%- assign quote_text = quote_text | replace: hl, hl_markup -%}
+            {%- endif -%}
+            <blockquote class="fb-quote__text">&ldquo;{{ quote_text }}&rdquo;</blockquote>
+          {%- endif -%}
+
+          <figcaption class="fb-quote__author">
+            {%- if block.settings.name != blank -%}
+              <span class="fb-quote__name">{{ block.settings.name | escape }}</span>
+            {%- endif -%}
+            {%- if block.settings.role != blank -%}
+              <span class="fb-quote__role">{{ block.settings.role | escape }}</span>
+            {%- endif -%}
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+    <div class="fb-quotes__controls" hidden>
+      <button type="button" class="fb-quotes__arrow" data-previous aria-label="Önceki yorumlar" aria-controls="FBQuotes-{{ section.id }}">‹</button>
+      <span class="fb-quotes__position" aria-live="polite" aria-atomic="true"></span>
+      <button type="button" class="fb-quotes__arrow" data-next aria-label="Sonraki yorumlar" aria-controls="FBQuotes-{{ section.id }}">›</button>
+    </div>
+    </fb-quotes-carousel>
+  </div>
+</div>
+
+<script>
+if (!customElements.get('fb-quotes-carousel')) {
+  customElements.define('fb-quotes-carousel', class extends HTMLElement {
+    connectedCallback() {
+      this.abort = new AbortController();
+      const options = { signal: this.abort.signal };
+      const track = this.querySelector('.fb-quotes__grid');
+      const cards = Array.from(track.children);
+      const controls = this.querySelector('.fb-quotes__controls');
+      const previous = this.querySelector('[data-previous]');
+      const next = this.querySelector('[data-next]');
+      const position = this.querySelector('.fb-quotes__position');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const visible = () => {
+        const bounds = track.getBoundingClientRect();
+        return cards.map((card, index) => ({ index, bounds: card.getBoundingClientRect() }))
+          .filter(card => card.bounds.right > bounds.left + 2 && card.bounds.left < bounds.right - 2);
+      };
+      const update = () => {
+        const shown = visible();
+        const overflow = track.scrollWidth > track.clientWidth + 2;
+        controls.hidden = !overflow;
+        previous.disabled = !overflow || Math.abs(track.scrollLeft) < 2;
+        next.disabled = !overflow || Math.abs(track.scrollLeft) >= track.scrollWidth - track.clientWidth - 2;
+        position.textContent = shown.length ? `${shown[0].index + 1}–${shown[shown.length - 1].index + 1} / ${cards.length}` : '';
+      };
+      const move = direction => {
+        if (!cards.length) return;
+        const step = cards[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap);
+        const rtl = getComputedStyle(track).direction === 'rtl' ? -1 : 1;
+        track.scrollBy({ left: direction * rtl * step, behavior: reduced.matches ? 'instant' : 'smooth' });
+      };
+      previous.addEventListener('click', () => move(-1), options);
+      next.addEventListener('click', () => move(1), options);
+      track.addEventListener('keydown', event => {
+        if (event.target !== track) return;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+          event.preventDefault();
+          const rtl = getComputedStyle(track).direction === 'rtl';
+          move((event.key === 'ArrowRight' ? 1 : -1) * (rtl ? -1 : 1));
+        }
+      }, options);
+      track.addEventListener('scroll', () => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(update, 120);
+      }, options);
+      this.addEventListener('shopify:block:select', event => {
+        const card = event.target.closest('.fb-quote');
+        if (card && this.contains(card)) {
+          const bounds = track.getBoundingClientRect();
+          const cardBounds = card.getBoundingClientRect();
+          const offset = getComputedStyle(track).direction === 'rtl'
+            ? cardBounds.right - bounds.right : cardBounds.left - bounds.left;
+          track.scrollBy({ left: offset, behavior: 'instant' });
+          update();
+        }
+      }, options);
+      this.observer = new ResizeObserver(update);
+      this.observer.observe(track);
+      cards.forEach(card => this.observer.observe(card));
+      update();
+    }
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.observer?.disconnect();
+      clearTimeout(this.scrollTimer);
+    }
+  });
+}
+</script>
+
+{% schema %}
+{
+  "name": "FB Yorumlar",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Turuncu üst etiket",
+      "default": "Kullanıcı Yorumları"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Başlık",
+      "default": "Binlerce Müşterinin Tercihi"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Masaüstü sütun sayısı",
+      "default": 3
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Renk şeması",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Boşluklar"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Üst boşluk",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Alt boşluk",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Yorum",
+      "settings": [
+        {
+          "type": "range",
+          "id": "stars",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "label": "Yıldız",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Yorum"
+        },
+        {
+          "type": "text",
+          "id": "highlight",
+          "label": "Vurgulanacak metin",
+          "info": "Yorumda geçen bu ifade turuncu gösterilir. Birebir aynı yazılmalı."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "İsim"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Rol"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 50,
+  "presets": [
+    {
+      "name": "FB Yorumlar",
+      "blocks": [
+        { "type": "quote" },
+        { "type": "quote" },
+        { "type": "quote" }
+      ]
+    }
+  ]
+}
+{% endschema %}

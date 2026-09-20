@@ -1,0 +1,37 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — "En uygun:" satırı
+  ---------------------------------------------------------------------------
+  Müşterinin 27.07 videosunda 3:18'de istediği satır:
+  "Ufak bir trik vermiş, hangi işler için uygundur diye."
+
+  Kaynak: ürün metafield'ı  custom.en_uygun  (Single line text)
+  Boşsa hiçbir şey basılmaz — ürün sayfası normal görünür.
+
+  Ürün bölümünde "Özel Liquid" bloğu olarak çağrılıyor, Dawn'ın kendi
+  dosyalarına dokunulmadı. Sırasını tema düzenleyiciden sürükleyerek
+  değiştirebilirsiniz.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{%- assign fb_en_uygun = product.metafields.custom.en_uygun.value -%}
+{%- assign fb_en_uygun_normalized = fb_en_uygun | replace: 'Technology:', 'Teknoloji:' -%}
+{%- assign fb_en_uygun_parts = fb_en_uygun_normalized | split: 'Teknoloji:' -%}
+{%- assign fb_en_uygun_text = fb_en_uygun_parts[0] | strip -%}
+{%- assign fb_teknoloji_text = fb_en_uygun_parts[1] | strip -%}
+
+{%- if fb_en_uygun != blank -%}
+  <div class="fb-en-uygun" style="display: block;">
+    <div>
+      <span class="fb-en-uygun__label">{% if localization.language.iso_code == 'en' %}Best for:{% else %}En uygun:{% endif %}</span>
+      <span class="fb-en-uygun__text">{{ fb_en_uygun_text }}</span>
+    </div>
+
+    {%- if fb_teknoloji_text != blank -%}
+      <div style="margin-top: 0.8rem;">
+        <span class="fb-en-uygun__label">{% if localization.language.iso_code == 'en' %}Technology:{% else %}Teknoloji:{% endif %}</span>
+        <span class="fb-en-uygun__text">{{ fb_teknoloji_text }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

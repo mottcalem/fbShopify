@@ -1,0 +1,280 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Güven Rozetleri
+  ---------------------------------------------------------------------------
+  Müşterinin 27.07 videosunda gönderdiği tasarıma göre yapıldı: beyaz kart,
+  üstte renkli kare ikon, altında koyu başlık ve gri açıklama.
+
+  Dawn'ın Multicolumn bölümü ikonu ancak görsel olarak alıyordu; her rozet için
+  Files'a PNG yüklemek gerekiyordu. Bunun yerine ikonlar SVG olarak gömüldü —
+  yüklenecek dosya yok, her ekranda net, rengi panelden değişiyor.
+
+  İkon eklemek için: aşağıdaki fb_icon case bloğuna yeni bir {% when %} ve
+  schema'daki "icon" select listesine aynı değeri ekleyin.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-trust {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #shopify-section-{{ section.id }} .fb-trust__grid {
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+  }
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .fb-trust__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media screen and (max-width: 589px) {
+    #shopify-section-{{ section.id }} .fb-trust__grid {
+      grid-template-columns: repeat({{ section.settings.columns_mobile }}, minmax(0, 1fr));
+    }
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="fb-trust page-width">
+    {%- if section.settings.title != blank or section.settings.subtitle != blank -%}
+      <div class="fb-trust__head">
+        {%- if section.settings.title != blank -%}
+          <h2 class="fb-trust__title {{ section.settings.heading_size }}">
+            {{ section.settings.title | escape }}
+          </h2>
+        {%- endif -%}
+        {%- if section.settings.subtitle != blank -%}
+          <p class="fb-trust__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="fb-trust__grid">
+      {%- for block in section.blocks -%}
+        <div class="fb-trust__card" {{ block.shopify_attributes }}>
+          <span
+            class="fb-trust__icon"
+            style="background-color: {{ block.settings.icon_color }};"
+            aria-hidden="true"
+          >
+            {%- case block.settings.icon -%}
+              {%- when 'return' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                </svg>
+              {%- when 'medical' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2v7a6 6 0 0 0 12 0V2" />
+                  <path d="M4 2h4M16 2h4" />
+                  <path d="M12 15v2a4 4 0 0 0 8 0v-2" />
+                  <circle cx="20" cy="12" r="2" />
+                </svg>
+              {%- when 'fast' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              {%- when 'shipping' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="3" width="15" height="13" rx="1" />
+                  <path d="M16 8h4l3 3v5h-7z" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+              {%- when 'shield' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  <polyline points="9 12 11 14 15 10" />
+                </svg>
+              {%- when 'support' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                </svg>
+              {%- else -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+            {%- endcase -%}
+          </span>
+
+          {%- if block.settings.title != blank -%}
+            <h3 class="fb-trust__card-title">{{ block.settings.title | escape }}</h3>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <p class="fb-trust__card-text">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Güven Rozetleri",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Başlık",
+      "default": "Güvenle Alışverişin Garantisi"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Başlık boyutu",
+      "options": [
+        { "value": "h2", "label": "Küçük" },
+        { "value": "h1", "label": "Orta" },
+        { "value": "h0", "label": "Büyük" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Alt başlık",
+      "default": "Her adımınızda güvence ve konfor sunan alışveriş deneyimi."
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Masaüstü sütun sayısı",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobil sütun sayısı",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Renk şeması",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Boşluklar"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Üst boşluk",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Alt boşluk",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Rozet",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "İkon",
+          "options": [
+            { "value": "return", "label": "İade (dönen ok)" },
+            { "value": "medical", "label": "Medikal (steteskop)" },
+            { "value": "fast", "label": "Hızlı (şimşek)" },
+            { "value": "shipping", "label": "Kargo (kamyon)" },
+            { "value": "shield", "label": "Güvence (kalkan)" },
+            { "value": "support", "label": "Destek (kulaklık)" },
+            { "value": "check", "label": "Onay (tik)" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "İkon arka plan rengi",
+          "default": "#1e3a5f"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Başlık",
+          "default": "Başlık"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Açıklama",
+          "default": "Kısa açıklama"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Güven Rozetleri",
+      "blocks": [
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "icon_color": "#16a34a",
+            "title": "30 Gün Koşulsuz İade",
+            "text": "Koşulsuz iade hakkı"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "medical",
+            "icon_color": "#1e3a5f",
+            "title": "Medikal Seviye",
+            "text": "Ortopedik destek"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "fast",
+            "icon_color": "#0d9488",
+            "title": "24 Saatte Kargo",
+            "text": "Hızlı teslim garantisi"
+          }
+        },
+        {
+          "type": "badge",
+          "settings": {
+            "icon": "shipping",
+            "icon_color": "#2563eb",
+            "title": "Ücretsiz Kargo",
+            "text": "3.000 TL ve üzeri siparişlerde"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

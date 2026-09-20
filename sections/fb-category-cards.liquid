@@ -1,0 +1,224 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Kategori kartları
+  ---------------------------------------------------------------------------
+  Referansta fotoğrafın üstüne beyaz yazı biniyor; Dawn'ın Collection list
+  bölümü yazıyı görselin altına koyuyor ve açıklama satırı yok.
+
+  Görsel sırası: blokta seçilen görsel → koleksiyonun kendi görseli →
+  koleksiyondaki ilk ürünün fotoğrafı. Üçü de yoksa düz zemin basılır,
+  yazı yine okunur.
+
+  Ürün fotoğrafları beyaz zeminli olduğu için yazının altına koyu bir
+  degrade (scrim) konuldu — hangi fotoğraf gelirse gelsin metin okunur kalır.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-cats {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #shopify-section-{{ section.id }} .fb-cats__grid {
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+  }
+  #shopify-section-{{ section.id }} .fb-cat {
+    aspect-ratio: {{ section.settings.aspect_ratio }};
+  }
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .fb-cats__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media screen and (max-width: 589px) {
+    #shopify-section-{{ section.id }} .fb-cats__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+
+<div class="fb-cats page-width">
+  {%- if section.settings.title != blank -%}
+    <div class="fb-cats__head">
+      {%- if section.settings.overline != blank -%}
+        <span class="fb-overline">{{ section.settings.overline | escape }}</span>
+      {%- endif -%}
+      <h2 class="fb-cats__title">{{ section.settings.title | escape }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="fb-cats__grid">
+    {%- for block in section.blocks -%}
+      {%- assign cat = collections[block.settings.collection] -%}
+
+      {%- comment -%} Görsel sırası: blok > koleksiyon > ilk ürün {%- endcomment -%}
+      {%- assign card_image = blank -%}
+      {%- if block.settings.image != blank -%}
+        {%- assign card_image = block.settings.image -%}
+      {%- elsif cat.featured_image != blank -%}
+        {%- assign card_image = cat.featured_image -%}
+      {%- elsif cat.products.first.featured_image != blank -%}
+        {%- assign card_image = cat.products.first.featured_image -%}
+      {%- endif -%}
+
+      {%- assign card_title = block.settings.title | default: cat.title -%}
+
+      <a
+        href="{% if cat != blank %}{{ cat.url }}{% else %}{{ block.settings.link | default: '#' }}{% endif %}"
+        class="fb-cat"
+        {{ block.shopify_attributes }}
+      >
+        {%- if card_image != blank -%}
+          <img
+            src="{{ card_image | image_url: width: 900 }}"
+            srcset="
+              {{ card_image | image_url: width: 450 }} 450w,
+              {{ card_image | image_url: width: 700 }} 700w,
+              {{ card_image | image_url: width: 900 }} 900w
+            "
+            sizes="(min-width: 990px) 33vw, (min-width: 590px) 50vw, 100vw"
+            alt="{{ card_title | escape }}"
+            width="900"
+            height="600"
+            loading="lazy"
+            class="fb-cat__img"
+          >
+        {%- else -%}
+          <span class="fb-cat__img fb-cat__img--empty"></span>
+        {%- endif -%}
+
+        <span class="fb-cat__scrim"></span>
+
+        <span class="fb-cat__body">
+          {%- if card_title != blank -%}
+            <span class="fb-cat__title">{{ card_title | escape }}</span>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <span class="fb-cat__text">{{ block.settings.text | escape }}</span>
+          {%- endif -%}
+          {%- if block.settings.cta != blank -%}
+            <span class="fb-cat__cta">{{ block.settings.cta | escape }} &rsaquo;</span>
+          {%- endif -%}
+        </span>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FB Kategori kartları",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Turuncu üst etiket"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Başlık"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Masaüstü sütun sayısı",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Kart oranı",
+      "options": [
+        { "value": "16 / 10", "label": "Geniş" },
+        { "value": "3 / 2", "label": "Standart" },
+        { "value": "1 / 1", "label": "Kare" }
+      ],
+      "default": "3 / 2"
+    },
+    {
+      "type": "header",
+      "content": "Boşluklar"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Üst boşluk",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Alt boşluk",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Kategori",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Koleksiyon"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Kart görseli",
+          "info": "Boşsa koleksiyonun görseli, o da yoksa ilk ürünün fotoğrafı kullanılır."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Başlık",
+          "info": "Boşsa koleksiyon adı kullanılır."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Açıklama"
+        },
+        {
+          "type": "text",
+          "id": "cta",
+          "label": "Bağlantı metni",
+          "default": "Keşfet"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Bağlantı",
+          "info": "Koleksiyon seçiliyse gerekmez."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "FB Kategori kartları",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

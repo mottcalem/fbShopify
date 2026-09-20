@@ -1,0 +1,112 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — menü alt açıklamaları
+  ---------------------------------------------------------------------------
+  Shopify menülerinde açıklama alanı yoktur. Müşteri 27.07 videosunda menü
+  başlıklarının altındaki kısa açıklamaların önemli olduğunu söyledi, bu yüzden
+  eşleştirme burada tutuluyor.
+
+  Kullanım:
+    {%- render 'menu-item-description', handle: childlink.handle -%}
+
+  YENİ SATIR EKLEMEK İÇİN:
+    Panelde menü öğesinin handle'ı, başlığından türetilir.
+    "Günlük Konfor"  →  gunluk-konfor
+    "Diz (KS7, QS4)" →  diz-ks7-qs4
+    Aşağıya aynı biçimde bir {%- when -%} satırı ekleyin.
+    Eşleşme bulunmazsa hiçbir şey basılmaz, menü normal görünür — bozulmaz.
+
+  Kaynak: Lovable referansı (şu an yayında olan sürüm), müşteri onaylı metinler.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{%- if localization.language.iso_code == 'en' -%}
+  {%- case handle -%}
+    {%- when 'gunluk-konfor' -%}Comfort for everyday steps
+    {%- when 'medikal-seviye-destek' -%}Medical-grade orthopedic support
+    {%- when 'guc-ve-performans' -%}Made for sports and athletes
+    {%- when 'tabanliklar' -%}Personalized orthopedic support
+    {%- when 'kompresyon-fs4' -%}Running and recovery
+    {%- when 'plantar-fasiit-fs4' -%}Heel and sole pain
+    {%- when 'bunyon-br4-hv3' -%}Bunion support
+    {%- when 'seyahat-ts5' -%}Swelling and long journeys
+    {%- when 'diyabet-hassas-cilt-wp4' -%}Soft, seamless design
+    {%- when 'performans-ta4' -%}Lightweight, breathable sock
+    {%- when 'destek-coraplari', 'coraplar' -%}Targeted compression support
+    {%- when 'vucut-destek-urunleri', 'vucut-destekleri', 'destek-urunleri' -%}Joint and muscle stability
+    {%- when 'ayak-bilegi-af7' -%}Sprain and stability support
+    {%- when 'diz-ks7' -%}Knee support
+    {%- when 'quadriceps-qs4' -%}Upper leg and muscle support
+    {%- when 'el-bilegi-ws6' -%}Strain and carpal tunnel support
+    {%- when 'dirsek-es3-es6' -%}Tennis and golfer's elbow
+    {%- when 'kol-as6' -%}Performance arm support
+    {%- when 'kosu' -%}Shock absorption and stability
+    {%- when 'futbol' -%}For football boots and pitches
+    {%- when 'basketbol' -%}Quick stops and jumps
+    {%- when 'tenis' -%}For court sports
+    {%- when 'voleybol' -%}Jump and landing protection
+    {%- when 'bisiklet' -%}Pedaling comfort
+    {%- when 'fitness' -%}Weight-training support
+    {%- when 'yuruyus', 'gunluk-yuruyus', 'gunluk-yuruyus-1' -%}Everyday walking comfort
+    {%- when 'golf' -%}Balance and swing control
+    {%- when 'plantar-fasiit' -%}Heel and sole pain
+    {%- when 'halluks-valgus' -%}Bunion support
+    {%- when 'diyabet' -%}For sensitive skin
+    {%- when 'seyahat-odem' -%}Long journeys and swelling
+    {%- when 'ayak-bakim' -%}Everyday foot care
+    {%- when 'ayak-bilegi-ve-kalf', 'ayak-bilegi-kalf' -%}Ankle and calf support
+  {%- endcase -%}
+{%- else -%}
+{%- case handle -%}
+
+  {%- comment -%} ---- Tabanlıklar ---- {%- endcomment -%}
+  {%- when 'gunluk-konfor' -%}Her gün rahat adım
+  {%- when 'medikal-seviye-destek' -%}Medikal seviye ortopedik destek
+  {%- when 'guc-ve-performans' -%}Spor ve sporculara özel
+  {%- when 'tabanliklar' -%}Kişiselleştirilmiş ortopedik destek
+
+  {%- comment -%} ---- Destek Çorapları ---- {%- endcomment -%}
+  {%- when 'kompresyon-fs4' -%}Koşu ve toparlanma
+  {%- when 'plantar-fasiit-fs4' -%}Topuk ve taban ağrısı
+  {%- when 'bunyon-br4-hv3' -%}Halluks valgus desteği
+  {%- when 'seyahat-ts5' -%}Ödem ve uzun yolculuk
+  {%- when 'diyabet-hassas-cilt-wp4' -%}Yumuşak dikişsiz yapı
+  {%- when 'performans-ta4' -%}Nefes alan ince çorap
+  {%- when 'destek-coraplari' -%}Hedeflenmiş kompresyon desteği
+  {%- when 'coraplar' -%}Hedeflenmiş kompresyon desteği
+  {%- when 'vucut-destek-urunleri' -%}Eklem ve kas stabilizasyonu
+
+  {%- comment -%} ---- Vücut Destekleri ---- {%- endcomment -%}
+  {%- when 'ayak-bilegi-af7' -%}Burkulma ve stabilite
+  {%- when 'diz-ks7' -%}Diz desteği
+  {%- when 'quadriceps-qs4' -%}Üst bacak ve kas desteği
+  {%- when 'el-bilegi-ws6' -%}Zorlanma ve karpal tünel
+  {%- when 'dirsek-es3-es6' -%}Tenisçi & golfçü dirseği
+  {%- when 'kol-as6' -%}Performans kol desteği
+  {%- when 'vucut-destekleri' -%}Eklem ve kas stabilizasyonu
+  {%- when 'destek-urunleri' -%}Eklem ve kas stabilizasyonu
+
+  {%- comment -%} ---- Spora Göre ---- {%- endcomment -%}
+  {%- when 'kosu' -%}Darbe emilimi ve stabilite
+  {%- when 'futbol' -%}Halı saha ve krampon içi
+  {%- when 'basketbol' -%}Ani duruş ve sıçrama
+  {%- when 'tenis' -%}Kort sporları için
+  {%- when 'voleybol' -%}Sıçrama ve iniş koruması
+  {%- when 'bisiklet' -%}Pedal aktarımı ve konfor
+  {%- when 'fitness' -%}Ağırlık antrenmanı desteği
+  {%- when 'yuruyus' -%}Günlük yürüyüş konforu
+  {%- when 'gunluk-yuruyus' -%}Günlük yürüyüş konforu
+  {%- when 'gunluk-yuruyus-1' -%}Günlük yürüyüş konforu
+  {%- when 'golf' -%}Denge ve salınım kontrolü
+
+  {%- comment -%} ---- Rahatsızlığa Göre ---- {%- endcomment -%}
+  {%- when 'plantar-fasiit' -%}Topuk ve taban ağrısı
+  {%- when 'halluks-valgus' -%}Bunyon desteği
+  {%- when 'diyabet' -%}Hassas cilt için
+  {%- when 'seyahat-odem' -%}Uzun yolculuk ve ödem
+  {%- when 'ayak-bakim' -%}Günlük ayak bakımı
+  {%- when 'ayak-bilegi-ve-kalf' -%}Burkulma ve baldır desteği
+  {%- when 'ayak-bilegi-kalf' -%}Burkulma ve baldır desteği
+
+{%- endcase -%}
+{%- endif -%}

@@ -1,0 +1,62 @@
+{% comment %}
+  Üç görsel kategori grubu, tek birleşik metafield filtresini kullanır.
+  Aynı parametrenin birden fazla değeri Shopify tarafından OR olarak uygulanır.
+{% endcomment %}
+{%- liquid
+  assign unified_filter = nil
+  for candidate in results.filters
+    if candidate.param_name == 'filter.p.m.custom.birlesik_kategori_filtresi'
+      assign unified_filter = candidate
+    endif
+  endfor
+  assign group_titles = 'Tabanlıklar|Destek Çorapları|Vücut Destek Ürünleri' | split: '|'
+  assign group_titles_en = 'Orthopedic Insoles|Support Socks|Body Support Products' | split: '|'
+  assign group_codes = 'tb|dc|vd' | split: '|'
+  assign group_values = 'QuickFit Control~QuickFit Balance Narrow~QuickFit Balance|Koşu ve Toparlanma~Topuk ve Taban Ağrısı~Bunyon~Seyahat~Diyabet & Hassas Cilt~Günlük Performans|Ayak Bileği~Diz~Quadriceps~El Bileği~Dirsek~Kol' | split: '|'
+  assign group_values_en = 'QuickFit Control~QuickFit Balance Narrow~QuickFit Balance|Running and Recovery~Heel and Sole Pain~Bunions~Travel~Diabetes & Sensitive Skin~Everyday Performance|Ankle~Knee~Quadriceps~Wrist~Elbow~Arm' | split: '|'
+-%}
+
+{%- for group_title in group_titles -%}
+  {%- assign group_code = group_codes[forloop.index0] -%}
+  {%- assign displayed_group_title = group_title -%}
+  {%- if localization.language.iso_code == 'en' -%}
+    {%- assign displayed_group_title = group_titles_en[forloop.index0] -%}
+  {%- endif -%}
+  {%- assign wanted_values = group_values[forloop.index0] | split: '~' -%}
+  {%- assign displayed_values = group_values_en[forloop.index0] | split: '~' -%}
+  <details class="fb-insole-filter fb-category-filter__group js-filter" id="FB-Unified-{{ group_code }}-{{ location }}-{{ section_id }}" data-index="fb-unified-{{ group_code }}-{{ location }}" open>
+    <summary class="fb-insole-filter__heading fb-category-filter__group-title facets__summary">
+      <a class="fb-category-nav-link fb-category-filter__parent-link" href="{{ routes.all_products_collection_url }}?fb={{ group_code }}" onclick="event.stopPropagation();">{{ displayed_group_title | escape }}</a>
+      {{- 'icon-caret.svg' | inline_asset_content -}}
+    </summary>
+    <ul class="fb-insole-filter__list fb-category-filter__children list-unstyled facets-wrap">
+      {%- for wanted_value in wanted_values -%}
+        {%- assign filter_value = nil -%}
+        {%- assign wanted_value_key = wanted_value | handleize -%}
+        {%- assign english_value_key = displayed_values[forloop.index0] | handleize -%}
+        {%- for candidate_value in unified_filter.values -%}
+          {%- assign clean_candidate_value = candidate_value.value | replace: '&amp;', '&' -%}
+          {%- assign candidate_value_key = clean_candidate_value | handleize -%}
+          {%- assign candidate_label_key = candidate_value.label | replace: '&amp;', '&' | handleize -%}
+          {%- if candidate_value_key == wanted_value_key or candidate_label_key == wanted_value_key or candidate_value_key == english_value_key or candidate_label_key == english_value_key -%}
+            {%- assign filter_value = candidate_value -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign submitted_value = wanted_value -%}
+        {%- if filter_value != nil -%}
+          {%- assign submitted_value = filter_value.value -%}
+        {%- endif -%}
+        <li class="fb-category-filter__item">
+          <label class="fb-insole-choice facets__label facet-checkbox{% if location == 'mobile' %} mobile-facets__label{% endif %}{% if filter_value.active %} active{% endif %}" for="FB-Unified-Value-{{ group_code }}-{{ location }}-{{ section_id }}-{{ forloop.index }}">
+            <input type="checkbox" {% if location == 'mobile' %}class="mobile-facets__checkbox"{% endif %} id="FB-Unified-Value-{{ group_code }}-{{ location }}-{{ section_id }}-{{ forloop.index }}" name="filter.p.m.custom.birlesik_kategori_filtresi" value="{{ submitted_value | escape }}" {% if filter_value.active %}checked{% endif %} {% if unified_filter == nil %}disabled{% endif %}>
+            <div class="svg-wrapper">{{- 'icon-checkmark.svg' | inline_asset_content -}}</div>
+            <span class="facet-checkbox__text">
+              <span class="facet-checkbox__text-label">{% if localization.language.iso_code == 'en' %}{{ displayed_values[forloop.index0] | escape }}{% else %}{{ wanted_value | escape }}{% endif %}</span>
+              {%- if filter_value != nil -%} ({{ filter_value.count }}){%- else -%} <span class="fb-category-filter__switch-hint" aria-hidden="true">→</span>{%- endif -%}
+            </span>
+          </label>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </details>
+{%- endfor -%}

@@ -1,0 +1,288 @@
+{% comment %}
+  Temiz koleksiyon URL'sinde çoklu kategori filtresi.
+
+  Örnek: /collections/bunyon açıkken "Topuk ve Taban Ağrısı" seçilirse
+  ürün ızgarası Bunyon + Topuk ürünleriyle Ajax üzerinden güncellenir.
+  Adres çubuğu /collections/bunyon olarak kalır.
+
+  Bu snippet yalnızca aşağıdaki handle'lara sahip koleksiyonlarda çalışır.
+  Aynı kategoriye ait farklı SEO URL'leri de aynı metafield değerine bağlanır.
+  Yeni bir SEO koleksiyonu eklendiğinde baseCategoryByHandle nesnesine
+  "koleksiyon-handle": "Metafield değeri" satırını ekleyin.
+{% endcomment %}
+
+{%- if request.page_type == 'collection' and collection.handle != 'all' -%}
+  <script>
+    (() => {
+      if (window.FBCleanCollectionCategoryState) return;
+      window.FBCleanCollectionCategoryState = true;
+
+      const filterParam = 'filter.p.m.custom.birlesik_kategori_filtresi';
+      const collectionHandle = {{ collection.handle | json }};
+      const baseCategoryByHandle = {
+        'quickfit-control': 'QuickFit Control',
+        'guc-ve-performans': 'QuickFit Control',
+        'quickfit-balance-narrow': 'QuickFit Balance Narrow',
+        'medikal-seviye-destek': 'QuickFit Balance Narrow',
+        'quickfit-balance': 'QuickFit Balance',
+        'kosu-ve-toparlanma': 'Koşu ve Toparlanma',
+        'kompresyon-coraplari': 'Koşu ve Toparlanma',
+        'topuk-ve-taban-agrisi': 'Topuk ve Taban Ağrısı',
+        'plantar-fasiit-corabi': 'Topuk ve Taban Ağrısı',
+        'bunyon': 'Bunyon',
+        'halluks-valgus': 'Bunyon',
+        'seyahat': 'Seyahat',
+        'seyahat-corabi': 'Seyahat',
+        'diyabet-hassas-cilt': 'Diyabet & Hassas Cilt',
+        'diyabet-corabi': 'Diyabet & Hassas Cilt',
+        'gunluk-performans': 'Günlük Performans',
+        'spor-coraplari': 'Günlük Performans',
+        'performans-ta4': 'Günlük Performans',
+        'gunluk-konfor': 'QuickFit Balance',
+        'ayak-bilegi': 'Ayak Bileği',
+        'ayak-bilek-destegi-ve-kalf-koruyucu': 'Ayak Bileği',
+        'ayak-bilegi-af7': 'Ayak Bileği',
+        'diz': 'Diz',
+        'diz-ks7': 'Diz',
+        'quadriceps': 'Quadriceps',
+        'quadriceps-qs4': 'Quadriceps',
+        'ust-bacak-qs4': 'Quadriceps',
+        'el-bilegi': 'El Bileği',
+        'el-bilegi-ws6': 'El Bileği',
+        'dirsek': 'Dirsek',
+        'dirsek-es3-es6': 'Dirsek',
+        'kol': 'Kol',
+        'kol-as6': 'Kol'
+      };
+      const baseCategory = baseCategoryByHandle[collectionHandle];
+      // Üst kategori sayfalarının ürünleri birden çok metafield değeriyle
+      // temsil edilir. Bu değerler her zaman sonuçlarda korunur; kullanıcı
+      // başka bir kategori seçtiğinde sonuçlara eklenir.
+      const hubBaseCategoriesByHandle = {
+        'tabanliklar': [
+          'QuickFit Control',
+          'QuickFit Balance Narrow',
+          'QuickFit Balance'
+        ],
+        'destek-coraplari': [
+          'Koşu ve Toparlanma',
+          'Topuk ve Taban Ağrısı',
+          'Bunyon',
+          'Seyahat',
+          'Diyabet & Hassas Cilt',
+          'Günlük Performans'
+        ],
+        'vucut-destekleri': [
+          'Ayak Bileği',
+          'Diz',
+          'Quadriceps',
+          'El Bileği',
+          'Dirsek',
+          'Kol'
+        ],
+        'vucut-destek-urunleri': [
+          'Ayak Bileği',
+          'Diz',
+          'Quadriceps',
+          'El Bileği',
+          'Dirsek',
+          'Kol'
+        ]
+      };
+      const hubBaseCategories = hubBaseCategoriesByHandle[collectionHandle] || [];
+      const isCategoryHub = hubBaseCategories.length > 0;
+      const preservedCategories = baseCategory ? [baseCategory] : hubBaseCategories;
+
+      if (!baseCategory && !isCategoryHub) return;
+
+      const categoryValues = Object.values(baseCategoryByHandle);
+      const storageKey = `fb-clean-category-state:${collectionHandle}`;
+      let selected = new Set(preservedCategories);
+      let rendering = false;
+      const desktopLoaderEnabled = window.matchMedia('(min-width: 990px)').matches;
+      let desktopLoader;
+
+      const showDesktopLoader = () => {
+        if (!desktopLoaderEnabled) return;
+
+        if (!desktopLoader) {
+          const style = document.createElement('style');
+          style.textContent = `
+            .fb-category-page-loader {
+              position: fixed; inset: 0; z-index: 10000;
+              display: flex; align-items: center; justify-content: center;
+              background: rgba(255, 255, 255, .82);
+              opacity: 0; visibility: hidden;
+              transition: opacity .18s ease, visibility .18s ease;
+              pointer-events: none;
+            }
+            .fb-category-page-loader.is-visible { opacity: 1; visibility: visible; }
+            .fb-category-page-loader__content {
+              display: inline-flex; align-items: center; gap: .9rem;
+              padding: 1.2rem 1.6rem; border: 1px solid #f3d6bd;
+              border-radius: .9rem; background: #fffaf5; color: #102d49;
+              font-size: 1.4rem; font-weight: 600; box-shadow: 0 .8rem 2.4rem rgba(16,45,73,.12);
+            }
+            .fb-category-page-loader__spinner {
+              width: 2rem; height: 2rem; border: .25rem solid #f2d5bc;
+              border-top-color: #ff6d00; border-radius: 50%;
+              animation: fb-category-loader-spin .7s linear infinite;
+            }
+            @keyframes fb-category-loader-spin { to { transform: rotate(360deg); } }
+          `;
+          document.head.appendChild(style);
+
+          desktopLoader = document.createElement('div');
+          desktopLoader.className = 'fb-category-page-loader';
+          desktopLoader.setAttribute('aria-live', 'polite');
+          desktopLoader.innerHTML = '<div class="fb-category-page-loader__content"><span class="fb-category-page-loader__spinner" aria-hidden="true"></span><span>{% if localization.language.iso_code == 'en' %}Loading products{% else %}Ürünler hazırlanıyor{% endif %}</span></div>';
+          document.body.appendChild(desktopLoader);
+        }
+
+        desktopLoader.classList.add('is-visible');
+      };
+
+      const hideDesktopLoader = () => desktopLoader?.classList.remove('is-visible');
+
+      const valueFor = (input) => {
+        if (input.value) return input.value.trim();
+        const label = input.closest('label');
+        return label?.querySelector('.facet-checkbox__text-label')?.textContent.trim() || '';
+      };
+
+      const categoryInputs = () => [...document.querySelectorAll(`input[name="${filterParam}"]`)]
+        .filter((input) => categoryValues.includes(valueFor(input)));
+
+      const loadSelection = () => {
+        // Filtreler sayfa oturumları arasında hatırlanmaz. Eski sürümden kalan
+        // kayıt varsa da ilk açılışta temizlenir.
+        try {
+          sessionStorage.removeItem(storageKey);
+        } catch (_) {}
+        preservedCategories.forEach((value) => selected.add(value));
+      };
+
+      const saveSelection = () => {
+        // Bilerek boş: seçim yalnızca açık sayfada geçerlidir.
+      };
+
+      const syncCheckboxes = () => {
+        categoryInputs().forEach((input) => {
+          const value = valueFor(input);
+          // Destek Çorapları sayfasında da kendi alt kategorileri başlangıçta
+          // seçili görünür ve başka bir seçim eklendiğinde korunur.
+          const isSelected = selected.has(value);
+          input.checked = isSelected;
+          input.closest('label')?.classList.toggle('active', isSelected);
+        });
+      };
+
+      const sourceUrl = () => {
+        const url = new URL({{ routes.all_products_collection_url | json }}, window.location.origin);
+        [...selected].forEach((value) => url.searchParams.append(filterParam, value));
+        return url;
+      };
+
+      const renderProducts = async () => {
+        if (rendering) return;
+
+        rendering = true;
+        showDesktopLoader();
+        document.documentElement.classList.add('fb-category-filter-loading');
+
+        try {
+          const response = await fetch(sourceUrl().toString(), { credentials: 'same-origin' });
+          if (!response.ok) throw new Error('Filter request failed');
+
+          const html = await response.text();
+          const nextDocument = new DOMParser().parseFromString(html, 'text/html');
+          const currentGrid = document.querySelector('#ProductGridContainer');
+          const nextGrid = nextDocument.querySelector('#ProductGridContainer');
+          const currentDesktopFacets = document.querySelector('#FacetsWrapperDesktop');
+          const nextDesktopFacets = nextDocument.querySelector('#FacetsWrapperDesktop');
+          const currentMobileFacets = document.querySelector('#FacetFiltersFormMobile');
+          const nextMobileFacets = nextDocument.querySelector('#FacetFiltersFormMobile');
+
+          if (!currentGrid || !nextGrid) throw new Error('Product grid not found');
+
+          currentGrid.innerHTML = nextGrid.innerHTML;
+          if (currentDesktopFacets && nextDesktopFacets) currentDesktopFacets.innerHTML = nextDesktopFacets.innerHTML;
+          if (currentMobileFacets && nextMobileFacets) currentMobileFacets.innerHTML = nextMobileFacets.innerHTML;
+
+          syncCheckboxes();
+          window.scrollTo({ top: document.querySelector('#ProductGridContainer')?.offsetTop || 0, behavior: 'smooth' });
+        } catch (error) {
+          console.error('[FootBalance category filter]', error);
+        } finally {
+          rendering = false;
+          document.documentElement.classList.remove('fb-category-filter-loading');
+          hideDesktopLoader();
+        }
+      };
+
+      const labelIn = (text) => categoryValues.find((value) => text.includes(value));
+
+      document.addEventListener('change', (event) => {
+        const input = event.target;
+        if (!(input instanceof HTMLInputElement) || input.name !== filterParam) return;
+
+        const value = valueFor(input);
+        if (!categoryValues.includes(value)) return;
+
+        event.stopImmediatePropagation();
+        if (input.checked) selected.add(value);
+        else if (value !== baseCategory) selected.delete(value);
+
+        preservedCategories.forEach((category) => selected.add(category));
+        saveSelection();
+        syncCheckboxes();
+        renderProducts();
+      }, true);
+
+      document.addEventListener('click', (event) => {
+        const removeLink = event.target.closest('.active-facets__button, .active-facets__button-remove');
+        if (!removeLink) return;
+
+        const label = labelIn(removeLink.textContent || '');
+        const clearAll = removeLink.classList.contains('active-facets__button-remove');
+        if (!label && !clearAll) return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        if (clearAll) selected = new Set(preservedCategories);
+        else if (label !== baseCategory) selected.delete(label);
+
+        preservedCategories.forEach((category) => selected.add(category));
+        saveSelection();
+        syncCheckboxes();
+        renderProducts();
+      }, true);
+
+      const syncAfterThemeRender = () => {
+        syncCheckboxes();
+        requestAnimationFrame(syncCheckboxes);
+        window.setTimeout(syncCheckboxes, 120);
+      };
+
+      loadSelection();
+      syncAfterThemeRender();
+      window.addEventListener('load', syncAfterThemeRender, { once: true });
+      window.addEventListener('pageshow', (event) => {
+        // Tarayıcı geri/ileri önbelleğinden dönerse de eski filtreli görünümü
+        // göstermeyelim; koleksiyon varsayılan haline geri dönsün.
+        if (event.persisted) {
+          selected = new Set(preservedCategories);
+          syncAfterThemeRender();
+          renderProducts();
+          return;
+        }
+        syncAfterThemeRender();
+      });
+
+      // İlk yüklemede ürün adetleri ve filtre durumları /collections/all'dan
+      // alınır. Üst kategori sayfalarında kendi alt kategorileri korunur.
+      if (selected.size) renderProducts();
+    })();
+  </script>
+{%- endif -%}

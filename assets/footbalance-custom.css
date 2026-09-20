@@ -1,0 +1,3098 @@
+/* ==========================================================================
+   FootBalance — özel stiller
+   --------------------------------------------------------------------------
+   Dawn'ın kendi dosyalarına dokunulmadı; buradaki kurallar tema
+   güncellemesinde kaybolmaz. layout/theme.liquid içinden çağrılıyor.
+
+   0. Marka değişkenleri + ortak parçalar
+   1. Menü alt açıklamaları  (27.07 müşteri notu)
+   2. Güven rozetleri        (sections/trust-badges.liquid)
+   3. Hero                   (sections/fb-hero.liquid)
+   4. "Hedefin ne?"          (sections/fb-finder.liquid)
+   5. Kategori kartları      (sections/fb-category-cards.liquid)
+   6. Özellik kartları       (sections/fb-feature-cards.liquid)
+   7. Yorumlar               (sections/fb-testimonials.liquid)
+   8. Çağrı bölümü           (sections/fb-cta.liquid)
+
+   Not: Dawn html { font-size: 62.5% } kullanır → 1rem = 10px.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. Marka değişkenleri + ortak parçalar
+   Renkler config/settings_data.json'daki şemalardan alındı.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --fb-navy: #0e2a45;
+  --fb-navy-deep: #021322;
+  --fb-orange: #f87900;
+  --fb-cream: #fefbf8;
+  --fb-cream-2: #f9f4ee;
+  --fb-card-radius: 1.6rem;
+  --fb-shadow: 0 1px 2px rgba(2, 19, 34, 0.04), 0 10px 30px -14px rgba(2, 19, 34, 0.18);
+  --fb-shadow-lg: 0 2px 4px rgba(2, 19, 34, 0.05), 0 24px 60px -24px rgba(2, 19, 34, 0.3);
+}
+
+/* Turuncu üst etiket — referansta her bölüm başlığının üstünde var */
+.fb-overline {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fb-orange);
+  margin-bottom: 0.8rem;
+}
+
+/* Butonlar — Dawn'ın .button'ı köşeleri ve ok ikonunu vermiyor */
+.fb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.3rem 2.8rem;
+  border-radius: 999px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  border: 0.2rem solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease,
+    border-color 0.2s ease;
+}
+
+.fb-btn:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.fb-btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex-shrink: 0;
+}
+
+.fb-btn--primary {
+  background-color: var(--fb-orange);
+  color: #fff;
+}
+
+.fb-btn--primary:hover {
+  background-color: #e06e00;
+  color: #fff;
+}
+
+.fb-btn--ghost {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.fb-btn--ghost:hover {
+  background-color: #fff;
+  color: var(--fb-navy);
+}
+
+.fb-btn--navy {
+  background-color: var(--fb-navy);
+  color: #fff;
+}
+
+.fb-btn--navy:hover {
+  background-color: var(--fb-navy-deep);
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   0.5. Üst bant — sections/fb-announcement.liquid
+   Dawn'ın slider'ı tek mesaj gösteriyordu; burada üçü yan yana.
+   -------------------------------------------------------------------------- */
+
+.fb-ann {
+  width: 100%;
+}
+
+.fb-ann__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.2rem 3.2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.fb-ann__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.fb-ann__item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fb-ann__item a:hover {
+  text-decoration: underline;
+}
+
+.fb-ann__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.fb-ann__icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.9;
+}
+
+/* Mobilde yan yana sığmıyor — kaydırılabilir olsun, mesaj kaybolmasın */
+@media screen and (max-width: 749px) {
+  .fb-ann__inner {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    gap: 2rem;
+    scrollbar-width: none;
+  }
+  .fb-ann__inner::-webkit-scrollbar {
+    display: none;
+  }
+  .fb-ann__item {
+    font-size: 1.15rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   1. Menü alt açıklamaları
+   header-dropdown-menu.liquid + snippets/menu-item-description.liquid
+   -------------------------------------------------------------------------- */
+
+.header__submenu .fb-menu-item--stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  line-height: 1.3;
+}
+
+.fb-menu-item__title {
+  font-weight: 600 !important;
+  color: rgb(var(--color-foreground));
+}
+
+.fb-menu-item__desc {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: rgba(var(--color-foreground), 0.62);
+  white-space: normal;
+}
+
+/* Açıklamalı menüde satırlar sarmalanabilmeli, Dawn varsayılanı tek satır tutuyor */
+.header__submenu:has(.fb-menu-item--stacked) {
+  min-width: 26rem;
+}
+
+.header__submenu .fb-menu-item--stacked:hover .fb-menu-item__desc,
+.header__submenu .fb-menu-item--stacked:focus .fb-menu-item__desc {
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+/* "Doğru Ürün Bul" — referanstaki turuncu vurgulu menü öğesi */
+.header__inline-menu .fb-menu-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--fb-orange);
+  font-weight: 700;
+  border-radius: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.header__inline-menu .fb-menu-cta:hover {
+  background-color: rgba(248, 121, 0, 0.1);
+  color: var(--fb-orange);
+}
+
+.header__inline-menu .fb-menu-cta span,
+.header__inline-menu .fb-menu-cta span.header__active-menu-item {
+  color: inherit;
+  text-decoration: none;
+}
+
+.fb-menu-cta__icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  flex-shrink: 0;
+}
+
+/* Mobil çekmecede de aynı hiyerarşi korunsun */
+.menu-drawer .fb-menu-item--stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. Güven rozetleri
+   sections/trust-badges.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-trust__head {
+  text-align: center;
+  max-width: 62rem;
+  margin: 0 auto 4rem;
+}
+
+.fb-trust__title {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.fb-trust__subtitle {
+  margin: 1rem 0 0;
+  font-size: 1.9rem;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.fb-trust__grid {
+  display: grid;
+  gap: 1.6rem;
+}
+
+.fb-trust__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3.2rem 2rem;
+  border-radius: 1.4rem;
+  background-color: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  box-shadow: 0 1px 2px rgba(var(--color-foreground), 0.04),
+    0 8px 24px -12px rgba(var(--color-foreground), 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fb-trust__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 1px 2px rgba(var(--color-foreground), 0.04),
+    0 14px 32px -14px rgba(var(--color-foreground), 0.22);
+}
+
+.fb-trust__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 1.2rem;
+  color: #fff;
+  margin-bottom: 1.8rem;
+  flex-shrink: 0;
+}
+
+.fb-trust__icon svg {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.fb-trust__card-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.fb-trust__card-text {
+  margin: 0.6rem 0 0;
+  font-size: 1.7rem;
+  color: rgba(var(--color-foreground), 0.68);
+  line-height: 1.4;
+}
+
+@media screen and (max-width: 589px) {
+  .fb-trust__card {
+    padding: 2.4rem 1.4rem;
+  }
+  .fb-trust__icon {
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1.2rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Hero — sections/fb-hero.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.fb-hero__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.fb-hero__media--placeholder {
+  background-color: var(--fb-navy);
+}
+
+/* Video arka plan. Görsel alt katmanda hep durur; video onun üstüne biner.
+   Video gizlendiği her durumda (mobil, hareket azaltma) görsel ortaya çıkar,
+   hero boş kalmaz.
+
+   z-index verilmiyor: sıralama DOM'dan geliyor (görsel → video → karartma →
+   içerik). z-index eklenirse video karartmanın da üstüne çıkar, yazılar
+   okunmaz hale gelir. */
+
+@media screen and (max-width: 749px) {
+  .fb-hero__media--desktop-only {
+    display: none;
+  }
+}
+
+/* Hareket azaltma tercihi açık kullanıcıda video gösterilmez */
+@media (prefers-reduced-motion: reduce) {
+  .fb-hero__media--video {
+    display: none;
+  }
+}
+
+.fb-hero__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.fb-hero__inner {
+  position: relative;
+  width: 100%;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.fb-hero__content {
+  max-width: 60rem;
+  color: #fff;
+}
+
+.fb-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 0.1rem solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(6px);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.fb-hero__badge svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.fb-hero__heading {
+  margin: 2rem 0 0;
+  font-size: clamp(3.4rem, 5.4vw, 6rem);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.fb-hero__subheading {
+  margin: 2.4rem 0 0;
+  font-size: clamp(2rem, 2.6vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.24;
+  color: var(--fb-orange);
+}
+
+.fb-hero__text {
+  margin: 1.6rem 0 0;
+  font-size: 1.6rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.fb-hero__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 3rem;
+}
+
+.fb-hero__rating {
+  margin-top: 3rem;
+  font-size: 1.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.fb-hero__stars {
+  display: flex;
+  gap: 0.3rem;
+  color: var(--fb-orange);
+  margin-bottom: 0.4rem;
+}
+
+.fb-hero__stars svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@media screen and (max-width: 749px) {
+  .fb-hero__content {
+    max-width: none;
+  }
+  .fb-hero__buttons .fb-btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. "Hedefin ne?" — sections/fb-finder.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-finder {
+  position: relative;
+  z-index: 2;
+}
+
+.fb-finder__card {
+  background-color: #fff;
+  border-radius: 2.4rem;
+  padding: 3.2rem;
+  box-shadow: var(--fb-shadow-lg);
+  border: 0.1rem solid rgba(2, 19, 34, 0.06);
+}
+
+.fb-finder__head {
+  text-align: center;
+  margin-bottom: 2.8rem;
+}
+
+.fb-finder__title {
+  margin: 0;
+  font-size: clamp(2.4rem, 3vw, 3.2rem);
+  font-weight: 600;
+  color: var(--fb-navy);
+  letter-spacing: -0.01em;
+}
+
+.fb-finder__grid {
+  display: grid;
+  gap: 1.6rem;
+}
+
+.fb-finder__option {
+  display: flex;
+  flex-direction: column;
+  padding: 2.4rem;
+  border-radius: var(--fb-card-radius);
+  background-color: var(--fb-cream-2);
+  border: 0.1rem solid rgba(2, 19, 34, 0.05);
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.fb-finder__option:hover {
+  background-color: #fff;
+  transform: translateY(-3px);
+  box-shadow: var(--fb-shadow);
+  text-decoration: none;
+}
+
+.fb-finder__option-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+}
+
+.fb-finder__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.2rem;
+  height: 5.2rem;
+  border-radius: 1.3rem;
+  overflow: hidden;
+  color: var(--fb-navy);
+  flex-shrink: 0;
+}
+
+.fb-finder__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fb-finder__icon svg {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.fb-finder__chevron {
+  width: 2rem;
+  height: 2rem;
+  color: rgba(2, 19, 34, 0.35);
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.fb-finder__option:hover .fb-finder__chevron {
+  transform: translateX(3px);
+  color: var(--fb-navy);
+}
+
+.fb-finder__option-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+  line-height: 1.3;
+}
+
+.fb-finder__option-text {
+  margin-top: 0.8rem;
+  font-size: 1.4rem;
+  color: rgba(2, 19, 34, 0.62);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.fb-finder__option-cta {
+  margin-top: 1.8rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fb-orange);
+}
+
+@media screen and (max-width: 749px) {
+  .fb-finder__card {
+    padding: 2.4rem 1.8rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Kategori kartları — sections/fb-category-cards.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-cats__head {
+  text-align: center;
+  margin-bottom: 3.2rem;
+}
+
+.fb-cats__title {
+  margin: 0;
+  font-size: clamp(2.6rem, 3.4vw, 3.6rem);
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-cats__grid {
+  display: grid;
+  gap: 1.8rem;
+}
+
+.fb-cat {
+  position: relative;
+  display: block;
+  border-radius: var(--fb-card-radius);
+  overflow: hidden;
+  text-decoration: none;
+  box-shadow: var(--fb-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fb-cat:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--fb-shadow-lg);
+  text-decoration: none;
+}
+
+.fb-cat__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.fb-cat:hover .fb-cat__img {
+  transform: scale(1.04);
+}
+
+.fb-cat__img--empty {
+  background: linear-gradient(135deg, var(--fb-cream-2), #e6ddd2);
+}
+
+/* Ürün fotoğrafları beyaz zeminli — yazı okunsun diye koyu degrade */
+.fb-cat__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(2, 19, 34, 0.82) 0%,
+    rgba(2, 19, 34, 0.45) 38%,
+    rgba(2, 19, 34, 0.06) 70%,
+    rgba(2, 19, 34, 0) 100%
+  );
+}
+
+.fb-cat__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 2.2rem;
+  color: #fff;
+}
+
+.fb-cat__title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.fb-cat__text {
+  margin-top: 0.5rem;
+  font-size: 1.9rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.fb-cat__cta {
+  margin-top: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--fb-orange);
+}
+
+/* --------------------------------------------------------------------------
+   6. Özellik kartları — sections/fb-feature-cards.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-feats__head {
+  text-align: center;
+  margin-bottom: 3.6rem;
+}
+
+.fb-feats__title {
+  margin: 0;
+  font-size: clamp(2.6rem, 3.6vw, 3.8rem);
+  font-weight: 700;
+  color: var(--fb-navy);
+  letter-spacing: -0.01em;
+}
+
+.fb-feats__subtitle {
+  margin: 1rem 0 0;
+  font-size: clamp(1.7rem, 2vw, 2rem);
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-feats__accent {
+  color: var(--fb-orange);
+  font-weight: 400;
+}
+
+.fb-feats__grid {
+  display: grid;
+  gap: 1.8rem;
+}
+
+.fb-feat {
+  background-color: #fff;
+  border: 0.1rem solid rgba(2, 19, 34, 0.08);
+  border-radius: var(--fb-card-radius);
+  padding: 2.8rem;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-feat__media {
+  display: block;
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  margin-bottom: 1.8rem;
+}
+
+.fb-feat__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fb-feat__title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-feat__text {
+  margin-top: 1.2rem;
+  font-size: 1.7rem;
+  line-height: 1.6;
+  color: rgba(2, 19, 34, 0.66);
+}
+
+.fb-feat__text p {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Yorumlar — sections/fb-testimonials.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-quotes__head {
+  text-align: center;
+  margin-bottom: 3.6rem;
+}
+
+.fb-quotes__title {
+  margin: 0;
+  font-size: clamp(2.6rem, 3.6vw, 3.8rem);
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-quotes__grid {
+  display: grid;
+  gap: 1.8rem;
+}
+
+.fb-quote {
+  margin: 0;
+  padding: 2.6rem;
+  border-radius: var(--fb-card-radius);
+  background: linear-gradient(
+    135deg,
+    rgba(248, 121, 0, 0.07),
+    rgba(14, 42, 69, 0.04)
+  );
+  border: 0.1rem solid rgba(248, 121, 0, 0.16);
+  display: flex;
+  flex-direction: column;
+}
+
+.fb-quote__stars {
+  display: flex;
+  gap: 0.3rem;
+  color: var(--fb-orange);
+  margin-bottom: 1.4rem;
+}
+
+.fb-quote__stars svg {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+.fb-quote__text {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1.6;
+  color: rgba(2, 19, 34, 0.82);
+  flex: 1;
+}
+
+.fb-quote__hl {
+  color: var(--fb-orange);
+  font-weight: 600;
+}
+
+.fb-quote__author {
+  margin-top: 2rem;
+  padding-top: 1.8rem;
+  border-top: 0.1rem solid rgba(248, 121, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.fb-quote__name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-quote__role {
+  font-size: 1.2rem;
+  color: rgba(2, 19, 34, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+   8. Çağrı bölümü — sections/fb-cta.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-cta {
+  text-align: center;
+}
+
+.fb-cta__title {
+  margin: 0;
+  font-size: clamp(2.6rem, 3.6vw, 3.8rem);
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-cta__text {
+  margin: 1rem 0 0;
+  font-size: 1.9rem;
+  color: rgba(2, 19, 34, 0.62);
+}
+
+.fb-cta .fb-btn {
+  margin-top: 2.8rem;
+}
+
+/* --------------------------------------------------------------------------
+   10. "En uygun:" satırı — snippets/fb-en-uygun.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-en-uygun {
+  margin: 1.6rem 0;
+  padding: 1.2rem 1.6rem;
+  border-radius: 1rem;
+  background-color: rgba(248, 121, 0, 0.07);
+  border-left: 0.3rem solid var(--fb-orange);
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+
+.fb-en-uygun__label {
+  font-weight: 700;
+  color: var(--fb-navy);
+  margin-right: 0.4rem;
+}
+
+.fb-en-uygun__text {
+  color: rgba(2, 19, 34, 0.72);
+}
+
+/* --------------------------------------------------------------------------
+   9. Paket önerisi — sections/fb-bundle.liquid
+   -------------------------------------------------------------------------- */
+
+.fb-bundle {
+  padding-top: 3.2rem;
+  padding-bottom: 4.8rem;
+}
+
+/* Sepetteki paket önerisi 02.08 revizesiyle ödeme bloğunun ALTINA taşındı.
+   Güven satırı da kaldırıldığı için bölüm doğrudan başlıkla başlıyor —
+   araya ince ayırıcı konmazsa ödeme kutusuna yapışık duruyor. */
+[data-fb-cart-bundle] {
+  margin-top: 1.6rem;
+  border-top: 0.1rem solid rgba(2, 19, 34, 0.1);
+}
+
+.fb-bundle__trust {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin-bottom: 3.2rem;
+}
+
+.fb-bundle__trust-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.4rem 1.8rem;
+  border-radius: 1.2rem;
+  border: 0.1rem solid rgba(2, 19, 34, 0.1);
+  background-color: #fff;
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--fb-navy);
+}
+
+.fb-bundle__trust-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background-color: rgba(248, 121, 0, 0.1);
+  color: var(--fb-orange);
+  flex-shrink: 0;
+}
+
+.fb-bundle__trust-icon svg {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.fb-bundle__title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 2rem;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-bundle__spark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 1rem;
+  background-color: rgba(248, 121, 0, 0.12);
+  color: var(--fb-orange);
+  flex-shrink: 0;
+}
+
+.fb-bundle__spark svg {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.fb-bundle__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) 1.35fr;
+  gap: 1.6rem;
+  align-items: start;
+}
+
+/* --- paketteki ürün kartları --- */
+
+.fb-bundle__card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.4rem;
+  border-radius: var(--fb-card-radius);
+  border: 0.1rem solid rgba(2, 19, 34, 0.09);
+  background-color: #fff;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.fb-bundle__card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--fb-shadow);
+  text-decoration: none;
+}
+
+.fb-bundle__card-media {
+  position: relative;
+  display: block;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background-color: var(--fb-cream-2);
+  aspect-ratio: 4 / 3;
+  margin-bottom: 1.4rem;
+}
+
+.fb-bundle__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fb-bundle__card-badge {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.6rem;
+  background-color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fb-navy);
+}
+
+.fb-bundle__card-vendor {
+  font-size: 1.2rem;
+  color: rgba(2, 19, 34, 0.5);
+}
+
+.fb-bundle__card-title {
+  margin-top: 0.2rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+  line-height: 1.3;
+}
+
+.fb-bundle__card-desc {
+  margin-top: 0.4rem;
+  font-size: 1.25rem;
+  color: rgba(2, 19, 34, 0.58);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.fb-bundle__card-price {
+  margin-top: 1.4rem;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-bundle__card-link {
+  margin-top: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--fb-orange);
+}
+
+/* --- paket kutusu --- */
+
+.fb-bundle__offer {
+  padding: 2rem;
+  border-radius: var(--fb-card-radius);
+  border: 0.2rem solid rgba(248, 121, 0, 0.35);
+  background: linear-gradient(160deg, rgba(248, 121, 0, 0.07), rgba(255, 255, 255, 0.9));
+}
+
+.fb-bundle__offer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.fb-bundle__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  background-color: var(--fb-orange);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.fb-bundle__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 0.1rem solid rgba(2, 19, 34, 0.12);
+  background-color: rgba(255, 255, 255, 0.7);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(2, 19, 34, 0.6);
+}
+
+.fb-bundle__tag svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.fb-bundle__offer-title {
+  margin: 1.6rem 0 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-bundle__offer-text {
+  margin: 0.5rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(2, 19, 34, 0.7);
+}
+
+.fb-bundle__list {
+  list-style: none;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.fb-bundle__list li {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.35rem;
+  color: rgba(2, 19, 34, 0.85);
+}
+
+.fb-bundle__list svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  padding: 0.2rem;
+  border-radius: 50%;
+  background-color: rgba(248, 121, 0, 0.15);
+  color: var(--fb-orange);
+}
+
+.fb-bundle__price-box {
+  position: relative;
+  margin-top: 1.8rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: 1.1rem;
+  background-color: rgba(2, 19, 34, 0.04);
+}
+
+.fb-bundle__price-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(2, 19, 34, 0.5);
+}
+
+.fb-bundle__price-old {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 1.3rem;
+  text-decoration: line-through;
+  color: rgba(2, 19, 34, 0.45);
+}
+
+.fb-bundle__price-new {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--fb-navy);
+}
+
+.fb-bundle__savings {
+  position: absolute;
+  right: 1.4rem;
+  bottom: 1.4rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.8rem;
+  background-color: var(--fb-orange);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.fb-bundle__savings small {
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.fb-bundle__cta {
+  width: 100%;
+  margin-top: 1.6rem;
+}
+
+.fb-bundle__cta[disabled] {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.fb-bundle__note {
+  margin: 1rem 0 0;
+  font-size: 1.3rem;
+  color: #b42318;
+}
+
+@media screen and (max-width: 989px) {
+  .fb-bundle__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fb-bundle__offer {
+    grid-column: 1 / -1;
+  }
+}
+
+@media screen and (max-width: 589px) {
+  .fb-bundle__trust {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fb-bundle__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ==========================================================================
+   11. SEPET  —  referans tasarıma göre yeniden kurgulandı (02.08)
+   --------------------------------------------------------------------------
+   Dawn'ın sepet MARKUP'ı korundu (adet kuralları, silme, AJAX tazeleme ona
+   bağlı). Kart görünümü tamamen buradan geliyor: tablo -> kart dönüşümü,
+   sağdaki "Sipariş Özeti" kartı ve paket şeridi.
+
+   Düzen: #MainContent masaüstünde iki sütunlu grid'e çevriliyor.
+
+   ⚠️ Bölüm sarmalayıcısının id'si cart.json'daki anahtar DEĞİLDİR. Shopify
+   şablon bölümlerine tema öneki ekler:
+       beklenen : shopify-section-cart-footer
+       gerçek   : shopify-section-template--27459017703720__cart-footer
+   Önek tema kopyalandığında değişir, o yüzden id'ye "ile biter" (`$=`)
+   seçicisiyle bakılıyor.
+   ========================================================================== */
+
+/* --- 11.1 İki sütunlu düzen ------------------------------------------- */
+
+/* Eşik 990px: özet kartı 36rem. Daha dar ekranda sol sütun kullanılamayacak
+   kadar sıkışıyor (800px'de 301px'e düşüyordu), o yüzden altında tek sütun. */
+@media screen and (min-width: 990px) {
+  body:has(#MainContent > [id$="__cart-footer"]) #MainContent {
+    display: grid;
+    align-items: start;
+    column-gap: 2.4rem;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 5rem;
+  }
+
+  #MainContent > [id$="__cart-items"] {
+    grid-column: 1;
+  }
+
+  #MainContent > [id$="__cart-footer"] {
+    grid-column: 2;
+  }
+
+  #MainContent > [id$="__fb_cart_bundle"] {
+    grid-column: 1 / -1;
+  }
+
+  /* Dış grid zaten sayfa genişliğini veriyor; içerideki page-width ikinci
+     kez kenar boşluğu eklemesin.
+
+     ⚠️ Paket şeridi hariç tutuluyor: onun `padding` değeri bandın KENDİ iç
+     boşluğu, sayfa kenarı değil. Sıfırlanırsa mini kartlar bandın kenarına
+     yapışıyor. */
+  body:has(#MainContent > [id$="__cart-footer"]) #MainContent .page-width:not(.fb-cartbundle) {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body:has(#MainContent > [id$="__cart-footer"]) #MainContent .fb-cartbundle.page-width {
+    max-width: none;
+  }
+
+  /* Dawn footer'ı kendi grid sütununa itiyordu — artık dış grid hallediyor */
+  .cart__items + .cart__footer,
+  .cart__footer {
+    grid-column: auto;
+    display: block;
+  }
+
+  .cart__footer > * {
+    width: auto;
+  }
+
+  .cart__footer > * + * {
+    margin-left: 0;
+  }
+
+  /* Özet kartı sayfayla birlikte kaymasın (sticky) — AMA paket şeridinin
+     üstüne binmesin.
+
+     ⚠️ Sticky bir öğe, en yakın blok ata kutusunun içinde hareket eder.
+     `position: sticky` doğrudan bölüm sarmalayıcısına verilince o kutu
+     `#MainContent`'in tamamı oluyordu — paket şeridi dahil. Kart da ürünler
+     bitince durmayıp bandın üstüne iniyordu.
+
+     Çözüm: sarmalayıcı ızgaranın BİRİNCİ SATIRINI baştan sona kaplasın
+     (align-self: stretch + iç kutuların yüksekliği devralması), sticky de
+     kartın kendisine verilsin. Böylece kart ürün listesinin sonunda
+     kendiliğinden duruyor, banda hiç değmiyor. */
+  #MainContent > [id$="__cart-footer"] {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10.8rem;
+  }
+
+  /* ⚠️ Yükseklik zinciri kesintisiz olmalı. Bölüm sarmalayıcısı ile kart
+     arasında iki ara kutu daha var:
+       [bölüm] > div#main-cart-footer > div.page-width > div.cart__footer > .fb-summary
+     Biri bile `block` kalırsa yükseklik devrolmaz, kart takılacak yer bulamaz
+     ve sticky hiç çalışmaz. */
+  #MainContent > [id$="__cart-footer"] > div,
+  #MainContent > [id$="__cart-footer"] .page-width {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #MainContent > [id$="__cart-footer"] .cart__footer {
+    flex: 1;
+  }
+
+  /* Sticky artık kartın kendisinde; kapsayıcısı birinci satır kadar. */
+  #MainContent > [id$="__cart-footer"] .fb-summary {
+    position: sticky;
+    top: 2rem;
+  }
+}
+
+/* Tek sütuna düştüğünde özet kartı ürünlere yapışmasın */
+@media screen and (max-width: 989px) {
+  #MainContent > [id$="__cart-footer"] {
+    margin-top: 2.4rem;
+  }
+}
+
+/* --- 11.2 Başlık ------------------------------------------------------- */
+
+.fb-cart .title-wrapper-with-link {
+  align-items: baseline;
+  margin-bottom: 2rem;
+}
+
+.fb-cart .title--primary {
+  margin: 0;
+}
+
+/* --- 11.3 Ücretsiz kargo çubuğu ---------------------------------------- */
+
+.fb-cart__shipbar {
+  padding: 1.4rem 1.8rem;
+  margin-bottom: 1.6rem;
+  border: 0.1rem solid rgba(248, 121, 0, 0.28);
+  border-radius: var(--fb-card-radius);
+  background-color: rgba(248, 121, 0, 0.06);
+}
+
+.fb-cart__shipbar-text {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  color: var(--fb-navy);
+}
+
+.fb-cart__shipbar-text strong {
+  color: var(--fb-orange);
+  font-weight: 700;
+}
+
+.fb-cart__shipbar-track {
+  height: 0.6rem;
+  border-radius: 999px;
+  background-color: rgba(248, 121, 0, 0.18);
+  overflow: hidden;
+}
+
+.fb-cart__shipbar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--fb-orange);
+  transition: width 0.4s ease;
+}
+
+/* --- 11.4 Tablo -> kart ------------------------------------------------ */
+
+/* ⚠️ ÖZGÜLLÜK TUZAĞI
+   Sıfırlama kuralına `tr` yazılırsa `.fb-cart .cart-items tr` (0,2,1) olur ve
+   `.fb-cart .cart-item` (0,2,0) kuralını yener — kart display:block'ta kalır,
+   padding/border hiç uygulanmaz. Bu yüzden `tr` burada YOK ve kart kuralları
+   `.fb-cart .cart-items .cart-item` (0,3,0) ile yazıldı. */
+
+.fb-cart .cart-items,
+.fb-cart .cart-items thead,
+.fb-cart .cart-items tbody,
+.fb-cart .cart-items td {
+  display: block;
+  width: auto;
+  border: 0;
+  padding: 0;
+}
+
+.fb-cart .cart-items thead {
+  display: none;
+}
+
+.fb-cart .cart-items .cart-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 2rem;
+  row-gap: 1.6rem;
+  padding: 2rem 2.2rem;
+  margin-bottom: 1.4rem;
+  border: 0.1rem solid rgba(2, 19, 34, 0.08);
+  border-radius: var(--fb-card-radius);
+  background-color: #fff;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-cart .cart-items .cart-item::after {
+  content: none;
+}
+
+/* ⚠️ Dawn'da `.cart-item__link` boş bir <a> ve position:absolute; inset:0.
+   Konumlanmış bir ata bulamazsa KARTIN TAMAMINI kaplar ve çöp kutusu,
+   adet butonları tıklanamaz olur. Görsel hücresine konum bağlamı veriliyor. */
+.fb-cart .cart-items .cart-item__media {
+  position: relative;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.fb-cart .cart-items .cart-item__image-container {
+  border-radius: 1.2rem;
+  overflow: hidden;
+  background-color: var(--fb-cream-2);
+}
+
+.fb-cart .cart-items .cart-item__image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.fb-cart .cart-items .cart-item__details {
+  grid-column: 2;
+  grid-row: 1;
+  padding-right: 3.5rem;
+}
+
+.fb-cart .cart-items .cart-item__name {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--fb-navy);
+  text-decoration: none;
+}
+
+.fb-cart .cart-items .cart-item__details dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.6rem;
+  margin: 0.5rem 0 0;
+}
+
+.fb-cart .cart-items .cart-item__details .product-option {
+  font-size: 1.3rem;
+  color: rgba(2, 19, 34, 0.58);
+}
+
+.fb-cart .cart-items .cart-item__details dl .product-option {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.fb-cart .cart-items .cart-item__details dd {
+  margin: 0;
+}
+
+/* Adet kutusu — kartın sol altında */
+.fb-cart .cart-items .cart-item__quantity {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.fb-cart .cart-items .cart-item__quantity-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.fb-cart .cart-items .cart-quantity {
+  border: 0.1rem solid rgba(2, 19, 34, 0.14);
+  border-radius: 1rem;
+  min-height: 4rem;
+  width: auto;
+  min-width: 11.5rem;
+}
+
+/* Silme butonu — kartın sağ üstü. z-index: görünmez link düzeltildi ama
+   yine de tıklanabilirliği garanti altına alıyoruz. */
+.fb-cart .cart-items cart-remove-button {
+  position: absolute;
+  top: 1.6rem;
+  right: 1.8rem;
+  z-index: 2;
+  margin: 0;
+}
+
+.fb-cart .cart-items cart-remove-button .button {
+  min-width: 0;
+  min-height: 0;
+  padding: 0.6rem;
+  color: rgba(2, 19, 34, 0.45);
+}
+
+.fb-cart .cart-items cart-remove-button .button:hover {
+  color: var(--fb-orange);
+}
+
+/* Satır toplamı — sağ altta, akışın içinde (mutlak değil, çöp kutusuyla
+   çakışmasın diye) */
+.fb-cart .cart-items .cart-item__totals.small-hide {
+  grid-column: 3;
+  grid-row: 2;
+  align-self: end;
+  text-align: right;
+}
+
+.fb-cart .cart-items .cart-item__totals.medium-hide.large-up-hide {
+  display: none;
+}
+
+.fb-cart .cart-items .cart-item__totals .price {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+@media screen and (max-width: 749px) {
+  .fb-cart .cart-items .cart-item {
+    grid-template-columns: 8rem minmax(0, 1fr);
+    padding: 1.6rem;
+  }
+
+  .fb-cart .cart-items .cart-item__totals.small-hide {
+    display: none;
+  }
+
+  .fb-cart .cart-items .cart-item__totals.medium-hide.large-up-hide {
+    display: block;
+    grid-column: 2;
+    grid-row: 3;
+    text-align: right;
+  }
+}
+
+/* --- 11.5 Alt aksiyon satırı ------------------------------------------- */
+
+.fb-cart__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  margin-top: 1.6rem;
+}
+
+.fb-cart__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.4rem;
+  color: rgba(2, 19, 34, 0.55);
+  text-decoration: none;
+}
+
+.fb-cart__clear:hover {
+  color: var(--fb-orange);
+}
+
+.fb-cart__clear svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.fb-cart__continue {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.1rem 2rem;
+  border: 0.1rem solid rgba(2, 19, 34, 0.16);
+  border-radius: 1rem;
+  background-color: #fff;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--fb-navy);
+  text-decoration: none;
+}
+
+.fb-cart__continue:hover {
+  border-color: var(--fb-navy);
+}
+
+/* --- 11.6 Sipariş Özeti kartı ------------------------------------------ */
+
+.fb-summary {
+  padding: 2.2rem;
+  border: 0.1rem solid rgba(2, 19, 34, 0.08);
+  border-radius: var(--fb-card-radius);
+  background-color: #fff;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-summary__title {
+  margin: 0 0 1.6rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-summary__rows {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.fb-summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.6rem;
+  font-size: 1.45rem;
+  color: rgba(2, 19, 34, 0.7);
+}
+
+.fb-summary__row > span:last-child {
+  font-weight: 600;
+  color: var(--fb-navy);
+}
+
+.fb-summary__muted {
+  font-weight: 500 !important;
+  color: rgba(2, 19, 34, 0.5) !important;
+}
+
+.fb-summary .totals.fb-summary__total {
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 1.4rem;
+  margin-bottom: 1.6rem;
+  border-top: 0.1rem solid rgba(2, 19, 34, 0.1);
+}
+
+.fb-summary .totals__total {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+}
+
+.fb-summary .totals__total-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--fb-navy);
+}
+
+/* Ödemeye Geç — referansta lacivert */
+.fb-summary .cart__checkout-button {
+  max-width: none;
+  width: 100%;
+  min-height: 5.2rem;
+  border-radius: 1.2rem;
+  background-color: var(--fb-navy);
+  box-shadow: none;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.fb-summary .cart__checkout-button::after,
+.fb-summary .cart__checkout-button::before {
+  box-shadow: none;
+  border: 0;
+}
+
+.fb-summary .cart__checkout-button:hover {
+  background-color: var(--fb-navy-deep);
+}
+
+.fb-summary__trust {
+  list-style: none;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.fb-summary__trust li {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.35rem;
+  color: rgba(2, 19, 34, 0.62);
+}
+
+.fb-summary__trust svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  color: var(--fb-orange);
+}
+
+.fb-hidden {
+  display: none !important;
+}
+
+/* --- 11.7 Paket şeridi -------------------------------------------------- */
+
+.fb-cartbundle {
+  margin-top: 2.4rem;
+  padding: 2rem;
+  border: 0.1rem solid rgba(248, 121, 0, 0.28);
+  border-radius: 2rem;
+  background-color: rgba(248, 121, 0, 0.05);
+}
+
+/* Tek sütunlu düzende bandın `padding`i `.page-width`inkini eziyor, dolayısıyla
+   renkli zemin ekran kenarına dayanıyordu. Kenar boşluğunu margin ile veriyoruz
+   ki bant, ürün kartlarıyla aynı hizada dursun. Değerler Dawn'ın page-width
+   padding'iyle aynı: <750px 1.5rem, üstünde 5rem. */
+@media screen and (max-width: 989px) {
+  .fb-cartbundle {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+}
+
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .fb-cartbundle {
+    margin-left: 5rem;
+    margin-right: 5rem;
+  }
+}
+
+.fb-cartbundle__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.6rem;
+  margin-bottom: 1.6rem;
+}
+
+.fb-cartbundle__head-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+}
+
+.fb-cartbundle__spark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  flex-shrink: 0;
+  border-radius: 1rem;
+  background-color: rgba(248, 121, 0, 0.16);
+  color: var(--fb-orange);
+}
+
+.fb-cartbundle__spark svg {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.fb-cartbundle__title {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--fb-navy);
+}
+
+.fb-cartbundle__sub {
+  margin: 0.3rem 0 0;
+  font-size: 1.4rem;
+  color: rgba(2, 19, 34, 0.62);
+}
+
+.fb-cartbundle__sub strong {
+  color: var(--fb-orange);
+  font-weight: 700;
+}
+
+.fb-cartbundle__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  background-color: rgba(248, 121, 0, 0.14);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--fb-orange);
+}
+
+.fb-cartbundle__badge svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.fb-cartbundle__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.4rem;
+}
+
+.fb-cartbundle__card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  /* Tek ürün kaldığında kart bandın tamamına yayılıp garip duruyordu.
+     Izgara `auto-fit` olduğu için 2-3 üründe yine yan yana ve eşit dağılıyor. */
+  max-width: 46rem;
+  padding: 1.1rem;
+  border: 0.1rem solid rgba(2, 19, 34, 0.08);
+  border-radius: 1.3rem;
+  background-color: #fff;
+  text-decoration: none;
+}
+
+.fb-cartbundle__card:hover {
+  border-color: rgba(248, 121, 0, 0.45);
+}
+
+.fb-cartbundle__card-media {
+  width: 5.6rem;
+  height: 5.6rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  overflow: hidden;
+  background-color: var(--fb-cream-2);
+}
+
+.fb-cartbundle__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.fb-cartbundle__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.fb-cartbundle__card-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--fb-navy);
+  line-height: 1.3;
+}
+
+.fb-cartbundle__card-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.2rem;
+  color: rgba(2, 19, 34, 0.55);
+}
+
+.fb-cartbundle__card-rating svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  color: #f5b301;
+}
+
+.fb-cartbundle__card-price {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--fb-navy);
+}
+
+.fb-cartbundle__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  flex-wrap: wrap;
+  padding: 1.4rem 1.8rem;
+  border-radius: 1.4rem;
+  background-color: var(--fb-navy);
+}
+
+.fb-cartbundle__bar-label {
+  display: block;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.fb-cartbundle__bar-label s {
+  margin-left: 0.5rem;
+}
+
+.fb-cartbundle__bar-new {
+  display: block;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.fb-cartbundle__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1.2rem 2rem;
+  border: 0;
+  border-radius: 1.1rem;
+  background-color: var(--fb-orange);
+  font-family: inherit;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+}
+
+.fb-cartbundle__cta:hover {
+  filter: brightness(1.06);
+}
+
+.fb-cartbundle__cta:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.fb-cartbundle__cta svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.fb-cartbundle__note {
+  margin: 1rem 0 0;
+  font-size: 1.3rem;
+  color: #b3261e;
+}
+
+/* ==========================================================================
+   12. GENEL FONT ÖLÇEĞİ  (02.08 müşteri notu: "fontlar biraz büyük")
+   --------------------------------------------------------------------------
+   Dawn kök font boyutunu `html { font-size: calc(--font-body-scale * 62.5%) }`
+   ile veriyor ve tema baştan sona `rem` kullanıyor — yani burası tek kaldıraç.
+
+   ⚠️ Panelden küçültülemez: Ayarlar > Tipografi'deki ölçek sliderı 100'den
+   başlıyor (max 130), yani sadece büyütmeye izin veriyor. Bu yüzden CSS.
+
+   0.94 -> gövde metni 15px yerine 14px; başlıklar ve tüm bileşenler aynı
+   oranda küçülür. Geri almak için değeri 1 yapmak yeterli.
+   ========================================================================== */
+
+:root {
+  --fb-font-scale: 0.94;
+}
+
+html {
+  font-size: calc(var(--font-body-scale) * var(--fb-font-scale) * 62.5%);
+}
+
+/* ==========================================================================
+   13. ÜRÜN GALERİSİ — küçük görseller solda dikey  (02.08 müşteri notu)
+   --------------------------------------------------------------------------
+   İstenen: solda küçük kareler alt alta, sağda büyük görsel; küçüğe tıklayınca
+   büyük olan değişsin. Referans: superfeet.eu ürün sayfası.
+
+   Tıkla-değiştir davranışı Dawn'ın kendi `media-gallery.js`'inde HAZIR —
+   `gallery_layout: thumbnail` ayarı açıldığı an çalışıyor, JS yazılmadı.
+   Dawn küçükleri büyük görselin ALTINA yatay koyuyor; sola dikey almak
+   panelde yok, düzen buradan kuruluyor.
+
+   DOM (snippets/product-media-gallery.liquid):
+     <media-gallery>
+       <div class="visually-hidden">              ← ekran okuyucu durumu
+       <slider-component id="GalleryViewer-…">    ← büyük görsel
+       <slider-component class="thumbnail-slider">← küçükler
+     </media-gallery>
+
+   Küçükler DOM'da sonra geldiği için `order: -1` ile sola alınıyor.
+   ========================================================================== */
+
+@media screen and (min-width: 990px) {
+  /* ⚠️ Küçükler sütunu AKIŞTAN ÇIKARILIYOR (position: absolute).
+
+     Sebep: flex'te satır yüksekliğini en uzun öğe belirler. 8 küçük görsel
+     ~767px ederken büyük görsel 694px; sütun daha uzun olduğu için hizayı o
+     belirliyor ve büyük görselin altında 73px boşluk bırakıyordu.
+
+     Mutlak konumlanınca sütun yüksekliği artık büyük görselden geliyor
+     (top/bottom: 0), sığmayan küçükler kendi içinde kayıyor. Ürün başına
+     görsel sayısı 3 ile 8 arasında değiştiği için sabit bir yükseklik yerine
+     bu yöntem gerekiyor. */
+  .product--thumbnail media-gallery {
+    position: relative;
+    display: block;
+  }
+
+  .product--thumbnail media-gallery > slider-component:not(.thumbnail-slider) {
+    margin-left: calc(9.5rem + 1.2rem);
+  }
+
+  .product--thumbnail media-gallery > .thumbnail-slider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 9.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+  }
+
+  /* ⚠️ Dawn `.product--large .thumbnail-list`'i 6 sütuna zorluyor (0,2,0).
+     Aynı özgüllükte ama dosya sonra yüklendiği için buradaki kazanıyor. */
+  .product--thumbnail .thumbnail-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 0.8rem;
+    padding: 0;
+  }
+
+  .product--thumbnail .thumbnail-list__item {
+    width: auto;
+  }
+
+  /* Yatay kaydırma okları dikey sütunda anlamsız — sütun zaten kayıyor */
+  .product--thumbnail .thumbnail-slider > .slider-button {
+    display: none;
+  }
+}
+
+/* 990px altında düzen tek sütuna düşüyor; küçükler Dawn'ın varsayılanı gibi
+   büyük görselin altında yatay kalsın. Dar ekranda dikey sütun yer yemez. */
+
+/* --- 13.1 Sabit kare çerçeve ------------------------------------------
+   Dawn büyük görselin kutusunu her görselin KENDİ oranından hesaplıyor
+   (`--aspect-ratio: var(--preview-ratio)`). Ürünlerdeki görseller farklı
+   oranlarda olduğu için (1000x1000, 800x1000, 600x613, 1200x912…) küçüklere
+   tıklarken kutu 694px ile 830px arasında zıplıyor, altındaki her şey
+   oynuyordu.
+
+   Kare çerçeveye sabitleniyor; `media_fit: contain` zaten açık olduğu için
+   görseller kırpılmadan içine oturuyor. Referans tasarımdaki çerçeve de kare.
+   Tüm genişliklerde geçerli — zıplama masaüstüne özgü değil. */
+/* Çerçeve oranı artık ürün başına, sections/main-product.liquid içinden
+   kapak görselinin oranıyla basılıyor. Buradaki değer sadece emniyet payı:
+   o kural herhangi bir sebeple basılmazsa kare çerçeveye düşülür. */
+.product--thumbnail .product-media-container {
+  --aspect-ratio: 1;
+}
+
+/* ⚠️ Dawn'ın "contain" ayarı object-fit'e DOKUNMUYOR — kutuyu görselin oranına
+   göre kurarak sığdırıyor, görsel de `cover` ile kutuyu tam dolduruyordu.
+   Kutuyu kareye sabitleyince o denge bozuluyor ve dikey görsellerin altı üstü
+   kırpılıyor. Bu yüzden görsele açıkça `contain` veriliyor. */
+.product--thumbnail .product-media-container .media > img {
+  object-fit: contain;
+}
+
+/* Kırpma yerine boşluk kaldığı için çerçeve zemini krem olsun, beyaz görselde
+   kutu sınırı belirsiz kalmasın */
+.product--thumbnail .product-media-container .media {
+  background-color: var(--fb-cream-2);
+}
+
+.fb-category-filter {
+  margin-top: 24px;
+}
+
+.fb-category-filter__title {
+  margin: 0 0 28px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.fb-category-filter__group {
+  margin-bottom: 28px;
+}
+
+.fb-category-filter__group-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 36px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.fb-category-filter__group-title::-webkit-details-marker {
+  display: none;
+}
+
+.fb-category-filter__group-title .icon-caret {
+  margin-left: auto;
+  width: 12px;
+}
+
+.fb-category-filter__children {
+  position: relative;
+  margin: 16px 0 0 18px;
+  padding-left: 22px;
+}
+
+.fb-category-filter__children::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(11, 42, 67, 0.18);
+}
+
+.fb-category-filter__item {
+  margin-bottom: 12px;
+}
+
+.fb-category-filter__item .facets__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  font-size: 17px;
+}
+
+.fb-category-filter__item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+/* FootBalance kategori filtresi - ince ayar */
+
+.fb-category-filter {
+  margin-top: 18px;
+}
+
+.fb-category-filter__title {
+  margin: 0 0 22px;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.fb-category-filter__group {
+  margin-bottom: 22px;
+}
+
+.fb-category-filter__group-title {
+  gap: 10px;
+  padding-left: 32px;
+  min-height: 24px;
+
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.fb-category-filter__group-title::before {
+  width: 20px;
+  height: 20px;
+  border-width: 1.5px;
+  border-radius: 5px;
+}
+
+.fb-category-filter__group-title .icon-caret {
+  width: 10px;
+  margin-left: auto;
+}
+
+.fb-category-filter__children {
+  margin: 12px 0 0 10px;
+  padding-left: 24px;
+}
+
+.fb-category-filter__item {
+  margin-bottom: 8px;
+}
+
+.fb-category-filter__item .facets__label {
+  gap: 9px;
+  padding: 5px 0;
+
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.fb-category-filter__item input[type="checkbox"] {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.fb-category-filter__item .facet-checkbox__text {
+  line-height: 1.3;
+}
+
+.fb-category-filter__item .facet-checkbox__text-label {
+  line-height: 1.3;
+}
+
+.fb-category-filter__group-title {
+  padding-left: 0;
+}
+
+.fb-category-filter__parent-checkbox {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin: 0 2px 0 0;
+  cursor: pointer;
+  accent-color: #0b2a43;
+}
+
+.fb-category-filter__item input[type="checkbox"],
+.fb-category-filter__parent-checkbox {
+  accent-color: #0b2a43;
+}
+
+
+/* Ürün detay sayfası fiyatı */
+.product__info-container .price--large .price-item {
+  color: #ff7100;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Fiyattaki TRY */
+.product__info-container .fb-product-currency {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-left: 0.2rem;
+  vertical-align: baseline;
+}
+
+@media screen and (max-width: 749px) {
+  .product__info-container .price--large .price-item {
+    font-size: 2.5rem;
+  }
+
+  .product__info-container .fb-product-currency {
+    font-size: 1.2rem;
+  }
+}
+
+/* Sepet ürün kaldırma — kompakt görünüm */
+#main-cart-items .cart-item cart-remove-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-self: center !important;
+
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+
+  margin: 0 6px !important;
+  padding: 0 !important;
+
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+}
+
+#main-cart-items .cart-item cart-remove-button > a.button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #c84a3f !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Temanın buton efektlerini kaldır */
+#main-cart-items .cart-item cart-remove-button > a.button::before,
+#main-cart-items .cart-item cart-remove-button > a.button::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* İkon ölçüsü */
+#main-cart-items .cart-item cart-remove-button .svg-wrapper,
+#main-cart-items .cart-item cart-remove-button .svg-wrapper svg {
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+#main-cart-items .cart-item cart-remove-button svg path {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* Hafif hover efekti */
+@media screen and (hover: hover) {
+  #main-cart-items .cart-item cart-remove-button > a.button:hover {
+    color: #a92f27 !important;
+    background: #fff1ee !important;
+  }
+}
+
+/* Sipariş özeti avantajları */
+.fb-summary .fb-summary__trust {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+
+  margin: 16px 0 0 !important;
+  padding: 0 !important;
+
+  list-style: none !important;
+}
+
+.fb-summary .fb-summary__trust li {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+
+  color: #102d46 !important;
+  background: #fff6ee !important;
+  border: 1px solid rgba(255, 121, 0, 0.2) !important;
+  border-radius: 9px !important;
+
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  box-sizing: border-box !important;
+}
+
+.fb-summary .fb-summary__trust-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 12px !important;
+
+  width: 12px !important;
+  height: 12px !important;
+
+  color: #ffffff !important;
+  background: #ff7900 !important;
+  border-radius: 50% !important;
+}
+
+.fb-summary .fb-summary__trust-icon svg {
+  display: none !important;
+}
+
+@media screen and (max-width: 749px) {
+  .fb-summary .fb-summary__trust li {
+    min-height: 42px !important;
+    padding: 9px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .fb-summary .fb-summary__trust-icon {
+    flex-basis: 23px !important;
+    width: 23px !important;
+    height: 23px !important;
+  }
+
+  .fb-summary .fb-summary__trust-icon svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+}
+
+.mobile-facets__sort
+{
+  display:none !important
+}
+
+.fb-finder__option--horizontal .fb-finder__option-title{
+  font-size:32px !important;
+}
+
+.fb-finder__option--horizontal .fb-finder__option-text
+{
+  font-size:18px !important;
+}
+
+.fb-product-card__category {
+  display: none !important;
+}
+
+.facets-vertical-form{
+  display:none !important;
+}
+
+body,
+.gradient {
+  background-color: #fefefe;
+}
+
+/* Header — masaüstünde menüyü ortala */
+@media screen and (min-width: 990px) {
+  .header.header--middle-left {
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "heading navigation icons";
+    column-gap: 3rem;
+  }
+
+  .header__heading,
+  .header__heading-link {
+    justify-self: start;
+  }
+
+  .header__inline-menu {
+    justify-self: center;
+    margin-left: 0;
+  }
+
+  .header__icons {
+    justify-self: end;
+  }
+
+  /* Header menü tipografisi ve renkleri */
+@media screen and (min-width: 990px) {
+  .header__menu-item,
+  .header__menu-item span {
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: #263746;
+    text-decoration: none;
+  }
+
+  .header__menu-item svg,
+  .header__menu-item .icon-caret {
+    color: #ff7200;
+  }
+
+  .header__menu-item:hover,
+  .header__menu-item:hover span {
+    color: #102c44;
+    text-decoration: none;
+  }
+
+  /* Son menü öğesi: Doğru Ürün Bul */
+  .header__inline-menu
+    > .list-menu
+    > li:last-child
+    > .header__menu-item,
+  .header__inline-menu
+    > .list-menu
+    > li:last-child
+    > .header__menu-item span {
+    color: #ff7200;
+    font-weight: 600;
+  }
+
+  .header__inline-menu
+    > .list-menu
+    > li:last-child
+    > .header__menu-item:hover,
+  .header__inline-menu
+    > .list-menu
+    > li:last-child
+    > .header__menu-item:hover span {
+    color: #e86500;
+  }
+}
+
+  .header__active-menu-item {
+    font-size: inherit;
+  }
+
+  .
+}
+@media screen and (min-width: 990px) {
+  .header__menu-item,
+  .header__menu-item span {
+    font-weight: 600;
+  }
+
+  .header__submenu .header__menu-item,
+  .header__submenu .header__menu-item span {
+    font-weight: 500;
+  }
+
+  .header__inline-menu
+    > .list-menu
+    > li:last-child
+    > .header__menu-item,
+  .header__inline-menu
+    > .list-menu
+    > li:last-child
+    > .header__menu-item span {
+    font-weight: 700;
+  }
+}
+
+/* Başka kategoride kaldığı için 0 görünen seçenekler tıklanabilir */
+.fb-category-filter__item label:has(input:disabled) {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.fb-category-filter__item label:has(input:disabled):hover {
+  color: #ff7200;
+}
+
+.fb-category-filter__item label:has(input:disabled) input {
+  cursor: pointer;
+}
+
+.fb-category-filter__switch-hint {
+  display: inline-block;
+  margin-left: 0.4rem;
+  color: #ff7200;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.fb-category-filter__item label:hover
+  .fb-category-filter__switch-hint {
+  transform: translateX(3px);
+}
+/* --------------------------------------------------
+   FootBalance kategori filtresi
+-------------------------------------------------- */
+
+.fb-category-filter {
+  color: #102a40;
+  font-family: var(--font-body-family);
+}
+
+.fb-category-filter__title {
+  margin: 0 0 1.8rem;
+  color: #102a40;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.03em;
+}
+
+.fb-category-filter__group {
+  margin: 0;
+  padding: 0;
+}
+
+.fb-category-filter__group + .fb-category-filter__group {
+  margin-top: 2rem;
+}
+
+.fb-category-filter__group-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.2rem;
+  padding: 0;
+  color: #102a40;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.fb-category-filter__group-title > span,
+.fb-category-filter__parent-link {
+  color: #102a40;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.fb-category-filter__parent-link:hover {
+  color: #ff7200;
+  text-decoration: none;
+}
+
+.fb-category-filter__group-title .icon-caret {
+  width: 1rem;
+  height: 0.6rem;
+  margin-left: auto;
+  color: #776b5f;
+}
+
+/* Alt seçenekleri bağlayan dikey çizgi */
+
+.fb-category-filter__children {
+  margin: 0.9rem 0 0 1.2rem !important;
+  padding: 0 0 0 2rem !important;
+  border-left: 1px solid #e4ddd6;
+}
+
+.fb-category-filter__item {
+  margin: 0 0 0.8rem;
+  padding: 0;
+}
+
+.fb-category-filter__item:last-child {
+  margin-bottom: 0;
+}
+
+.fb-category-filter__item .facets__label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  min-height: 1.9rem;
+  padding: 0 !important;
+  color: #776b5f;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.fb-category-filter__item .facet-checkbox__text {
+  color: #776b5f;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.fb-category-filter__item:hover .facet-checkbox__text,
+.fb-category-filter__item:hover .facet-checkbox__text-label {
+  color: #102a40;
+}
+
+/* Checkbox temel görünümü */
+
+.fb-category-filter input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 1.8rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  margin: 0;
+  border: 1px solid #17354e;
+  border-radius: 0.5rem;
+  background-color: #fefefe;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1.3rem 1.3rem;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.fb-category-filter input[type="checkbox"]:hover {
+  border-color: #ff7200;
+}
+
+/* Seçili checkbox: kurumsal lacivert ve beyaz tik */
+
+.fb-category-filter input[type="checkbox"]:checked {
+  border-color: #102a40 !important;
+  background-color: #102a40 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.2 6.3 11.5 13 4.8' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+}
+
+.fb-category-filter input[type="checkbox"]:checked:hover {
+  border-color: #173b59 !important;
+  background-color: #173b59 !important;
+}
+
+.fb-category-filter input[type="checkbox"]:hover {
+  border-color: #102a40;
+}
+
+.fb-category-filter input[type="checkbox"]:focus-visible {
+  outline: 2px solid #102a40;
+  outline-offset: 2px;
+}
+
+/* Başka kategoriye geçiş sağlayan seçenekler */
+
+.fb-category-filter__item label:has(input:disabled) {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.fb-category-filter__item label:has(input:disabled) input {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.fb-category-filter__item
+  label:has(input:disabled)
+  .facet-checkbox__text {
+  color: #8b8075;
+}
+
+.fb-category-filter__item
+  label:has(input:disabled):hover
+  .facet-checkbox__text {
+  color: #102a40;
+}
+
+.fb-category-filter__switch-hint {
+  display: inline-block;
+  margin-left: 0.4rem;
+  color: #ff7200;
+  font-size: 1.3rem;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.fb-category-filter__item
+  label:hover
+  .fb-category-filter__switch-hint {
+  transform: translateX(3px);
+}
+
+/* Ürün kartları arasındaki boşluklar */
+
+#product-grid.fb-demo-product-grid {
+  --grid-desktop-horizontal-spacing: 2.4rem;
+  --grid-desktop-vertical-spacing: 3.2rem;
+
+  column-gap: 2.4rem;
+  row-gap: 3.2rem;
+}
+
+@media screen and (max-width: 989px) {
+  #product-grid.fb-demo-product-grid {
+    --grid-mobile-horizontal-spacing: 1.6rem;
+    --grid-mobile-vertical-spacing: 2.4rem;
+
+    column-gap: 1.6rem;
+    row-gap: 2.4rem;
+  }
+}
+
+/* Ürün kartı fiyat boşluklarını daralt */
+
+.fb-demo-product-grid .price,
+.fb-demo-product-grid .fb-product-card__price {
+  margin-top: 0.8rem !important;
+  margin-bottom: 0 !important;
+  padding-top: 0.8rem !important;
+  padding-bottom: 0 !important;
+}
+
+/* Ürün kartının gereksiz uzamasını engelle */
+
+.fb-demo-product-grid
+  .card
+  > .card__content {
+  flex-grow: 0 !important;
+}
+
+.fb-demo-product-grid
+  .fb-card-main-information {
+  padding-top: 1.4rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.fb-demo-product-grid
+  .fb-card-main-information
+  > .card-information {
+  margin-bottom: 0 !important;
+}
+
+.fb-demo-product-grid
+  .fb-card-main-information
+  .price {
+  margin-top: 0.6rem !important;
+  margin-bottom: 0 !important;
+  padding-top: 0.7rem !important;
+  padding-bottom: 0 !important;
+}
+
+.fb-demo-product-grid .card--standard>.card__content, .fb-demo-product-grid .card--card>.card__content {
+    padding: 2rem 2.2rem 0.2rem !important;
+}
+
+/* Koleksiyon filtresi üzerindeki geri bağlantısı */
+
+.fb-collection-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 2.4rem;
+  color: #102a40;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.fb-collection-back-link svg {
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.fb-collection-back-link:hover {
+  color: #ff7200;
+  transform: translateX(-2px);
+  text-decoration: none;
+}
+
+/* --------------------------------------------------
+   Ürün detay — Sepete ekle ve Hemen satın alın
+-------------------------------------------------- */
+
+.product__info-container .product-form__submit,
+.product__info-container
+  .shopify-payment-button__button--unbranded {
+  width: 100% !important;
+  min-height: 5.4rem !important;
+  padding: 1.4rem 2.4rem !important;
+  border: 0 !important;
+  border-radius: 1.2rem !important;
+  font-family: var(--font-body-family) !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+/* Sepete ekle */
+
+.product__info-container .product-form__submit {
+  color: #ffffff !important;
+  background: #102a40 !important;
+  box-shadow: 0 0.8rem 2rem rgba(16, 42, 64, 0.2) !important;
+}
+
+.product__info-container
+  .product-form__submit:hover:not([disabled]) {
+  color: #ffffff !important;
+  background: #173b59 !important;
+  box-shadow: 0 1rem 2.4rem rgba(16, 42, 64, 0.28) !important;
+  transform: translateY(-2px);
+}
+
+/* Hemen satın alın */
+
+.product__info-container
+  .shopify-payment-button__button--unbranded {
+  color: #ffffff !important;
+  background: #ff7200 !important;
+  box-shadow: 0 0.8rem 2rem rgba(255, 114, 0, 0.24) !important;
+}
+
+.product__info-container
+  .shopify-payment-button__button--unbranded:hover {
+  color: #ffffff !important;
+  background: #e86500 !important;
+  box-shadow: 0 1rem 2.4rem rgba(255, 114, 0, 0.32) !important;
+  transform: translateY(-2px);
+}
+
+/* Butonlar arasındaki boşluk */
+
+.product__info-container .shopify-payment-button {
+  margin-top: 1.2rem !important;
+}
+
+/* Dawn temasının varsayılan çerçevelerini kaldır */
+
+.product__info-container .product-form__submit::before,
+.product__info-container .product-form__submit::after,
+.product__info-container
+  .shopify-payment-button__button--unbranded::before,
+.product__info-container
+  .shopify-payment-button__button--unbranded::after {
+  box-shadow: none !important;
+}
+
+/* Klavye odağı */
+
+.product__info-container
+  .product-form__submit:focus-visible,
+.product__info-container
+  .shopify-payment-button__button--unbranded:focus-visible {
+  outline: 3px solid rgba(255, 114, 0, 0.35) !important;
+  outline-offset: 3px !important;
+}
+
+/* Pasif Sepete ekle */
+
+.product__info-container
+  .product-form__submit[disabled] {
+  color: #ffffff !important;
+  background: #8b969f !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+}
+
+/* Mobil */
+
+@media screen and (max-width: 749px) {
+  .product__info-container .product-form__submit,
+  .product__info-container
+    .shopify-payment-button__button--unbranded {
+    min-height: 5.2rem !important;
+    font-size: 1.5rem !important;
+  }
+}
+
+.product-form__input--pill input[type=radio]+label
+{
+  text-transform:uppercase !important;
+}
+
+/* Sepet özeti — uygulanan indirimi belirginleştir */
+.fb-summary .discounts {
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.fb-summary .discounts__discount {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #ffc99f;
+  border-radius: 10px;
+  background: #fff5ed;
+  color: #e95600;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.fb-summary .discounts__discount svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: #ff6500;
+}
+
+@media screen and (max-width: 749px) {
+  .fb-summary .discounts__discount {
+    padding: 10px;
+    font-size: 12px;
+  }
+}
+
+/* Ürün kartlarındaki yıldız puanları */
+.fb-carousel-card__stars,
+.fb-cartbundle__card-rating svg,
+.fb-cartbundle__card-rating,
+.rating-star,
+.rating-wrapper .rating-star {
+  color: #f5b400 !important;
+}
+
+/* Dawn rating bileşenindeki dolu yıldız rengi */
+.rating-star::before {
+  color: #f5b400 !important;
+  background: linear-gradient(
+    90deg,
+    #f5b400 var(--percent),
+    #e5e5e5 var(--percent)
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+/* Sepet avantaj çubuğu: daha büyük ve kalın yazılar */
+#MainContent .fb-cart__rewardbar .fb-cart__shipbar-text {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+  margin-bottom: 16px !important;
+}
+
+#MainContent .fb-cart__rewardbar .fb-cart__shipbar-text strong {
+  font-size: inherit !important;
+  font-weight: 800 !important;
+}
+
+#MainContent .fb-cart__rewardbar .fb-cart__reward-levels {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+  color: #123653 !important;
+  margin-top: 14px !important;
+}
+
+#MainContent .fb-cart__rewardbar .fb-cart__reward-levels span {
+  min-width: 0;
+  white-space: normal;
+}
+
+/* Mobilde taşmadan okunaklı kalsın */
+@media screen and (max-width: 749px) {
+  #MainContent .fb-cart__rewardbar .fb-cart__shipbar-text {
+    font-size: 16px !important;
+  }
+
+  #MainContent .fb-cart__rewardbar .fb-cart__reward-levels {
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+}
+
+/* Yalnızca masaüstü sepet sayfasını genişlet */
+@media screen and (min-width: 990px) {
+  body:has(#MainContent > [id$="__cart-footer"]) #MainContent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36rem;
+    align-items: start;
+    column-gap: 2.4rem;
+
+    width: calc(100% - 64px);
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  body:has(#MainContent > [id$="__cart-footer"]) #MainContent > [id$="__cart-items"],
+  body:has(#MainContent > [id$="__cart-footer"]) #MainContent > [id$="__cart-footer"] {
+    min-width: 0;
+  }
+}

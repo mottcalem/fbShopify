@@ -1,0 +1,109 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Ortalanmış çağrı bölümü
+  ---------------------------------------------------------------------------
+  Referansta ana sayfanın sonunda ürün ızgarası değil, ortalanmış bir
+  "Tüm Ürünleri Gör" butonu var. Dawn'ın featured-collection bölümü ızgarayı
+  gizleyemiyor, o yüzden ayrı bölüm yazıldı.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-cta {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="fb-cta page-width">
+    {%- if section.settings.overline != blank -%}
+      <span class="fb-overline">{{ section.settings.overline | escape }}</span>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="fb-cta__title">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <p class="fb-cta__text">{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <a href="{{ section.settings.button_link | default: '/collections/all' }}" class="fb-btn fb-btn--navy">
+        {{ section.settings.button_label | escape }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FB Çağrı bölümü",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Turuncu üst etiket",
+      "default": "Tüm Ürünler"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Başlık",
+      "default": "İhtiyacına göre tüm ürünler"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Alt başlık",
+      "default": "Sağlığın ve performansın için."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Buton metni",
+      "default": "Tüm Ürünleri Gör"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Buton bağlantısı"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Renk şeması",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Üst boşluk",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Alt boşluk",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "FB Çağrı bölümü"
+    }
+  ]
+}
+{% endschema %}

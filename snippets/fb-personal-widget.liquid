@@ -1,0 +1,58 @@
+{{ 'fb-personal-widget.css' | asset_url | stylesheet_tag }}
+
+<div class="fb-personal-widget" data-fb-personal-widget>
+  <button class="fb-personal-widget__tab" type="button" data-fb-widget-open aria-controls="FB-Personal-Drawer" aria-expanded="false">
+    <span>{% if localization.language.iso_code == 'en' %}Recommended{% else %}Tavsiyelerimiz{% endif %}</span><span aria-hidden="true">✦</span>
+  </button>
+
+  <div class="fb-personal-widget__shade" data-fb-widget-close hidden></div>
+  <aside class="fb-personal-widget__drawer" id="FB-Personal-Drawer" aria-label="{% if localization.language.iso_code == 'en' %}Recommendations for you{% else %}Sizin için tavsiyelerimiz{% endif %}" aria-hidden="true">
+    <header class="fb-personal-widget__header">
+      <div><small>{% if localization.language.iso_code == 'en' %}FOR YOU{% else %}SİZİN İÇİN{% endif %}</small><h2>{% if localization.language.iso_code == 'en' %}Our recommendations{% else %}Tavsiyelerimiz{% endif %}</h2></div>
+      <button type="button" data-fb-widget-close aria-label="{% if localization.language.iso_code == 'en' %}Close{% else %}Kapat{% endif %}">×</button>
+    </header>
+
+    <p class="fb-personal-widget__summary" data-fb-widget-summary></p>
+    <div class="fb-personal-widget__empty" data-fb-widget-empty>
+      <strong>{% if localization.language.iso_code == 'en' %}You haven't made a selection yet.{% else %}Henüz kişisel seçim oluşturmadınız.{% endif %}</strong>
+      <span>{% if localization.language.iso_code == 'en' %}Complete the quick product finder to get recommendations.{% else %}Kısa ürün bulucuyu tamamlayarak önerilerinizi hazırlayın.{% endif %}</span>
+      <button type="button" data-fb-widget-start>{% if localization.language.iso_code == 'en' %}Start product finder{% else %}Ürün Bulucuyu Başlat{% endif %}</button>
+    </div>
+
+    <div class="fb-personal-widget__content" data-fb-widget-content hidden>
+      <div class="fb-personal-widget__products">
+        {% assign widget_handles = 'plantar-fasiit-corabi|basparmak-bunyon-koruma-corabi|halluks-valgus-basparmak-ateli|wp4-diyabet-saglik-corabi|af7-ayak-bilek-destegi|cs6-kalf-koruyucu|kompresyon-corabi|quadriceps-ust-bacak-destegi|os1st-ks7-diz-koruyucu-destek|el-bilek-destegi|tenisci-golfcu-dirsegi-destegi|epikondilit-dirsek-destegi|kol-destegi|seyahat-corabi|quickfit-balance-ortopedik-tabanlik|quickfit-control-ortopedik-tabanlik' | split: '|' %}
+        {% for widget_handle in widget_handles %}
+          {% assign widget_product = all_products[widget_handle] %}
+          {% if widget_product != blank %}
+            {% assign widget_product_link = widget_product.url %}
+            {% assign widget_image = widget_product.metafields.custom.listing_image.value %}
+            {% if widget_image == blank %}{% assign widget_image = widget_product.featured_image %}{% endif %}
+            <article class="fb-personal-widget__product" data-fb-widget-product="{{ widget_handle | escape }}" data-fb-widget-base-price="{{ widget_product.price_min }}" hidden>
+              <a href="{{ widget_product_link }}" class="fb-personal-widget__image">
+                {% if widget_image != blank %}
+                  {{ widget_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: widget_product.title }}
+                {% endif %}
+              </a>
+              <div class="fb-personal-widget__info">
+                <a href="{{ widget_product_link }}"><strong>{{ widget_product.title | escape }}</strong></a>
+                <div class="fb-personal-widget__row">
+                  <span><b data-fb-widget-price>{{ widget_product.price_min | money_without_currency }}</b> <small>{{ cart.currency.iso_code | default: shop.currency }}</small></span>
+                  <a class="fb-personal-widget__inspect" href="{{ widget_product_link }}">{% if localization.language.iso_code == 'en' %}View product{% else %}Ürünü İncele{% endif %}</a>
+                </div>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <footer class="fb-personal-widget__bundle">
+        <div class="fb-personal-widget__bundle-title"><span>{% if localization.language.iso_code == 'en' %}PICKED FOR YOU{% else %}SİZİN İÇİN SEÇTİK{% endif %}</span></div>
+        <p>{% if localization.language.iso_code == 'en' %}Explore recommendations selected for your needs.{% else %}İhtiyacınıza uygun önerilerimizi inceleyebilirsiniz.{% endif %}</p>
+        <button class="fb-personal-widget__change" type="button" data-fb-widget-start>{% if localization.language.iso_code == 'en' %}Change my choices{% else %}Seçimlerimi Değiştir{% endif %}</button>
+      </footer>
+    </div>
+  </aside>
+</div>
+
+<script src="{{ 'fb-personal-widget.js' | asset_url }}" defer></script>

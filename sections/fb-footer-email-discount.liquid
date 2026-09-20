@@ -1,0 +1,399 @@
+{% comment %}
+  FootBalance — Footer e-posta aboneliği ve %5 indirim
+
+  Shopify'ın yerleşik customer formunu kullanır. API veya uygulama gerekmez.
+  Başarılı kayıtlar Shopify Müşteriler > E-posta aboneleri listesine düşer ve
+  "newsletter" ile "footer-yuzde-5" etiketlerini alır.
+{% endcomment %}
+
+{%- assign fb_form_id = 'FbFooterEmailForm-' | append: section.id -%}
+{%- assign fb_widget_id = 'FbFooterEmailDiscount-' | append: section.id -%}
+{%- assign fb_discount_code = section.settings.discount_code | strip -%}
+
+<section
+  id="{{ fb_widget_id }}"
+  class="fb-footer-email color-{{ section.settings.color_scheme }}"
+  data-fb-footer-email
+>
+  <div class="page-width">
+    <div class="fb-footer-email__card">
+      <div class="fb-footer-email__content">
+        <span class="fb-footer-email__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+        <h2 class="fb-footer-email__title">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.text != blank -%}
+          <p class="fb-footer-email__text">{{ section.settings.text | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="fb-footer-email__form-wrap">
+        {% form 'customer', id: fb_form_id, class: 'fb-footer-email__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter,footer-yuzde-5">
+          <input type="hidden" name="return_to" value="{{ request.path }}#{{ fb_widget_id }}">
+
+          {%- if form.posted_successfully? -%}
+            <div class="fb-footer-email__success" tabindex="-1" data-fb-email-success>
+              <span class="fb-footer-email__success-label">{{ section.settings.success_text | escape }}</span>
+
+              {%- if fb_discount_code != blank -%}
+                <div class="fb-footer-email__code-row">
+                  <strong class="fb-footer-email__code" data-fb-discount-code>{{ fb_discount_code | escape }}</strong>
+                  <button type="button" class="fb-footer-email__copy" data-fb-copy-code>
+                    {% if localization.language.iso_code == 'en' %}Copy code{% else %}Kodu kopyala{% endif %}
+                  </button>
+                </div>
+
+                <a
+                  class="fb-footer-email__apply"
+                  href="/discount/{{ fb_discount_code | url_encode }}?redirect={{ routes.all_products_collection_url | url_encode }}"
+                >
+                  {% if localization.language.iso_code == 'en' %}Apply discount{% else %}İndirimi uygula{% endif %}
+                </a>
+              {%- endif -%}
+            </div>
+          {%- else -%}
+            <div class="fb-footer-email__fields">
+              <label class="visually-hidden" for="FbFooterEmail-{{ section.id }}">
+                {% if localization.language.iso_code == 'en' %}Your email address{% else %}E-posta adresiniz{% endif %}
+              </label>
+              <input
+                id="FbFooterEmail-{{ section.id }}"
+                class="fb-footer-email__input"
+                type="email"
+                name="contact[email]"
+                value="{% if form.email %}{{ form.email | escape }}{% endif %}"
+                placeholder="{% if localization.language.iso_code == 'en' %}Your email address{% else %}E-posta adresiniz{% endif %}"
+                autocomplete="email"
+                autocapitalize="off"
+                spellcheck="false"
+                required
+                {% if form.errors %}aria-invalid="true" aria-describedby="FbFooterEmailError-{{ section.id }}"{% endif %}
+              >
+              <button class="fb-footer-email__submit" type="submit">
+                {{ section.settings.button_label | escape }}
+              </button>
+            </div>
+
+            <label class="fb-footer-email__consent">
+              <input type="checkbox" required>
+              <span>
+                {% if localization.language.iso_code == 'en' %}I agree to receive emails about promotions and offers.{% else %}Kampanya ve fırsatlardan e-posta ile haberdar olmayı kabul ediyorum.{% endif %}
+                {%- if shop.privacy_policy != blank -%}
+                  <a href="{{ shop.privacy_policy.url }}">{% if localization.language.iso_code == 'en' %}Privacy Policy{% else %}Gizlilik Politikası{% endif %}</a>
+                {%- endif -%}
+              </span>
+            </label>
+
+            {%- if form.errors -%}
+              <div id="FbFooterEmailError-{{ section.id }}" class="fb-footer-email__error" role="alert">
+                {{ form.errors | default_errors }}
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .fb-footer-email {
+    padding: 24px 0;
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__card {
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(380px, 1.1fr);
+    align-items: center;
+    gap: 40px;
+    padding: 28px 32px;
+    border: 1px solid #ffd0ad;
+    border-radius: 18px;
+    background: #fff7f1;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: #ff6500;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__title {
+    margin: 0;
+    color: #0e2a45;
+    font-size: clamp(24px, 2.2vw, 34px);
+    font-weight: 800;
+    line-height: 1.12;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__text {
+    margin: 9px 0 0;
+    color: #6e737a;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__input {
+    width: 100%;
+    min-width: 0;
+    min-height: 50px;
+    padding: 12px 15px;
+    border: 1px solid #d7dce1;
+    border-radius: 10px;
+    background: #fff;
+    color: #0e2a45;
+    font: inherit;
+    font-size: 14px;
+    box-shadow: none;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__input:focus {
+    border-color: #ff6500;
+    outline: 2px solid rgba(255, 101, 0, .16);
+    outline-offset: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__submit,
+  #shopify-section-{{ section.id }} .fb-footer-email__apply {
+    display: inline-flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border: 1px solid #ff6500;
+    border-radius: 10px;
+    background: #ff6500;
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__submit:hover,
+  #shopify-section-{{ section.id }} .fb-footer-email__apply:hover {
+    background: #e85c00;
+    transform: translateY(-1px);
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+    color: #6e737a;
+    font-size: 11px;
+    line-height: 1.45;
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__consent input {
+    width: 15px;
+    height: 15px;
+    margin: 1px 0 0;
+    accent-color: #ff6500;
+    flex: 0 0 15px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__consent a {
+    color: #0e2a45;
+    text-underline-offset: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__error {
+    margin-top: 9px;
+    color: #b42318;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__success {
+    padding: 16px;
+    border: 1px solid #ffc99f;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__success-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #0e2a45;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__code-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__code {
+    display: flex;
+    min-height: 46px;
+    align-items: center;
+    padding: 9px 14px;
+    border: 1px dashed #ff6500;
+    border-radius: 9px;
+    background: #fff7f1;
+    color: #e95600;
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: .08em;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__copy {
+    min-height: 46px;
+    padding: 9px 14px;
+    border: 1px solid #0e2a45;
+    border-radius: 9px;
+    background: #fff;
+    color: #0e2a45;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .fb-footer-email__apply {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .fb-footer-email {
+      padding: 16px 0;
+    }
+
+    #shopify-section-{{ section.id }} .fb-footer-email__card {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+      padding: 22px 18px;
+      border-radius: 14px;
+    }
+
+    #shopify-section-{{ section.id }} .fb-footer-email__fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    #shopify-section-{{ section.id }} .fb-footer-email__submit {
+      width: 100%;
+    }
+
+    #shopify-section-{{ section.id }} .fb-footer-email__code-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById({{ fb_widget_id | json }});
+    if (!root || root.dataset.fbBound === '1') return;
+    root.dataset.fbBound = '1';
+
+    var success = root.querySelector('[data-fb-email-success]');
+    var copyButton = root.querySelector('[data-fb-copy-code]');
+    var codeNode = root.querySelector('[data-fb-discount-code]');
+
+    if (success) {
+      success.focus();
+      try { localStorage.setItem('fbEmailDiscountClaimed', '1'); } catch (error) {}
+    }
+
+    if (!copyButton || !codeNode) return;
+
+    copyButton.addEventListener('click', function () {
+      var code = codeNode.textContent.trim();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(function () {
+          copyButton.textContent = {% if localization.language.iso_code == 'en' %}'Copied'{% else %}'Kopyalandı'{% endif %};
+        });
+        return;
+      }
+
+      var input = document.createElement('input');
+      input.value = code;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      input.remove();
+      copyButton.textContent = {% if localization.language.iso_code == 'en' %}'Copied'{% else %}'Kopyalandı'{% endif %};
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FB %5 e-posta üyeliği",
+  "tag": "section",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Renk şeması",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Üst etiket",
+      "default": "FootBalance'a özel fırsat"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Başlık",
+      "default": "%5 indirim için ücretsiz abone olun"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Açıklama",
+      "default": "E-posta listemize katılın, ilk alışverişinizde kullanabileceğiniz indirim kodunu hemen alın."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Buton metni",
+      "default": "%5 indirimimi al"
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Başarı mesajı",
+      "default": "Teşekkürler! İndirim kodunuz hazır."
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "İndirim kodu",
+      "info": "Shopify İndirimler bölümünde oluşturduğunuz kodla tamamen aynı olmalı.",
+      "default": "HOSGELDIN5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FB %5 e-posta üyeliği"
+    }
+  ]
+}
+{% endschema %}

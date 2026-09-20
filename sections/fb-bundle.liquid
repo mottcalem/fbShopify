@@ -1,0 +1,167 @@
+{% comment %}
+  FootBalance — Ürün detayında tamamlayıcı ürün tavsiyesi
+  Kaynak: product.metafields.custom.paket_urunleri
+  Bu bölüm ayrı bir indirim hesaplamaz veya indirim kodu uygulamaz.
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-bundle[hidden]{display:none!important}
+  #shopify-section-{{ section.id }} .fb-bundle{margin:40px auto;color:#123653}
+  #shopify-section-{{ section.id }} .fb-bundle *{box-sizing:border-box}
+  #shopify-section-{{ section.id }} .fb-bundle__title{display:flex;align-items:center;gap:12px;margin:0 0 8px;font-size:clamp(22px,2.4vw,30px);line-height:1.25}
+  #shopify-section-{{ section.id }} .fb-bundle__spark{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:50%;background:#fff2e7;color:#ff7900}
+  #shopify-section-{{ section.id }} .fb-bundle__spark svg{width:22px;height:22px}
+  #shopify-section-{{ section.id }} .fb-bundle__intro{margin:0 0 22px;color:#5b6c80;line-height:1.6}
+  #shopify-section-{{ section.id }} .fb-bundle__intro strong{color:#e96500}
+  #shopify-section-{{ section.id }} .fb-bundle__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:start}
+  #shopify-section-{{ section.id }} .fb-bundle__cards{display:grid;gap:16px;min-width:0}
+  #shopify-section-{{ section.id }} .fb-bundle__card{display:flex;flex-direction:column;gap:10px;min-width:0;padding:16px;border:1px solid #e7e9ec;border-radius:18px;background:#fff}
+  #shopify-section-{{ section.id }} .fb-bundle__card-media{display:block;position:relative;height:auto;aspect-ratio:1/1;overflow:hidden;border-radius:12px;background:#f8f7f5}
+  #shopify-section-{{ section.id }} .fb-bundle__card-media img{display:block;width:100%;height:100%;object-fit:contain}
+  #shopify-section-{{ section.id }} .fb-bundle__card-badge{position:absolute;z-index:1;top:12px;left:12px;max-width:calc(100% - 24px);padding:7px 10px;border-radius:8px;background:#fff;color:#123653;font-size:11px;font-weight:700}
+  #shopify-section-{{ section.id }} .fb-bundle__card-vendor{color:#758194;font-size:13px}
+  #shopify-section-{{ section.id }} .fb-bundle__card-title{font-size:18px;font-weight:700;line-height:1.4}
+  #shopify-section-{{ section.id }} .fb-bundle__card-desc{color:#5b6c80;font-size:14px;line-height:1.6}
+  #shopify-section-{{ section.id }} .fb-bundle__card-link{color:#d75c00;font-size:14px;text-underline-offset:3px}
+  #shopify-section-{{ section.id }} .fb-bundle__offer{min-width:0;padding:24px;border:1px solid #ffdec5;border-radius:18px;background:linear-gradient(135deg,#fff9f3,#fff);box-shadow:none}
+  #shopify-section-{{ section.id }} .fb-bundle__offer-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+  #shopify-section-{{ section.id }} .fb-bundle__benefit-badge{padding:10px 14px;background:#ff7900;color:#fff;border-radius:22px;font-size:12px;font-weight:700;line-height:1.4}
+  #shopify-section-{{ section.id }} .fb-bundle__tag{padding:7px 10px;border:1px solid #e7e9ec;border-radius:20px;background:#fff;color:#123653;font-size:10px}
+  #shopify-section-{{ section.id }} .fb-bundle__offer-title{margin:0 0 8px;font-size:26px;line-height:1.25}
+  #shopify-section-{{ section.id }} .fb-bundle__offer-text{margin:0;color:#5b6c80;font-size:15px;line-height:1.6}
+  #shopify-section-{{ section.id }} .fb-bundle__preview{display:flex;align-items:center;gap:10px;margin:20px 0;overflow-x:auto}
+  #shopify-section-{{ section.id }} .fb-bundle__mini{flex:1;min-width:90px;text-align:center;text-decoration:none;color:#123653;font-size:12px;line-height:1.4}
+  #shopify-section-{{ section.id }} .fb-bundle__mini img{display:block;width:100%;height:100px;object-fit:contain;margin-bottom:8px;border-radius:12px;background:#fff}
+  #shopify-section-{{ section.id }} .fb-bundle__plus{font-size:26px;color:#5b6c80}
+  #shopify-section-{{ section.id }} .fb-bundle__benefits{list-style:none;padding:0;margin:0 0 20px;display:grid;gap:10px;color:#5b6c80;font-size:14px;line-height:1.5}
+  #shopify-section-{{ section.id }} .fb-bundle__benefits li{display:flex;gap:10px}
+  #shopify-section-{{ section.id }} .fb-bundle__benefits li>span{color:#e96500}
+  #shopify-section-{{ section.id }} .fb-bundle__cta{display:block;width:100%;min-height:48px;padding:12px 18px;border:0;border-radius:28px;background:#123653;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+  #shopify-section-{{ section.id }} .fb-bundle__note,#shopify-section-{{ section.id }} .fb-bundle__discount-note{margin:10px 0 0;font-size:12px;line-height:1.6;text-align:center;color:#5b6c80}
+  @media(max-width:749px){
+    #shopify-section-{{ section.id }} .fb-bundle__grid{grid-template-columns:minmax(0,1fr)}
+    #shopify-section-{{ section.id }} .fb-bundle__offer{padding:18px}
+  }
+  #shopify-section-{{ section.id }} .fb-bundle__card-title{color:inherit;text-decoration:none}
+  #shopify-section-{{ section.id }} .fb-bundle__card-media>a{display:block;height:100%}
+  #shopify-section-{{ section.id }} .fb-bundle__variant-label{display:grid;gap:7px;margin-top:14px;color:#123653;font-size:12px;font-weight:700}
+  #shopify-section-{{ section.id }} .fb-bundle__variant-select{width:100%;min-height:44px;padding:9px 36px 9px 12px;border:1px solid #ded6cd;border-radius:8px;background:#fff;color:#123653;font:inherit;cursor:pointer}
+  #shopify-section-{{ section.id }} .fb-bundle__cta:disabled{opacity:.55;cursor:not-allowed}
+  #shopify-section-{{ section.id }} .fb-bundle__price-old,
+  #shopify-section-{{ section.id }} .fb-bundle__savings,
+  #shopify-section-{{ section.id }} .fb-bundle__pill{display:none!important}
+</style>
+
+{%- assign recommendation_items = product.metafields.custom.paket_urunleri.value -%}
+{%- assign recommendation_count = 0 -%}
+{%- for recommended_product in recommendation_items -%}
+  {%- if recommended_product.available and recommended_product.id != product.id -%}
+    {%- assign recommendation_count = recommendation_count | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if recommendation_count > 0 -%}
+  <div class="fb-bundle page-width" data-fb-product-recommendation>
+    <h2 class="fb-bundle__title">
+      <span class="fb-bundle__spark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z"/></svg></span>
+      {{ section.settings.title | escape }}
+    </h2>
+    <p class="fb-bundle__intro">{% if localization.language.iso_code == 'en' %}Discover products that complement your choice and enjoy <strong>up to 20% off</strong> in your cart.{% else %}Seçtiğin ürünü tamamlayan ürünleri keşfet, sepetinde <strong>%20’ye varan avantajlardan</strong> yararlan.{% endif %}</p>
+
+    <div class="fb-bundle__grid">
+      <div class="fb-bundle__cards">
+      {%- assign shown = 0 -%}
+      {%- for recommended_product in recommendation_items -%}
+        {%- if recommended_product.id == product.id or recommended_product.available == false or shown >= 2 -%}{%- continue -%}{%- endif -%}
+        {%- assign shown = shown | plus: 1 -%}
+        {%- assign recommendation_image = recommended_product.metafields.custom.listing_image.value | default: recommended_product.featured_image -%}
+        <div class="fb-bundle__card" data-fb-recommended-product>
+          <span class="fb-bundle__card-media">
+            <span class="fb-bundle__card-badge">{% if recommended_product.type != blank %}{{ recommended_product.type | escape }}{% elsif localization.language.iso_code == 'en' %}Complementary product{% else %}TAMAMLAYICI ÜRÜN{% endif %}</span>
+            <a href="{{ recommended_product.url }}">
+              {{ recommendation_image | image_url: width: 600 | image_tag: loading: 'lazy', width: 300, height: 220, alt: recommended_product.title }}
+            </a>
+          </span>
+          <span class="fb-bundle__card-vendor">{{ recommended_product.vendor | escape }}</span>
+          <a href="{{ recommended_product.url }}" class="fb-bundle__card-title">{{ recommended_product.title | escape }}</a>
+          {%- assign short_desc = recommended_product.metafields.custom.en_uygun.value | default: recommended_product.description | strip_html | truncate: 60 -%}
+          {%- if short_desc != blank -%}<span class="fb-bundle__card-desc">{{ short_desc }}</span>{%- endif -%}
+
+          {%- if recommended_product.variants.size > 1 -%}
+            <label class="fb-bundle__variant-label">
+              <span>{{ recommended_product.options | join: ' / ' | escape }} {% if localization.language.iso_code == 'en' %}– choose{% else %}seç{% endif %}</span>
+              <select class="fb-bundle__variant-select" data-fb-recommendation-variant data-default-price="{{ recommended_product.selected_or_first_available_variant.price }}">
+                <option value="" selected disabled>{% if localization.language.iso_code == 'en' %}Choose an option{% else %}Seçenek seçiniz{% endif %}</option>
+                {%- for recommendation_variant in recommended_product.variants -%}
+                  <option value="{{ recommendation_variant.id }}" data-price="{{ recommendation_variant.price }}" {% unless recommendation_variant.available %}disabled{% endunless %}>
+                    {{ recommendation_variant.title | escape }}{% unless recommendation_variant.available %} — {% if localization.language.iso_code == 'en' %}Sold out{% else %}Tükendi{% endif %}{% endunless %}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </label>
+          {%- else -%}
+            <input type="hidden" data-fb-recommendation-variant value="{{ recommended_product.selected_or_first_available_variant.id }}" data-price="{{ recommended_product.selected_or_first_available_variant.price }}">
+          {%- endif -%}
+          <a href="{{ recommended_product.url }}" class="fb-bundle__card-link">{% if localization.language.iso_code == 'en' %}Learn more{% else %}Daha fazla bilgi{% endif %} →</a>
+        </div>
+      {%- endfor -%}
+      </div>
+
+      <div class="fb-bundle__offer">
+        <div class="fb-bundle__offer-top"><span class="fb-bundle__benefit-badge">{% if localization.language.iso_code == 'en' %}UP TO 20% OFF<br>IN YOUR CART{% else %}SEPETTE %20’YE VARAN<br>İNDİRİM FIRSATI{% endif %}</span><span class="fb-bundle__tag">{% if localization.language.iso_code == 'en' %}COMPLEMENTARY PRODUCT{% else %}TAMAMLAYICI ÜRÜN ÖNERİSİ{% endif %}</span></div>
+        <h3 class="fb-bundle__offer-title">{{ section.settings.offer_title | escape }}</h3>
+        <p class="fb-bundle__offer-text">{% if localization.language.iso_code == 'en' %}Add these products together and unlock more benefits as your cart total grows.{% else %}Bu ürünleri birlikte sepetine ekle, sepet toplamını artırdıkça daha fazla avantaj kazan.{% endif %}</p>
+        <div class="fb-bundle__preview">
+          <a class="fb-bundle__mini" href="{{ product.url }}">
+            {{ product.featured_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: product.title }}
+            {{ product.title | escape }}
+          </a>
+          {%- assign preview_count = 0 -%}
+          {%- for recommended_product in recommendation_items -%}
+            {%- if recommended_product.available and recommended_product.id != product.id and preview_count < 2 -%}
+              {%- assign preview_count = preview_count | plus: 1 -%}
+              <span class="fb-bundle__plus" aria-hidden="true">+</span>
+              <a class="fb-bundle__mini" href="{{ recommended_product.url }}">
+                {{ recommended_product.featured_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: recommended_product.title }}
+                {{ recommended_product.title | escape }}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <ul class="fb-bundle__benefits">
+          <li><span aria-hidden="true">✓</span><div>{% if localization.language.iso_code == 'en' %}<strong>10%</strong> off at 5,000 TL, <strong>15%</strong> at 7,000 TL, and <strong>20%</strong> at 9,000 TL.{% else %}Sepet toplamına göre 5.000 TL’de <strong>%10</strong>, 7.000 TL’de <strong>%15</strong>, 9.000 TL’de <strong>%20</strong> indirim.{% endif %}</div></li>
+          <li><span aria-hidden="true">✓</span><div>{% if localization.language.iso_code == 'en' %}Free shipping on orders of <strong>3,000 TL or more</strong>.{% else %}<strong>3.000 TL ve üzeri</strong> alışverişlerde ücretsiz kargo.{% endif %}</div></li>
+        </ul>
+        <button type="button" class="fb-btn fb-btn--navy fb-bundle__cta" data-fb-recommendation-add disabled>{{ section.settings.button_label | escape }} →</button>
+        <p class="fb-bundle__note" data-fb-recommendation-note>{% if localization.language.iso_code == 'en' %}Choose size and color options before adding these products.{% else %}Ürünleri eklemek için beden ve renk seçeneklerini tamamlayın.{% endif %}</p>
+        <p class="fb-bundle__discount-note">{% if localization.language.iso_code == 'en' %}Your cart discount is applied automatically based on the cart total.{% else %}Sepet indirimin, sepet toplamına göre otomatik uygulanır.{% endif %}</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var root=document.querySelector('#shopify-section-{{ section.id }} [data-fb-product-recommendation]');if(!root)return;
+      var fields=Array.prototype.slice.call(root.querySelectorAll('[data-fb-recommendation-variant]'));
+      var button=root.querySelector('[data-fb-recommendation-add]');
+      var note=root.querySelector('[data-fb-recommendation-note]');
+      function mainId(){var field=document.querySelector('form[action*="/cart/add"] [name="id"]');return field&&field.value?field.value:'{{ product.selected_or_first_available_variant.id }}'}
+      function sync(){
+        var ready=fields.every(function(field){return Boolean(field.value)});button.disabled=!ready;
+        note.textContent=ready?{% if localization.language.iso_code == 'en' %}'Ready to add to cart.'{% else %}'Ürünler sepete eklenmeye hazır.'{% endif %}:{% if localization.language.iso_code == 'en' %}'Choose size and color options before adding these products.'{% else %}'Ürünleri eklemek için beden ve renk seçeneklerini tamamlayın.'{% endif %};
+      }
+      fields.forEach(function(field){field.addEventListener('change',sync)});document.addEventListener('change',function(event){if(event.target&&event.target.matches('form[action*="/cart/add"] [name="id"]'))sync()});sync();
+      button.addEventListener('click',function(){
+        var ids=fields.map(function(field){return field.value}).filter(Boolean);if(ids.length!==fields.length){sync();return}
+        var items=[{id:mainId(),quantity:1}];ids.forEach(function(id){items.push({id:id,quantity:1})});button.disabled=true;
+        fetch('{{ routes.cart_add_url }}.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:items})}).then(function(response){if(!response.ok)throw new Error('cart');window.location.href='{{ routes.cart_url }}'}).catch(function(){button.disabled=false;note.textContent={% if localization.language.iso_code == 'en' %}'Products could not be added. Please try again.'{% else %}'Ürünler sepete eklenemedi. Lütfen tekrar deneyin.'{% endif %};});
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{"name":"FB Ürün tavsiyesi","tag":"section","settings":[{"type":"paragraph","content":"Ürünler custom.paket_urunleri alanından alınır. Fiyat gösterilmez; ayrı indirim uygulanmaz. Sepet baremleri bilgi amaçlıdır."},{"type":"text","id":"title","label":"Bölüm başlığı","default":"Birlikte Kullanabileceğin Ürünler"},{"type":"text","id":"offer_title","label":"Tavsiye kutusu başlığı","default":"Birlikte daha avantajlı"},{"type":"text","id":"button_label","label":"Buton metni","default":"Birlikte Sepete Ekle"}],"presets":[{"name":"FB Ürün tavsiyesi"}]}
+{% endschema %}

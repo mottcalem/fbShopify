@@ -1,0 +1,137 @@
+.fb-personal-widget[hidden],.fb-personal-widget [hidden]{display:none!important}.fb-personal-widget{position:relative;z-index:1000}.fb-personal-widget__tab{position:fixed;z-index:15;right:0;top:52%;display:flex;gap:8px;align-items:center;padding:12px 10px 12px 14px;border:1px solid #e2e5e7;border-right:0;border-radius:12px 0 0 12px;background:#fff;color:#0c304d;box-shadow:0 8px 28px #0b2f4d24;font:inherit;font-weight:700;cursor:pointer;writing-mode:vertical-rl;transform:translateY(-50%) rotate(180deg)}
+.fb-personal-widget__tab span:last-child{color:#ff6b00}.fb-personal-widget__shade{position:fixed;z-index:20;inset:0;background:#071c2c7a}.fb-personal-widget__drawer{position:fixed;z-index:21;top:0;right:0;width:min(480px,100%);height:100dvh;padding:0;background:#fff;box-shadow:-18px 0 50px #071c2c26;overflow:auto;transform:translateX(105%);transition:transform .28s ease}.fb-personal-widget.is-open .fb-personal-widget__drawer{transform:none}.fb-personal-widget__header{position:sticky;z-index:2;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:24px;background:#123c5c;color:#fff}.fb-personal-widget__header small{color:#ff7900;font-weight:800;letter-spacing:.1em}.fb-personal-widget__header h2{margin:5px 0 0;color:#fff;font-size:2.4rem}.fb-personal-widget__header button{width:38px;height:38px;border:1px solid #ffffff66;border-radius:50%;background:transparent;color:#fff;font-size:2.5rem;line-height:1;cursor:pointer}.fb-personal-widget__summary{margin:0;padding:15px 24px;background:#fff7f0;color:#5f6870;font-size:1.3rem}.fb-personal-widget__empty{display:flex;margin:24px;padding:34px 22px;align-items:center;flex-direction:column;gap:10px;border:1px solid #eadfd5;border-radius:16px;text-align:center}.fb-personal-widget__empty span{color:#68727b}.fb-personal-widget__empty button,.fb-personal-widget__bundle>button:not(.fb-personal-widget__change){margin-top:8px;padding:13px 18px;border:0;border-radius:10px;background:#ff6b00;color:#fff;font:inherit;font-weight:800;cursor:pointer}.fb-personal-widget__products{display:grid;gap:12px;padding:20px}.fb-personal-widget__product{display:grid;grid-template-columns:112px 1fr;overflow:hidden;border:1px solid #e4e7e9;border-radius:14px;background:#fff}.fb-personal-widget__image{display:block;min-height:148px;background:#f8f6f2}.fb-personal-widget__image img{width:100%;height:100%;object-fit:contain}.fb-personal-widget__info{padding:14px}.fb-personal-widget__info>a{color:#0b2f4d;text-decoration:none;line-height:1.25}.fb-personal-widget__info label{display:block;margin-top:10px}.fb-personal-widget__info label span{display:block;margin-bottom:4px;color:#69737c;font-size:1.1rem}.fb-personal-widget__info select{width:100%;padding:8px;border:1px solid #d4d9dd;border-radius:7px;background:#fff;text-transform:uppercase}.fb-personal-widget__info select option{text-transform:uppercase}.fb-personal-widget__row{display:flex;margin-top:11px;align-items:center;justify-content:space-between;color:#ff6b00}.fb-personal-widget__row small{font-size:.9rem}.fb-personal-widget__row button{padding:8px 10px;border:1px solid #0b2f4d;border-radius:7px;background:#0b2f4d;color:#fff;font:inherit;font-size:1.1rem;font-weight:700;cursor:pointer}.fb-personal-widget__row button:disabled{opacity:.45}.fb-personal-widget__info>p{min-height:14px;margin:5px 0 0;color:#387a52;font-size:1rem}.fb-personal-widget__bundle{position:sticky;bottom:0;padding:20px 24px 24px;border-top:1px solid #f0d8c5;background:#fffaf6;box-shadow:0 -8px 24px #071c2c0d}.fb-personal-widget__bundle-title{display:flex;justify-content:space-between;align-items:center}.fb-personal-widget__bundle-title span{padding:5px 8px;border-radius:99px;background:#ff6b00;color:#fff;font-size:1rem;font-weight:800}.fb-personal-widget__bundle-title b{color:#ff6b00}.fb-personal-widget__bundle>p{margin:8px 0;color:#65717a;font-size:1.2rem}.fb-personal-widget__totals{display:flex;align-items:baseline;justify-content:space-between}.fb-personal-widget__totals s{color:#899097}.fb-personal-widget__totals strong{color:#0b2f4d;font-size:2.4rem}.fb-personal-widget__totals small{font-size:1rem}.fb-personal-widget__bundle>button:not(.fb-personal-widget__change){width:100%}.fb-personal-widget__bundle>button:disabled{opacity:.5;cursor:not-allowed}.fb-personal-widget__bundle .fb-personal-widget__package-note{color:#c14932;font-size:1.05rem}.fb-personal-widget__change{padding:6px 0;border:0;background:none;color:#0b2f4d;text-decoration:underline;cursor:pointer}.fb-widget-lock{overflow:hidden}@media(max-width:749px){.fb-personal-widget__tab{top:auto;bottom:90px;writing-mode:horizontal-tb;transform:none}.fb-personal-widget__header{padding:20px}.fb-personal-widget__products{padding:14px}.fb-personal-widget__product{grid-template-columns:96px 1fr}}
+
+.fb-inline-package-offer{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:24px;align-items:center;margin:0 0 28px;padding:22px 24px;border:1px solid #ff9b57;border-radius:16px;background:linear-gradient(135deg,#fff9f4 0%,#fff 72%);box-shadow:0 10px 30px #0b2f4d0d;color:#0b2f4d}
+.fb-inline-package-offer__copy{display:flex;min-width:0;flex-direction:column;gap:3px}.fb-inline-package-offer__copy>span{color:#ff6b00;font-size:1.05rem;font-weight:800;letter-spacing:.08em}.fb-inline-package-offer__copy>strong{font-size:1.8rem;line-height:1.25}.fb-inline-package-offer__copy>small{color:#69737c;font-size:1.15rem}.fb-inline-package-offer__price{display:grid;min-width:150px;text-align:right}.fb-inline-package-offer__price s{color:#8a9198;font-size:1.25rem}.fb-inline-package-offer__price>strong{font-size:2.5rem;line-height:1.15}.fb-inline-package-offer__price>strong small{font-size:1rem}.fb-inline-package-offer__price em{color:#ff6b00;font-size:1.05rem;font-style:normal;font-weight:700}.fb-inline-package-offer>button{padding:13px 20px;border:0;border-radius:10px;background:#ff6b00;color:#fff;font:inherit;font-weight:800;white-space:nowrap;cursor:pointer}.fb-inline-package-offer>button span{margin-left:8px}
+@media(max-width:749px){.fb-inline-package-offer{grid-template-columns:1fr auto;gap:14px;margin-bottom:20px;padding:18px}.fb-inline-package-offer__copy{grid-column:1/-1}.fb-inline-package-offer__copy>strong{font-size:1.55rem}.fb-inline-package-offer__price{text-align:left}.fb-inline-package-offer>button{align-self:end}}
+
+/* Panelin açılabilir olduğunu anlatan kısa otomatik önizleme. */
+.fb-personal-widget__tab{z-index:22;animation:fb-widget-handle-peek 2.25s cubic-bezier(.22,.75,.25,1) .7s 1 both}
+.fb-personal-widget__drawer{animation:fb-widget-drawer-peek 2.25s cubic-bezier(.22,.75,.25,1) .7s 1 both}
+.fb-personal-widget.is-open .fb-personal-widget__tab,.fb-personal-widget.is-open .fb-personal-widget__drawer,.fb-personal-widget.has-interacted .fb-personal-widget__tab,.fb-personal-widget.has-interacted .fb-personal-widget__drawer,.fb-personal-widget.has-peeked .fb-personal-widget__tab,.fb-personal-widget.has-peeked .fb-personal-widget__drawer{animation:none}
+.fb-personal-widget.is-open .fb-personal-widget__tab{opacity:0;visibility:hidden;pointer-events:none}
+@keyframes fb-widget-handle-peek{
+  0%,12%,88%,100%{right:0}
+  30%,65%{right:138px}
+  76%{right:128px}
+}
+@keyframes fb-widget-drawer-peek{
+  0%,12%,88%,100%{transform:translateX(105%)}
+  30%,65%{transform:translateX(calc(100% - 138px))}
+  76%{transform:translateX(calc(100% - 128px))}
+}
+@media(max-width:749px){
+  @keyframes fb-widget-handle-peek{0%,12%,88%,100%{right:0}30%,65%{right:112px}76%{right:102px}}
+  @keyframes fb-widget-drawer-peek{0%,12%,88%,100%{transform:translateX(105%)}30%,65%{transform:translateX(calc(100% - 112px))}76%{transform:translateX(calc(100% - 102px))}}
+}
+@media(prefers-reduced-motion:reduce){.fb-personal-widget__tab,.fb-personal-widget__drawer{animation:none}}
+
+/* Tavsiye görünümü: seçim ve doğrudan sepete ekleme yoktur. */
+.fb-personal-widget__inspect{display:inline-flex;padding:9px 12px;border-radius:8px;background:#0b2f4d;color:#fff!important;font-size:1.1rem;font-weight:800;text-decoration:none!important;white-space:nowrap}.fb-personal-widget__info{display:flex;flex-direction:column;justify-content:center}.fb-personal-widget__row{gap:12px}.fb-personal-widget__bundle{position:static}.fb-personal-widget__bundle .fb-personal-widget__change{margin-top:12px}
+.fb-inline-recommendations{margin:0 0 32px;padding:26px;border:1px solid #ff9b57;border-radius:18px;background:linear-gradient(135deg,#fff9f4,#fff 65%);box-shadow:0 12px 34px #0b2f4d12;color:#0b2f4d}.fb-inline-recommendations__header{display:flex;gap:28px;align-items:flex-end;justify-content:space-between}.fb-inline-recommendations__header span{color:#ff6b00;font-size:1.05rem;font-weight:800;letter-spacing:.09em}.fb-inline-recommendations__header h2{margin:4px 0;color:#0b2f4d;font-size:2.3rem}.fb-inline-recommendations__header p{margin:0;color:#68737c}.fb-inline-recommendations__total{display:grid;min-width:180px;text-align:right}.fb-inline-recommendations__total>small{color:#68737c}.fb-inline-recommendations__total s{color:#8b9298}.fb-inline-recommendations__total strong{font-size:2.5rem}.fb-inline-recommendations__total strong small{font-size:1rem}.fb-inline-recommendations__list{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:22px}.fb-inline-recommendations__product{display:grid;grid-template-columns:92px 1fr;min-width:0;overflow:hidden;border:1px solid #e3e6e8;border-radius:13px;background:#fff}.fb-inline-recommendations__image{display:block;background:#f8f6f2}.fb-inline-recommendations__image img{width:100%;height:100%;min-height:126px;object-fit:contain}.fb-inline-recommendations__product>div{display:flex;min-width:0;padding:13px;align-items:flex-start;flex-direction:column}.fb-inline-recommendations__product h3{margin:0;color:#0b2f4d;font-size:1.35rem;line-height:1.25}.fb-inline-recommendations__product p{margin:8px 0;color:#ff6b00;font-weight:800}.fb-inline-recommendations__product>div>a{margin-top:auto;color:#0b2f4d;font-weight:800;text-decoration:underline}
+@media(max-width:749px){.fb-inline-recommendations{margin-bottom:22px;padding:18px}.fb-inline-recommendations__header{align-items:flex-start;flex-direction:column}.fb-inline-recommendations__total{min-width:0;text-align:left}.fb-inline-recommendations__list{grid-template-columns:1fr}.fb-inline-recommendations__header h2{font-size:1.9rem}.fb-personal-widget__tab span:first-child{max-width:120px}}
+
+/* Ürün detayında yorumların üstünde kompakt öneri alanı */
+.fb-inline-recommendations {
+  width: min(100% - 64px, 1400px);
+  max-width: 1400px;
+  margin: 34px auto 48px;
+  padding: 26px 32px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(11, 47, 77, .08);
+}
+
+.fb-inline-recommendations__header h2 {
+  margin: 4px 0;
+  font-size: 2.2rem;
+}
+
+.fb-inline-recommendations__header p {
+  font-size: 1.35rem;
+}
+
+.fb-inline-recommendations__list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.fb-inline-recommendations__product {
+  grid-template-columns: 120px 1fr;
+  min-height: 130px;
+  border-radius: 12px;
+}
+
+.fb-inline-recommendations__image img {
+  min-height: 130px;
+}
+
+.fb-inline-recommendations__product > div {
+  padding: 16px 18px;
+}
+
+.fb-inline-recommendations__product h3 {
+  font-size: 1.45rem;
+}
+
+.fb-inline-recommendations__product p {
+  margin: 6px 0;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 749px) {
+  .fb-inline-recommendations {
+    width: calc(100% - 28px);
+    padding: 16px;
+  }
+
+  .fb-inline-recommendations__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sepet önerilerini ana ürün kolonuyla hizala */
+@media screen and (min-width: 990px) {
+  body:has(#MainContent > [id$="__cart-footer"]) .fb-inline-recommendations {
+    width: calc(100% - 6rem);
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Mobilde metin taşıyan sekme yerine sade, tek simgeli tetikleyici. */
+@media screen and (max-width: 749px) {
+  .fb-personal-widget__tab {
+    right: 16px;
+    bottom: 76px;
+    width: 46px;
+    height: 46px;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #e2e5e7;
+    border-radius: 50%;
+    writing-mode: horizontal-tb;
+    transform: none;
+    box-shadow: 0 6px 18px rgba(11, 47, 77, .18);
+    animation: none;
+  }
+
+  .fb-personal-widget__tab span:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .fb-personal-widget__tab span:last-child {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .fb-personal-widget__drawer {
+    animation: none;
+  }
+}

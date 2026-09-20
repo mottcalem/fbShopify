@@ -1,0 +1,362 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — sepette tamamlayıcı ürün tavsiyesi
+  ---------------------------------------------------------------------------
+  Müşterinin 01.08 revize notu: "Avantajlı paket burada da olsun."
+  Ürün sayfasındaki `fb-bundle` bölümünün sepet sürümü. Aynı CSS sınıflarını
+  kullanır, bu yüzden görünüm birebir aynıdır.
+
+  ÜRÜN SAYFASINDAN FARKI
+  Sepette "ana ürün" zaten sepette. Bu yüzden burada sadece EKSİK olanlar
+  gösterilir ve fiyat kutusu o eksiklerin toplamını yazar.
+
+  ÇALIŞMA MANTIĞI
+  1. Sepetteki ürünler sırayla gezilir.
+  2. İlk bulunan "Paket Ürünleri" (custom.paket_urunleri) dolu ürün baz alınır.
+  3. O ürünün paketindekilerden sepette OLMAYANLAR listelenir.
+  4. Hiç eksik yoksa bölüm hiç basılmaz — müşteri "zaten aldım" mesajı görmez.
+
+  Bu bölüm paket indirimi hesaplamaz. Sepetin genel baremli indirim sistemi
+  ayrıca çalışır.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-cartbundle__card-title {
+    color: inherit;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} .fb-cartbundle__variant-label {
+    display: grid;
+    gap: 6px;
+    min-width: 180px;
+    color: #123653;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  #shopify-section-{{ section.id }} .fb-cartbundle__variant-select {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 34px 8px 11px;
+    border: 1px solid #ded6cd;
+    border-radius: 8px;
+    background: #fff;
+    color: #123653;
+    font: inherit;
+  }
+  #shopify-section-{{ section.id }} .fb-cartbundle__cta:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .fb-cartbundle__variant-label {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+</style>
+
+{%- comment -%} Sepette hâlihazırda bulunan ürün id'leri {%- endcomment -%}
+{%- assign cart_product_ids = '' -%}
+{%- for line in cart.items -%}
+  {%- assign cart_product_ids = cart_product_ids | append: line.product_id | append: ',' -%}
+{%- endfor -%}
+
+{%- comment -%}
+  Paketi dolu ilk sepet ürününü bul. `base_product` bulunamazsa bölüm basılmaz.
+{%- endcomment -%}
+{%- assign base_product = null -%}
+{%- for line in cart.items -%}
+  {%- if base_product == null -%}
+    {%- assign candidate = line.product.metafields.custom.paket_urunleri.value -%}
+    {%- if candidate != blank and candidate.size > 0 -%}
+      {%- assign base_product = line.product -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if base_product != null -%}
+
+  {%- assign bundle_items = base_product.metafields.custom.paket_urunleri.value -%}
+
+  {%- comment -%} Sepette olmayan, satın alınabilir paket ürünlerini topla {%- endcomment -%}
+  {%- assign missing_total_cents = 0 -%}
+  {%- assign missing_count = 0 -%}
+  {%- for bp in bundle_items -%}
+    {%- assign id_needle = bp.id | append: ',' -%}
+    {%- unless bp.available == false or cart_product_ids contains id_needle -%}
+      {%- assign missing_total_cents = missing_total_cents | plus: bp.selected_or_first_available_variant.price -%}
+      {%- assign missing_count = missing_count | plus: 1 -%}
+    {%- endunless -%}
+  {%- endfor -%}
+
+  {%- if missing_count > 0 -%}
+
+    <div
+      class="fb-cartbundle page-width"
+      id="fb-cart-bundle-{{ section.id }}"
+      data-fb-cart-bundle
+      data-section-id="{{ section.id }}"
+    >
+      <div class="fb-cartbundle__head">
+        <div class="fb-cartbundle__head-main">
+          <span class="fb-cartbundle__spark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z" />
+            </svg>
+          </span>
+          <div>
+            {%- if section.settings.recommendation_title != blank -%}
+              <h2 class="fb-cartbundle__title">{% if localization.language.iso_code == 'en' %}Recommended for You{% else %}{{ section.settings.recommendation_title | escape }}{% endif %}</h2>
+            {%- endif -%}
+            <p class="fb-cartbundle__sub">
+              {% if localization.language.iso_code == 'en' %}We selected products that complement the items in your cart.{% else %}Sepetinizdeki ürünü tamamlayabilecek ürünleri sizin için seçtik.{% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fb-cartbundle__items">
+        {%- for bp in bundle_items -%}
+          {%- assign id_needle = bp.id | append: ',' -%}
+          {%- if bp.available == false or cart_product_ids contains id_needle -%}
+            {%- continue -%}
+          {%- endif -%}
+          <div class="fb-cartbundle__card" data-fb-cart-bundle-product>
+            <span class="fb-cartbundle__card-media">
+              {%- if bp.featured_image != blank -%}
+                <a href="{{ bp.url }}" aria-label="{{ bp.title | escape }} {% if localization.language.iso_code == 'en' %}view product{% else %}ürününü incele{% endif %}">
+                  <img
+                    src="{{ bp.featured_image | image_url: width: 240 }}"
+                    alt="{{ bp.title | escape }}"
+                    width="120"
+                    height="120"
+                    loading="lazy"
+                  >
+                </a>
+              {%- endif -%}
+            </span>
+            <span class="fb-cartbundle__card-body">
+              <a href="{{ bp.url }}" class="fb-cartbundle__card-title">{{ bp.title | escape }}</a>
+              {%- comment -%}
+                Puan ve yorum sayısı metafield'dan gelir. Veriyi müşteri girecek —
+                boşken satır hiç basılmaz, uydurma rakam yok.
+                  custom.puan          (Ondalık)
+                  custom.yorum_sayisi  (Tam sayı)
+              {%- endcomment -%}
+              {%- assign fb_puan = bp.metafields.custom.puan.value -%}
+              {%- assign fb_yorum = bp.metafields.custom.yorum_sayisi.value -%}
+              {%- if fb_puan != blank -%}
+                <span class="fb-cartbundle__card-rating">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1L12 2z" />
+                  </svg>
+                  {{ fb_puan }}{% if fb_yorum != blank %} · {{ fb_yorum }} {% if localization.language.iso_code == 'en' %}reviews{% else %}yorum{% endif %}{% endif %}
+                </span>
+              {%- endif -%}
+              {%- if bp.variants.size > 1 -%}
+                <label class="fb-cartbundle__variant-label">
+                  <span>{{ bp.options | join: ' / ' | escape }} {% if localization.language.iso_code == 'en' %}– choose{% else %}seç{% endif %}</span>
+                  <select
+                    class="fb-cartbundle__variant-select"
+                    data-fb-cart-bundle-variant
+                    data-default-price-cents="{{ bp.selected_or_first_available_variant.price }}"
+                    required
+                  >
+                    <option value="" selected disabled>{% if localization.language.iso_code == 'en' %}Choose an option{% else %}Seçenek seçiniz{% endif %}</option>
+                    {%- for bundle_variant in bp.variants -%}
+                      <option
+                        value="{{ bundle_variant.id }}"
+                        data-price-cents="{{ bundle_variant.price }}"
+                        {% unless bundle_variant.available %}disabled{% endunless %}
+                      >
+                        {{ bundle_variant.title | escape }}{% unless bundle_variant.available %} — {% if localization.language.iso_code == 'en' %}Sold out{% else %}Tükendi{% endif %}{% endunless %}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </label>
+              {%- else -%}
+                <input type="hidden" data-fb-cart-bundle-variant value="{{ bp.selected_or_first_available_variant.id }}" data-price-cents="{{ bp.selected_or_first_available_variant.price }}">
+              {%- endif -%}
+              <span class="fb-cartbundle__card-price" data-fb-cart-bundle-card-price>
+                {{ bp.selected_or_first_available_variant.price | money }}
+              </span>
+            </span>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="fb-cartbundle__bar">
+        <div class="fb-cartbundle__bar-price">
+          <span class="fb-cartbundle__bar-label">
+            {% if localization.language.iso_code == 'en' %}Recommended Products Total{% else %}{{ section.settings.recommendation_total_label | escape }}{% endif %}
+          </span>
+          <span class="fb-cartbundle__bar-new" data-fb-cart-bundle-price-total>{{ missing_total_cents | money }}</span>
+        </div>
+        <button
+          type="button"
+          class="fb-cartbundle__cta"
+          data-fb-cart-bundle-add
+          disabled
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z" />
+          </svg>
+          {% if localization.language.iso_code == 'en' %}Add Recommended Products to Cart{% else %}{{ section.settings.recommendation_button_label | escape }}{% endif %}
+        </button>
+      </div>
+
+      <p class="fb-cartbundle__note" data-fb-cart-bundle-note>{% if localization.language.iso_code == 'en' %}Choose size and color options before adding these products.{% else %}Ürünleri eklemek için beden ve renk seçeneklerini tamamlayın.{% endif %}</p>
+    </div>
+
+    <script>
+      (function () {
+        var root = document.querySelector('[data-fb-cart-bundle]');
+        if (!root || root.dataset.fbBound === '1') return;
+        root.dataset.fbBound = '1';
+
+        var sectionId = root.getAttribute('data-section-id');
+        var btn = root.querySelector('[data-fb-cart-bundle-add]');
+        var note = root.querySelector('[data-fb-cart-bundle-note]');
+        var variantFields = Array.prototype.slice.call(root.querySelectorAll('[data-fb-cart-bundle-variant]'));
+        var totalPrice = root.querySelector('[data-fb-cart-bundle-price-total]');
+
+        function money(cents) {
+          if (window.Shopify && typeof window.Shopify.formatMoney === 'function') {
+            return window.Shopify.formatMoney(cents, {{ shop.money_format | json }});
+          }
+          return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: '{{ cart.currency.iso_code | default: shop.currency }}' }).format(cents / 100);
+        }
+
+        function selectedPrice(field) {
+          if (field.tagName === 'SELECT') {
+            var option = field.options[field.selectedIndex];
+            return option && option.value
+              ? Number(option.getAttribute('data-price-cents'))
+              : Number(field.getAttribute('data-default-price-cents')) || 0;
+          }
+          return Number(field.getAttribute('data-price-cents')) || 0;
+        }
+
+        function syncBundle() {
+          var ready = variantFields.every(function (field) { return Boolean(field.value); });
+          btn.disabled = !ready;
+          if (note) {
+            note.hidden = false;
+            note.textContent = ready
+              ? {% if localization.language.iso_code == 'en' %}'Your selected products are ready to add.'{% else %}'Seçtiğiniz ürünler sepete eklenmeye hazır.'{% endif %}
+              : {% if localization.language.iso_code == 'en' %}'Choose size and color options before adding these products.'{% else %}'Ürünleri eklemek için beden ve renk seçeneklerini tamamlayın.'{% endif %};
+          }
+          variantFields.forEach(function (field) {
+            var card = field.closest('[data-fb-cart-bundle-product]');
+            var priceNode = card && card.querySelector('[data-fb-cart-bundle-card-price]');
+            var price = selectedPrice(field);
+            if (priceNode && price) priceNode.textContent = money(price);
+          });
+          var total = variantFields.reduce(function (sum, field) { return sum + selectedPrice(field); }, 0);
+          if (totalPrice) totalPrice.textContent = money(total);
+        }
+
+        // Sepet AJAX ile değiştiğinde bu bölüm bayatlar (eklenen ürün hâlâ
+        // "eksik" görünür). Dawn'ın cart-update olayına bağlanıp kendimizi
+        // Section Rendering API ile tazeliyoruz.
+        function refresh() {
+          fetch(window.location.pathname + '?section_id=' + sectionId)
+            .then(function (r) { return r.text(); })
+            .then(function (html) {
+              var doc = new DOMParser().parseFromString(html, 'text/html');
+              var fresh = doc.querySelector('[data-fb-cart-bundle]');
+              if (fresh) {
+                root.replaceWith(fresh);
+              } else {
+                root.remove(); // eksik ürün kalmadı
+              }
+            })
+            .catch(function () { /* tazeleme başarısızsa eski hâli kalsın */ });
+        }
+
+        if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
+          subscribe(PUB_SUB_EVENTS.cartUpdate, function (event) {
+            if (event && event.source === 'fb-cart-bundle') return;
+            refresh();
+          });
+        }
+
+        if (!btn) return;
+        variantFields.forEach(function (field) { field.addEventListener('change', syncBundle); });
+        syncBundle();
+
+        btn.addEventListener('click', function () {
+          var ids = variantFields.map(function (field) { return field.value; }).filter(Boolean);
+
+          if (!ids.length || ids.length !== variantFields.length) {
+            syncBundle();
+            return;
+          }
+
+          btn.disabled = true;
+          fetch('{{ routes.cart_add_url }}.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              items: ids.map(function (id) { return { id: id, quantity: 1 }; })
+            })
+          })
+            .then(function (r) {
+              if (!r.ok) throw new Error('cart');
+              window.location.reload();
+            })
+            .catch(function () {
+              btn.disabled = false;
+              if (note) {
+                note.hidden = false;
+                note.textContent = {% if localization.language.iso_code == 'en' %}'Products could not be added. Please try again.'{% else %}'Ürünler sepete eklenemedi. Lütfen tekrar deneyin.'{% endif %};
+              }
+            });
+        });
+      })();
+    </script>
+
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "FB Sepet ürün tavsiyesi",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["cart"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Sepetteki ürünün 'Paket Ürünleri' (custom.paket_urunleri) alanına bakar. Paketteki her şey zaten sepetteyse bu bölüm görünmez."
+    },
+    {
+      "type": "text",
+      "id": "recommendation_title",
+      "label": "Bölüm başlığı",
+      "default": "Sizin İçin Tavsiyemiz"
+    },
+    {
+      "type": "text",
+      "id": "recommendation_total_label",
+      "label": "Fiyat barı etiketi",
+      "default": "Önerilen Ürünler Toplamı"
+    },
+    {
+      "type": "text",
+      "id": "recommendation_button_label",
+      "label": "Buton metni",
+      "default": "Önerilen Ürünleri Sepete Ekle"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FB Sepet ürün tavsiyesi"
+    }
+  ]
+}
+{% endschema %}

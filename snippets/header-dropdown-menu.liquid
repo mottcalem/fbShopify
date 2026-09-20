@@ -1,0 +1,141 @@
+{% comment %}
+  Renders a standard dropdown style menu for the header.
+
+  Usage:
+  {% render 'header-dropdown-menu' %}
+{% endcomment %}
+
+<nav class="header__inline-menu">
+  <ul class="list-menu list-menu--inline" role="list">
+    {%- for link in section.settings.menu.links -%}
+      <li>
+        {%- if link.links != blank -%}
+          <header-menu>
+            <details id="Details-HeaderMenu-{{ forloop.index }}">
+              <summary
+                id="HeaderMenu-{{ link.handle }}"
+                class="header__menu-item list-menu__item link focus-inset"
+              >
+                <span
+                  {%- if link.child_active %}
+                    class="header__active-menu-item"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </span>
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </summary>
+              <ul
+                id="HeaderMenu-MenuList-{{ forloop.index }}"
+                class="header__submenu list-menu list-menu--disclosure color-{{ section.settings.menu_color_scheme }} gradient caption-large motion-reduce global-settings-popup"
+                role="list"
+                tabindex="-1"
+              >
+                {%- for childlink in link.links -%}
+                  {%- comment -%}
+                    FootBalance: menü başlığının altına kısa açıklama basılır.
+                    Eşleşme yoksa fb_menu_desc boş kalır ve menü standart görünür.
+                  {%- endcomment -%}
+                  {%- capture fb_menu_desc -%}
+                    {%- render 'menu-item-description', handle: childlink.handle -%}
+                  {%- endcapture -%}
+                  {%- assign fb_menu_desc = fb_menu_desc | strip -%}
+                  {%- if childlink.title contains 'QS4' -%}
+  {%- if localization.language.iso_code == 'en' -%}
+    {%- assign fb_menu_desc = 'Upper leg and muscle support' -%}
+  {%- else -%}
+    {%- assign fb_menu_desc = 'Üst bacak ve kas desteği' -%}
+  {%- endif -%}
+{%- endif -%}
+                  <li>
+                    {%- if childlink.links == blank -%}
+                      <a
+                        id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                        href="{{ childlink.url }}"
+                        class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} list-menu__item--active{% endif %}{% if fb_menu_desc != blank %} fb-menu-item--stacked{% endif %}"
+                        {% if childlink.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {%- if fb_menu_desc != blank -%}
+                          <span class="fb-menu-item__title">{{ childlink.title | escape }}</span>
+                          <span class="fb-menu-item__desc">{{ fb_menu_desc }}</span>
+                        {%- else -%}
+                          {{ childlink.title | escape }}
+                        {%- endif -%}
+                      </a>
+                    {%- else -%}
+                      <details id="Details-HeaderSubMenu-{{ link.handle }}-{{ childlink.handle }}">
+                        <summary
+                          id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                          class="header__menu-item link link--text list-menu__item focus-inset caption-large"
+                        >
+                          <span>{{ childlink.title | escape }}</span>
+                          {{- 'icon-caret.svg' | inline_asset_content -}}
+                        </summary>
+                        <ul
+                          id="HeaderMenu-SubMenuList-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                          class="header__submenu list-menu motion-reduce"
+                        >
+                          {%- for grandchildlink in childlink.links -%}
+                            <li>
+                              <a
+                                id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                href="{{ grandchildlink.url }}"
+                                class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+                                {% if grandchildlink.current %}
+                                  aria-current="page"
+                                {% endif %}
+                              >
+                                {{ grandchildlink.title | escape }}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </details>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </details>
+          </header-menu>
+        {%- else -%}
+          {%- comment -%}
+            FootBalance: "Doğru Ürün Bul" öğesi referanstaki gibi turuncu ve
+            kıvılcım ikonlu gösterilir. Eşleştirme başlık metnine göre yapılır —
+            handle Türkçe karakterlerde farklı üretilebiliyor.
+            Başlığı değiştirirseniz aşağıdaki metni de güncelleyin.
+          {%- endcomment -%}
+          {%- assign fb_cta_title = 'doğru ürün bul' -%}
+          {%- assign fb_link_title = link.title | strip | downcase -%}
+          {%- assign fb_is_cta = false -%}
+          {%- if fb_link_title == fb_cta_title or fb_link_title == 'find the right product' or link.url contains '#fb-product-advisor' -%}
+            {%- assign fb_is_cta = true -%}
+          {%- endif -%}
+          <a
+            id="HeaderMenu-{{ link.handle }}"
+            href="{{ link.url }}"
+            {% if fb_is_cta %}data-fb-advisor-open{% endif %}
+            class="header__menu-item list-menu__item link link--text focus-inset{% if fb_is_cta %} fb-menu-cta{% endif %}"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+          >
+            {%- if fb_is_cta -%}
+              <svg class="fb-menu-cta__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2l1.9 5.6L19.5 9.5l-5.6 1.9L12 17l-1.9-5.6L4.5 9.5l5.6-1.9L12 2z" />
+              </svg>
+            {%- endif -%}
+            <span
+              {%- if link.current %}
+                class="header__active-menu-item"
+              {% endif %}
+            >
+              {{- link.title | escape -}}
+            </span>
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>

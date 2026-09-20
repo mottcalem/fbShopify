@@ -1,0 +1,458 @@
+@media screen and (max-width: 749px) {
+    .collection .grid__item:only-child {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+  
+  @media screen and (max-width: 989px) {
+    .collection .slider.slider--tablet {
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  .collection .loading-overlay {
+    position: absolute;
+    z-index: 1;
+    width: 1.8rem;
+  }
+  
+  @media screen and (max-width: 749px) {
+    .collection .loading-overlay {
+      top: 0;
+      right: 0;
+    }
+  }
+  
+  @media screen and (min-width: 750px) {
+    .collection .loading-overlay {
+      left: 0;
+    }
+  }
+  
+  .collection .loading-overlay {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+    width: 100%;
+    padding: 0 1.5rem;
+    opacity: 0.7;
+  }
+  
+  @media screen and (min-width: 750px) {
+    .collection .loading-overlay {
+      padding-left: 5rem;
+      padding-right: 5rem;
+    }
+  }
+  
+  .collection.loading .loading-overlay {
+    display: block;
+  }
+  
+  .collection--empty .title-wrapper {
+    margin-top: 10rem;
+    margin-bottom: 15rem;
+  }
+  
+  @media screen and (max-width: 989px) {
+    .collection .slider--tablet.product-grid {
+      scroll-padding-left: 1.5rem;
+    }
+  }
+  
+  .collection__description > * {
+    margin: 0;
+  }
+  
+  .collection__title.title-wrapper {
+    margin-bottom: 2.5rem;
+  }
+  
+  .collection__title .title:not(:only-child) {
+    margin-bottom: 1rem;
+  }
+  
+  @media screen and (min-width: 990px) {
+    .collection__title--desktop-slider .title {
+      margin-bottom: 2.5rem;
+    }
+  
+    .collection__title.title-wrapper--self-padded-tablet-down {
+      padding: 0 5rem;
+    }
+  
+    .collection slider-component:not(.page-width-desktop) {
+      padding: 0;
+    }
+  
+    .collection--full-width slider-component:not(.slider-component-desktop) {
+      padding: 0 1.5rem;
+      max-width: none;
+    }
+  }
+  
+  .collection__view-all a:not(.link) {
+    margin-top: 1rem;
+  }
+
+/* FootBalance collection cards — demo-inspired layout */
+.fb-demo-product-grid {
+  align-items: stretch;
+  row-gap: 3.2rem;
+}
+
+.fb-demo-product-grid__item {
+  display: flex;
+}
+
+.fb-demo-product-grid__item > product-component {
+  display: block;
+  width: 100%;
+}
+
+.fb-demo-product-grid .product-card-wrapper {
+  background: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.16);
+  border-radius: 2.4rem;
+  box-shadow: 0 0.4rem 1.4rem rgba(var(--color-foreground), 0.06);
+  display: flex;
+  overflow: hidden;
+  transition: border-color var(--duration-short) ease, box-shadow var(--duration-short) ease,
+    transform var(--duration-short) ease;
+  width: 100%;
+}
+
+.fb-demo-product-grid .product-card-wrapper .card {
+  width: 100%;
+}
+
+.fb-demo-product-grid .card--standard .card__inner,
+.fb-demo-product-grid .card--card {
+  border: 0;
+  border-radius: 0;
+}
+
+.fb-demo-product-grid .card__inner.ratio::before {
+  /* Product photos use a portrait 4:5 canvas. Matching that ratio keeps
+     the complete image visible without leaving empty strips at the sides. */
+  padding-bottom: 125%;
+}
+
+.fb-demo-product-grid .card .card__inner .card__media {
+  border-radius: 2.3rem 2.3rem 0 0;
+}
+
+.fb-demo-product-grid .card__media .media img {
+  object-fit: contain;
+}
+
+.fb-demo-product-grid .card--standard > .card__content,
+.fb-demo-product-grid .card--card > .card__content {
+  padding: 2rem 2.2rem 2.2rem;
+}
+
+.fb-demo-product-grid .card__information {
+  padding: 0;
+}
+
+.fb-demo-product-grid .card__heading {
+  font-size: calc(var(--font-heading-scale) * 1.8rem);
+  font-weight: 700;
+  line-height: 1.25;
+  min-height: 4.5rem;
+}
+
+.fb-demo-product-grid .card__heading a {
+  text-decoration: none;
+}
+
+.fb-demo-product-grid .card-information .caption-with-letter-spacing {
+  color: rgba(var(--color-foreground), 0.66);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-bottom: 0.8rem;
+  text-transform: none;
+}
+
+.fb-demo-product-grid .card-information > .price {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.13);
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-top: 1.8rem;
+  padding-top: 1.7rem;
+}
+
+.fb-demo-product-grid .fb-product-card__category {
+  background: rgba(var(--color-background), 0.94);
+  border: 0.1rem solid rgba(var(--color-foreground), 0.14);
+  border-radius: 999rem;
+  color: rgb(var(--color-foreground));
+  font-size: 1.2rem;
+  font-weight: 700;
+  left: 1.6rem;
+  letter-spacing: 0.08em;
+  max-width: calc(100% - 3.2rem);
+  overflow: hidden;
+  padding: 0.7rem 1.2rem;
+  position: absolute;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  top: 1.6rem;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+@media screen and (min-width: 990px) {
+  .fb-demo-product-grid .grid__item {
+    max-width: calc(33.333333% - var(--grid-desktop-horizontal-spacing) * 2 / 3);
+    width: calc(33.333333% - var(--grid-desktop-horizontal-spacing) * 2 / 3);
+  }
+
+  .fb-demo-product-grid .product-card-wrapper:hover {
+    border-color: rgba(var(--color-foreground), 0.28);
+    box-shadow: 0 1.2rem 3rem rgba(var(--color-foreground), 0.12);
+    transform: translateY(-0.4rem);
+  }
+
+  .fb-demo-product-grid .underline-links-hover:hover a {
+    text-decoration: none;
+  }
+}
+
+/* Koleksiyon ürün sayısından bağımsız, kalıcı masaüstü kategori navigasyonu */
+.fb-static-category-nav {
+  color: rgb(var(--color-foreground));
+  padding-right: 2.4rem;
+}
+
+.fb-static-category-nav__title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 2.4rem;
+}
+
+.fb-static-category-nav__group {
+  margin-bottom: 2.4rem;
+}
+
+.fb-static-category-nav__group-title {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.7rem;
+  font-weight: 700;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0.8rem 0;
+}
+
+.fb-static-category-nav__group-title::-webkit-details-marker {
+  display: none;
+}
+
+.fb-static-category-nav__group-title .svg-wrapper {
+  height: 1.2rem;
+  transition: transform var(--duration-short) ease;
+  width: 1.2rem;
+}
+
+.fb-static-category-nav__group:not([open]) .fb-static-category-nav__group-title .svg-wrapper {
+  transform: rotate(-90deg);
+}
+
+.fb-static-category-nav__list {
+  border-left: 0.1rem solid rgba(var(--color-foreground), 0.18);
+  margin: 0.4rem 0 0 1.2rem;
+  padding-left: 1.8rem;
+}
+
+.fb-static-category-nav__link {
+  align-items: center;
+  color: rgba(var(--color-foreground), 0.72);
+  display: flex;
+  font-size: 1.55rem;
+  gap: 1rem;
+  line-height: 1.35;
+  padding: 0.8rem 0;
+  text-decoration: none;
+}
+
+.fb-static-category-nav__link:hover {
+  color: rgb(var(--color-foreground));
+}
+
+.fb-static-category-nav__box {
+  align-items: center;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.65);
+  border-radius: 0.3rem;
+  display: inline-flex;
+  flex: 0 0 1.8rem;
+  height: 1.8rem;
+  justify-content: center;
+  width: 1.8rem;
+}
+
+.fb-static-category-nav__link.is-active {
+  color: rgb(var(--color-foreground));
+  font-weight: 600;
+}
+
+.fb-static-category-nav__link.is-active .fb-static-category-nav__box {
+  background: rgb(var(--color-foreground));
+  border-color: rgb(var(--color-foreground));
+}
+
+.fb-static-category-nav__link.is-active .fb-static-category-nav__box::after {
+  color: rgb(var(--color-background));
+  content: '✓';
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Eski Liquid yedek paneli yerine koleksiyon bölümündeki tek panel kullanılır. */
+.fb-category-filter--fallback {
+  display: none;
+}
+
+/* Compact desktop collection filters */
+@media screen and (min-width: 750px) {
+  .facets-vertical .fb-category-filter__title {
+    font-size: 1.8rem;
+  }
+
+  .facets-vertical .fb-category-filter__group-title {
+    font-size: 1.55rem;
+  }
+
+  .facets-vertical .fb-category-filter .facet-checkbox,
+  .facets-vertical .fb-category-filter .facet-checkbox__text {
+    font-size: 1.4rem;
+    line-height: 1.35;
+  }
+
+  .facets-vertical .active-facets__button-inner,
+  .facets-vertical .active-facets__button-remove {
+    font-size: 1.3rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .fb-demo-product-grid {
+    row-gap: 1.8rem;
+  }
+
+  .fb-demo-product-grid .product-card-wrapper {
+    border-radius: 1.6rem;
+  }
+
+  .fb-demo-product-grid .card .card__inner .card__media {
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+
+  .fb-demo-product-grid .card--standard > .card__content,
+  .fb-demo-product-grid .card--card > .card__content {
+    padding: 1.4rem;
+  }
+
+  .fb-demo-product-grid .card__heading {
+    font-size: calc(var(--font-heading-scale) * 1.45rem);
+    min-height: 3.7rem;
+  }
+
+  .fb-demo-product-grid .card-information > .price {
+    font-size: 1.6rem;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+  }
+
+  .fb-demo-product-grid .fb-product-card__category {
+    font-size: 1rem;
+    left: 1rem;
+    padding: 0.5rem 0.8rem;
+    top: 1rem;
+  }
+}
+
+/* Ürün kartı kısa açıklaması */
+.fb-demo-product-grid .fb-product-card__description,
+.fb-demo-product-grid .card-information .caption-large.light {
+  font-size: 1.25rem !important;
+  line-height: 1.45 !important;
+}
+
+.fb-demo-product-grid .fb-card-currency {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-left: -0.2rem;
+  vertical-align: baseline;
+}
+
+@media screen and (max-width: 749px) {
+  .fb-demo-product-grid .card-information .caption-large.light {
+    font-size: 1.15rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .fb-demo-product-grid .fb-card-currency {
+    font-size: 1rem;
+  }
+}
+
+/* Mobil filtrele ve sırala butonu */
+@media screen and (max-width: 749px) {
+  .mobile-facets__open-wrapper {
+    flex: 1 1 auto;
+  }
+
+  .mobile-facets__open {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+
+    min-height: 4.6rem;
+    width: 100%;
+    padding: 1rem 1.6rem;
+
+    color: #0b2b45 !important;
+    background: #fff3e8;
+    border: 0.1rem solid #ff7900;
+    border-radius: 0.8rem;
+
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+
+    box-shadow: 0 0.3rem 1rem rgba(255, 121, 0, 0.12);
+  }
+
+  .mobile-facets__open:hover,
+  .mobile-facets__open:focus-visible {
+    color: #ffffff !important;
+    background: #ff7900;
+  }
+
+  .mobile-facets__open svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    color: #ff7900;
+  }
+
+  .mobile-facets__open:hover svg,
+  .mobile-facets__open:focus-visible svg {
+    color: #ffffff;
+  }
+
+  .facets-container {
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+}

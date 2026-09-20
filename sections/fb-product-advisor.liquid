@@ -1,0 +1,614 @@
+{{ 'fb-product-advisor.css' | asset_url | stylesheet_tag }}
+
+<div id="fb-product-advisor" class="fb-product-advisor" data-all-products-url="{{ routes.all_products_collection_url | escape }}" hidden>
+  <div class="fb-product-advisor__overlay"></div>
+
+  <div class="fb-product-advisor__modal">
+    <button
+      type="button"
+      class="fb-product-advisor__close"
+      aria-label="{% if localization.language.iso_code == 'en' %}Close{% else %}Kapat{% endif %}"
+    >
+      ×
+    </button>
+
+    <div class="fb-product-advisor__header">
+      <div class="fb-product-advisor__eyebrow">
+        {% if localization.language.iso_code == 'en' %}PERSONAL PRODUCT RECOMMENDATIONS{% else %}KİŞİSEL ÜRÜN ÖNERİSİ{% endif %}
+      </div>
+
+      <h2 class="fb-product-advisor__title">
+        {% if localization.language.iso_code == 'en' %}Let's find the right support for you{% else %}Sana uygun desteği bulalım{% endif %}
+      </h2>
+
+      <p class="fb-product-advisor__subtitle">
+        {% if localization.language.iso_code == 'en' %}Answer a few quick questions to find the best products for you.{% else %}Birkaç kısa soruyla sana en uygun ürünleri önerelim.{% endif %}
+      </p>
+
+      <div class="fb-product-advisor__steps">
+        <div
+          class="fb-product-advisor__step is-active"
+          data-step-indicator="0"
+        >
+          <span class="fb-product-advisor__step-number">1</span>
+          <span class="fb-product-advisor__step-label">{% if localization.language.iso_code == 'en' %}Use{% else %}Kullanım{% endif %}</span>
+        </div>
+
+        <div class="fb-product-advisor__step-line"></div>
+
+        <div
+          class="fb-product-advisor__step"
+          data-step-indicator="1"
+        >
+          <span class="fb-product-advisor__step-number">2</span>
+          <span class="fb-product-advisor__step-label">{% if localization.language.iso_code == 'en' %}Support{% else %}Destek{% endif %}</span>
+        </div>
+
+        <div class="fb-product-advisor__step-line"></div>
+
+        <div
+          class="fb-product-advisor__step"
+          data-step-indicator="2"
+        >
+          <span class="fb-product-advisor__step-number">3</span>
+          <span class="fb-product-advisor__step-label">{% if localization.language.iso_code == 'en' %}Details{% else %}Detay{% endif %}</span>
+        </div>
+        <div
+  class="fb-product-advisor__step-line"
+  data-activity-indicator
+  hidden
+></div>
+
+<div
+  class="fb-product-advisor__step"
+  data-step-indicator="3"
+  data-activity-indicator
+  hidden
+>
+  <span class="fb-product-advisor__step-number">4</span>
+  <span class="fb-product-advisor__step-label">{% if localization.language.iso_code == 'en' %}Activity{% else %}Aktivite{% endif %}</span>
+</div>
+      </div>
+    </div>
+
+    <div class="fb-product-advisor__body">
+
+      <!-- ADIM 1 -->
+      <div
+        class="fb-product-advisor__panel is-active"
+        data-advisor-step="0"
+      >
+        <div class="fb-product-advisor__small-title">
+          1 / 3 · KULLANIM
+        </div>
+
+        <h3 class="fb-product-advisor__question">
+          {% if localization.language.iso_code == 'en' %}What do you need support for?{% else %}Ürünü hangi amaçla arıyorsun?{% endif %}
+        </h3>
+
+        <p class="fb-product-advisor__question-sub">
+          {% if localization.language.iso_code == 'en' %}Start by choosing how you plan to use it.{% else %}Önce kullanım amacını seçerek başlayalım.{% endif %}
+        </p>
+
+        <div class="fb-product-advisor__purpose-options">
+          <button
+            type="button"
+            class="fb-product-advisor__purpose-card"
+            data-purpose="sport"
+          >
+            <strong>{% if localization.language.iso_code == 'en' %}Sports & Performance{% else %}Spor - Performans{% endif %}</strong>
+            <span>{% if localization.language.iso_code == 'en' %}Support for performance and movement{% else %}Performans ve hareket desteği{% endif %}</span>
+          </button>
+
+          <button
+            type="button"
+            class="fb-product-advisor__purpose-card"
+            data-purpose="daily"
+          >
+            <strong>{% if localization.language.iso_code == 'en' %}Medical Support{% else %}Medikal Destek{% endif %}</strong>
+            <span>{% if localization.language.iso_code == 'en' %}All-day comfort and support{% else %}Gün boyu konfor ve destek{% endif %}</span>
+          </button>
+
+          <button
+            type="button"
+            class="fb-product-advisor__purpose-card"
+            data-purpose="both"
+          >
+            <strong>{% if localization.language.iso_code == 'en' %}Sports Injuries{% else %}Spor Yaralanmaları{% endif %}</strong>
+            <span>{% if localization.language.iso_code == 'en' %}Support whenever you need it{% else %}Her an ihtiyaç duyduğum destek{% endif %}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ADIM 2 -->
+      <div
+        class="fb-product-advisor__panel"
+        data-advisor-step="1"
+      >
+        <div class="fb-product-advisor__small-title">
+          2 / 3 · DESTEK
+        </div>
+
+        <h3 class="fb-product-advisor__question">
+          {% if localization.language.iso_code == 'en' %}Which area needs the most support?{% else %}Öncelikli destek bölgen hangisi?{% endif %}
+        </h3>
+
+        <p class="fb-product-advisor__question-sub">
+          {% if localization.language.iso_code == 'en' %}Choose the area where you need support most.{% else %}Şu anda en çok destek aradığın bölgeyi seç.{% endif %}
+        </p>
+
+        <p class="fb-product-advisor__area-note">
+          {% if localization.language.iso_code == 'en' %}You can select up to 2 areas. (0/2){% else %}En fazla 2 bölge seçebilirsin. (0/2){% endif %}
+        </p>
+  <div class="fb-product-advisor__area-options">
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="general">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-none.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}No specific area{% else %}İhtiyacım yok{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="foot-sole">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-sole.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Sole of foot{% else %}Ayak tabanı{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="toes">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-toes.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Toes{% else %}Ayak parmak{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="heel">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-heel.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Heel{% else %}Topuk{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="back">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'bel.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Lower back{% else %}Bel{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="ankle">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-ankle.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Ankle{% else %}Ayak bileği{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="calf">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-calf.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Calf{% else %}Baldır{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="upper-calf">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-upper-calf.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Upper leg{% else %}Üst baldır{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="knee">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-knee.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Knee{% else %}Diz{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="wrist">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-wrist.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Wrist{% else %}El bileği{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="elbow">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'pain-elbow-anat-DwCJEF1J.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Elbow{% else %}Dirsek{% endif %}</strong>
+  </button>
+
+  <button type="button" class="fb-product-advisor__area-card" data-area="arm">
+    <span class="fb-product-advisor__area-placeholder">
+      <img src="{{ 'kol.png' | asset_url }}" alt="" loading="lazy">
+    </span>
+    <strong>{% if localization.language.iso_code == 'en' %}Arm{% else %}Kol{% endif %}</strong>
+  </button>
+
+</div>
+      </div>
+
+<!-- ADIM 3 -->
+<div
+  class="fb-product-advisor__panel"
+  data-advisor-step="2"
+>
+  <div class="fb-product-advisor__small-title">
+    3 / 3 · DETAY
+  </div>
+
+  <h3 class="fb-product-advisor__question">
+    {% if localization.language.iso_code == 'en' %}When do you need support most?{% else %}Desteğe en çok ne zaman ihtiyaç duyuyorsun?{% endif %}
+  </h3>
+
+  <p class="fb-product-advisor__question-sub">
+    {% if localization.language.iso_code == 'en' %}Tell us when you need support.{% else %}Desteğe ne zaman ihtiyaç duyduğunu belirt.{% endif %}
+  </p>
+
+  <div
+    class="fb-product-advisor__time-options"
+    role="radiogroup"
+    aria-label="{% if localization.language.iso_code == 'en' %}When support is needed{% else %}Desteğe ihtiyaç duyulan zaman{% endif %}"
+  >
+    <button
+      type="button"
+      class="fb-product-advisor__time-card"
+      data-usage-time="daily"
+      aria-pressed="false"
+    >
+      <strong>{% if localization.language.iso_code == 'en' %}All-day medical support{% else %}Gün boyu Medikal Destek{% endif %}</strong>
+    </button>
+
+    <button
+      type="button"
+      class="fb-product-advisor__time-card"
+      data-usage-time="during-activity"
+      aria-pressed="false"
+    >
+      <strong>{% if localization.language.iso_code == 'en' %}During exercise{% else %}Antrenmanda{% endif %}</strong>
+    </button>
+
+    <button
+      type="button"
+      class="fb-product-advisor__time-card"
+      data-usage-time="after-activity"
+      aria-pressed="false"
+    >
+      <strong>{% if localization.language.iso_code == 'en' %}After exercise{% else %}Antreman Sonrasında{% endif %}</strong>
+    </button>
+
+    <button
+      type="button"
+      class="fb-product-advisor__time-card"
+      data-usage-time="all-day"
+      aria-pressed="false"
+    >
+      <strong>{% if localization.language.iso_code == 'en' %}Both{% else %}Her ikisinde{% endif %}</strong>
+    </button>
+  </div>
+</div>
+
+<!-- ADIM 4: AKTİVİTE -->
+<div
+  class="fb-product-advisor__panel"
+  data-advisor-step="3"
+>
+  <div class="fb-product-advisor__small-title">
+    4 / 4 · AKTİVİTE
+  </div>
+
+  <h3 class="fb-product-advisor__question">
+    {% if localization.language.iso_code == 'en' %}Which activity do you do most often?{% else %}Hangi aktiviteyi en sık yapıyorsun?{% endif %}
+  </h3>
+
+  <p class="fb-product-advisor__question-sub">
+    {% if localization.language.iso_code == 'en' %}Choose your most frequent activity.{% else %}En sık yaptığın aktiviteyi seç.{% endif %}
+  </p>
+
+  <div
+    class="fb-product-advisor__activity-options"
+    role="radiogroup"
+    aria-label="{% if localization.language.iso_code == 'en' %}Choose an activity{% else %}Aktivite seçimi{% endif %}"
+  >
+    <button type="button" class="fb-product-advisor__activity-card" data-activity="running">
+      <strong>{% if localization.language.iso_code == 'en' %}Running and walking{% else %}Koşu ve yürüyüş{% endif %}</strong>
+    </button>
+
+    <button type="button" class="fb-product-advisor__activity-card" data-activity="football">
+      <strong>{% if localization.language.iso_code == 'en' %}Football{% else %}Futbol{% endif %}</strong>
+    </button>
+
+    <button type="button" class="fb-product-advisor__activity-card" data-activity="court-sports">
+      <strong>{% if localization.language.iso_code == 'en' %}Court sports{% else %}Kort sporları{% endif %}</strong>
+      <span>{% if localization.language.iso_code == 'en' %}Tennis, padel, basketball, volleyball{% else %}Tenis, padel, basketbol, voleybol{% endif %}</span>
+    </button>
+
+    <button type="button" class="fb-product-advisor__activity-card" data-activity="fitness">
+      <strong>Fitness</strong>
+    </button>
+
+    <button type="button" class="fb-product-advisor__activity-card" data-activity="cycling">
+      <strong>{% if localization.language.iso_code == 'en' %}Cycling{% else %}Bisiklet{% endif %}</strong>
+    </button>
+
+    <button type="button" class="fb-product-advisor__activity-card" data-activity="outdoor">
+      <strong>{% if localization.language.iso_code == 'en' %}Standing – all-day work{% else %}Ayakta – Gün boyu çalışma{% endif %}</strong>
+    </button>
+  </div>
+</div>
+
+<!-- SONUÇ EKRANI -->
+<div
+  class="fb-product-advisor__results"
+  data-advisor-results
+  hidden
+>
+  <p class="fb-product-advisor__result-notice" data-result-notice role="status" hidden></p>
+  <div class="fb-product-advisor__result-grid" data-result-grid></div>
+  <section data-insole-section hidden style="margin-top: 32px">
+    <h3>{% if localization.language.iso_code == 'en' %}Insoles for your activity{% else %}Aktivitene uygun tabanlık{% endif %}</h3>
+    <div class="fb-product-advisor__result-grid is-single-result" data-insole-grid></div>
+  </section>
+
+  {% comment %}
+    Tek Bölge listesi: yalnızca onaylanan mevcut ürünler.
+    Ürün bilgileri, fiyatlar ve varyantlar Shopify'dan gelir; CSV fiyatları sabitlenmez.
+    all_products: bu bölüm 16 benzersiz handle kullanır (sayfa sınırı 20).
+  {% endcomment %}
+  {% assign advisor_handles = 'plantar-fasiit-corabi|basparmak-bunyon-koruma-corabi|halluks-valgus-basparmak-ateli|wp4-diyabet-saglik-corabi|af7-ayak-bilek-destegi|cs6-kalf-koruyucu|kompresyon-corabi|quadriceps-ust-bacak-destegi|os1st-ks7-diz-koruyucu-destek|el-bilek-destegi|tenisci-golfcu-dirsegi-destegi|epikondilit-dirsek-destegi|kol-destegi|seyahat-corabi|quickfit-balance-ortopedik-tabanlik|quickfit-control-ortopedik-tabanlik' | split: '|' %}
+  {% for advisor_handle in advisor_handles %}
+    {% assign advisor_product = all_products[advisor_handle] %}
+    {% if advisor_product != blank %}
+      {% assign advisor_image = advisor_product.featured_image %}
+      {% assign advisor_custom_image = advisor_product.metafields.custom.listing_image.value %}
+      {% if advisor_custom_image.media_type == 'image' %}
+        {% assign advisor_image = advisor_custom_image.preview_image %}
+      {% endif %}
+      <template data-advisor-product="{{ advisor_handle | escape }}">
+        <article class="fb-product-advisor__result-card" data-base-price-cents="{{ advisor_product.price_min }}">
+          <div class="fb-product-advisor__result-image">
+            {% if advisor_image %}
+              <img src="{{ advisor_image | image_url: width: 720 }}"
+                alt="{{ advisor_product.title | escape }}" width="720" height="540" loading="lazy">
+            {% else %}
+              <span>{% if localization.language.iso_code == 'en' %}Image coming soon{% else %}Görsel hazırlanıyor{% endif %}</span>
+            {% endif %}
+          </div>
+          <div class="fb-product-advisor__result-meta">
+            <span class="fb-product-advisor__result-badge" data-result-badge></span>
+          </div>
+          <h4 class="fb-product-advisor__result-name">{{ advisor_product.title | escape }}</h4>
+          {% assign advisor_features_field = advisor_product.metafields.custom.one_cikan_ozellikler %}
+          {% assign advisor_features_text = advisor_features_field.value | strip %}
+          <div class="fb-product-advisor__result-reasons fb-product-advisor__product-features">
+            {% if advisor_features_text != blank %}
+              <strong>{% if localization.language.iso_code == 'en' %}Why is this product right for you?{% else %}Bu ürün neden sana uygun?{% endif %}</strong>
+              <ul>
+                {% if advisor_features_field.type == 'list.single_line_text_field' %}
+                  {% for advisor_feature in advisor_features_field.value %}
+                    {% assign advisor_feature_text = advisor_feature | strip %}
+                    {% if advisor_feature_text != blank %}<li>{{ advisor_feature_text | escape }}</li>{% endif %}
+                  {% endfor %}
+                {% else %}
+                  {% assign advisor_feature_lines = advisor_features_text | newline_to_br | replace: '•', '<br />' | split: '<br />' %}
+                  {% for advisor_feature in advisor_feature_lines %}
+                    {% assign advisor_feature_text = advisor_feature | strip %}
+                    {% if advisor_feature_text != blank %}<li>{{ advisor_feature_text | escape }}</li>{% endif %}
+                  {% endfor %}
+                {% endif %}
+              </ul>
+            {% else %}
+              <strong>{% if localization.language.iso_code == 'en' %}For your selected area{% else %}Seçtiğin bölge için{% endif %}</strong>
+              <ul><li data-result-reason></li></ul>
+            {% endif %}
+          </div>
+          <form method="post" action="{{ routes.cart_add_url }}" class="fb-product-advisor__product-form">
+            <input type="hidden" name="quantity" value="1">
+            {% if advisor_product.available %}
+              {% if advisor_product.variants.size > 1 %}
+                <label class="fb-product-advisor__variant-label">
+                  <span>{{ advisor_product.options | join: ' / ' | escape }} {% if localization.language.iso_code == 'en' %}– choose{% else %}seç{% endif %}</span>
+                  <select name="id" required data-result-variant>
+                    <option value="" selected disabled>{% if localization.language.iso_code == 'en' %}Choose an option{% else %}Seçenek seçiniz{% endif %}</option>
+                    {% for advisor_variant in advisor_product.variants %}
+                      <option value="{{ advisor_variant.id }}"
+                        data-price="{{ advisor_variant.price | money_without_currency | escape }}"
+                        data-price-cents="{{ advisor_variant.price }}"
+                        {% unless advisor_variant.available %}disabled{% endunless %}>
+                        {{ advisor_variant.title | escape }}{% unless advisor_variant.available %} — {% if localization.language.iso_code == 'en' %}Sold out{% else %}Tükendi{% endif %}{% endunless %}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </label>
+              {% else %}
+                <input type="hidden" name="id" value="{{ advisor_product.variants.first.id }}">
+              {% endif %}
+            {% endif %}
+            <div class="fb-product-advisor__result-price" data-result-price>
+              <span data-price-amount>{{ advisor_product.price_min | money_without_currency }}</span>
+              <span class="fb-product-advisor__currency">{{ cart.currency.iso_code | default: shop.currency | escape }}</span>
+              {% if advisor_product.price_varies %}<small data-price-from>{% if localization.language.iso_code == 'en' %}from{% else %}başlayan fiyatlarla{% endif %}</small>{% endif %}
+            </div>
+            <div class="fb-product-advisor__result-actions">
+              <a href="{{ advisor_product.url }}" class="fb-product-advisor__result-primary">{% if localization.language.iso_code == 'en' %}View product{% else %}Ürünü İncele{% endif %}</a>
+              <button type="submit" class="fb-product-advisor__result-secondary"
+                {% unless advisor_product.available %}disabled{% endunless %}>
+                {% if advisor_product.available %}{% if localization.language.iso_code == 'en' %}Add to cart{% else %}Sepete Ekle{% endif %}{% else %}{% if localization.language.iso_code == 'en' %}Out of stock{% else %}Stokta yok{% endif %}{% endif %}
+              </button>
+            </div>
+            <p class="fb-product-advisor__cart-status" data-cart-status role="status" aria-live="polite" aria-atomic="true"></p>
+            <a class="fb-product-advisor__cart-link" href="{{ routes.cart_url }}">{% if localization.language.iso_code == 'en' %}View my cart{% else %}Sepetimi gör{% endif %}</a>
+          </form>
+        </article>
+      </template>
+    {% endif %}
+  {% endfor %}
+
+  <div class="fb-product-advisor__results-footer">
+    <button type="button" class="fb-product-advisor__restart" data-advisor-edit>‹ {% if localization.language.iso_code == 'en' %}Change selected area{% else %}Bölge Seçimini Değiştir{% endif %}</button>
+    <button
+      type="button"
+      class="fb-product-advisor__restart"
+      data-advisor-restart
+    >
+      ↻ {% if localization.language.iso_code == 'en' %}Start over{% else %}Baştan Başla{% endif %}
+    </button>
+
+  </div>
+</div>
+
+    </div>
+
+<p class="fb-product-advisor__disclaimer">
+  {% if localization.language.iso_code == 'en' %}Product recommendations are intended to help you choose and do not replace a diagnosis or treatment. Consult a healthcare professional if symptoms persist or worsen.{% else %}Ürün önerileri, ürün seçimini kolaylaştırmak amacıyla hazırlanmıştır. Tanı veya tedavi yerine geçmez. Devam eden ya da şiddetlenen şikâyetlerde bir sağlık uzmanına danışınız.{% endif %}
+</p>
+
+<section class="fb-product-advisor__newsletter" data-advisor-newsletter>
+  <div class="fb-product-advisor__newsletter-copy">
+    <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
+    <h3>{% if localization.language.iso_code == 'en' %}Subscribe for free and get 5% off{% else %}%5 indirim için ücretsiz abone olun{% endif %}</h3>
+    <p>{% if localization.language.iso_code == 'en' %}Leave your email to get your discount code right away.{% else %}E-posta adresini bırak, indirim kodunu hemen al.{% endif %}</p>
+  </div>
+
+  {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
+    {% if form.posted_successfully? %}<span data-advisor-newsletter-posted hidden></span>{% endif %}
+    <input type="hidden" name="contact[tags]" value="newsletter,wizard-yuzde-5">
+    <div class="fb-product-advisor__newsletter-fields" data-advisor-newsletter-fields>
+      <label class="visually-hidden" for="FbAdvisorNewsletterEmail">{% if localization.language.iso_code == 'en' %}Your email address{% else %}E-posta adresiniz{% endif %}</label>
+      <input
+        id="FbAdvisorNewsletterEmail"
+        type="email"
+        name="contact[email]"
+        value="{% if form.email %}{{ form.email | escape }}{% endif %}"
+        placeholder="{% if localization.language.iso_code == 'en' %}Your email address{% else %}E-posta adresiniz{% endif %}"
+        autocomplete="email"
+        autocapitalize="off"
+        spellcheck="false"
+        required
+      >
+      <button type="submit">{% if localization.language.iso_code == 'en' %}Get my 5% discount{% else %}%5 indirimimi al{% endif %}</button>
+    </div>
+    <label class="fb-product-advisor__newsletter-consent" data-advisor-newsletter-fields>
+      <input type="checkbox" required>
+      <span>
+        {% if localization.language.iso_code == 'en' %}I agree to receive emails about promotions and offers.{% else %}Kampanya ve fırsatlardan e-posta ile haberdar olmayı kabul ediyorum.{% endif %}
+        {%- if shop.privacy_policy != blank -%}
+          <a href="{{ shop.privacy_policy.url }}" target="_blank">{% if localization.language.iso_code == 'en' %}Privacy Policy{% else %}Gizlilik Politikası{% endif %}</a>
+        {%- endif -%}
+      </span>
+    </label>
+    <p class="fb-product-advisor__newsletter-error" data-advisor-newsletter-error role="alert" hidden></p>
+    <div class="fb-product-advisor__newsletter-success" data-advisor-newsletter-success hidden>
+      <span>{% if localization.language.iso_code == 'en' %}Thank you! Your 5% discount code:{% else %}Teşekkürler! %5 indirim kodunuz:{% endif %}</span>
+      <div><strong data-advisor-newsletter-code>HOSGELDIN5</strong><button type="button" data-advisor-newsletter-copy>{% if localization.language.iso_code == 'en' %}Copy code{% else %}Kodu kopyala{% endif %}</button></div>
+      <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Apply discount{% else %}İndirimi uygula{% endif %}</a>
+    </div>
+  {% endform %}
+</section>
+
+<div class="fb-product-advisor__footer">
+  <button
+    type="button"
+    class="fb-product-advisor__back"
+    data-advisor-back
+  >
+    <span aria-hidden="true">‹</span>
+    {% if localization.language.iso_code == 'en' %}Back{% else %}Geri{% endif %}
+  </button>
+
+  <button
+    type="button"
+    class="fb-product-advisor__next"
+    data-advisor-next
+    disabled
+  >
+    {% if localization.language.iso_code == 'en' %}Continue{% else %}Devam et{% endif %}
+    <span aria-hidden="true">›</span>
+  </button>
+</div>
+
+  </div>
+</div>
+
+{% render 'fb-personal-widget' %}
+<script>
+  (function () {
+    var advisor = document.getElementById('fb-product-advisor');
+    if (!advisor) return;
+    var form = advisor.querySelector('.fb-product-advisor__newsletter-form');
+    if (!form) return;
+
+    var storageKey = 'fbAdvisorNewsletterPending';
+    function showNewsletterSuccess() {
+      advisor.querySelectorAll('[data-advisor-newsletter-fields]').forEach(function (field) {
+        field.hidden = true;
+      });
+      var successBox = advisor.querySelector('[data-advisor-newsletter-success]');
+      if (successBox) successBox.hidden = false;
+    }
+    form.addEventListener('submit', function () {
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify({
+          savedAt: Date.now(),
+          state: window.FBProductAdvisor && window.FBProductAdvisor.snapshot
+            ? window.FBProductAdvisor.snapshot() : null
+        }));
+      } catch (error) {}
+    });
+
+    window.addEventListener('load', function () {
+      var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
+        !!form.querySelector('[data-advisor-newsletter-posted]');
+      if (posted && window.location.hash === '#FbAdvisorNewsletter') showNewsletterSuccess();
+
+      var pending;
+      try {
+        pending = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+        sessionStorage.removeItem(storageKey);
+      } catch (error) { return; }
+      if (!pending || Date.now() - pending.savedAt > 15 * 60 * 1000) return;
+      if (!window.FBProductAdvisor) return;
+
+      window.FBProductAdvisor.open();
+      if (pending.state && window.FBProductAdvisor.restore) {
+        window.FBProductAdvisor.restore(pending.state);
+      }
+
+      if (posted) {
+        showNewsletterSuccess();
+      } else {
+        var errorBox = advisor.querySelector('[data-advisor-newsletter-error]');
+        if (errorBox) {
+          errorBox.textContent = {% if localization.language.iso_code == 'en' %}'Subscription could not be completed. Please try again.'{% else %}'Kayıt tamamlanmadı. Lütfen tekrar deneyin.'{% endif %};
+          errorBox.hidden = false;
+        }
+      }
+    });
+
+    var copyButton = advisor.querySelector('[data-advisor-newsletter-copy]');
+    if (copyButton) copyButton.addEventListener('click', async function () {
+      var code = advisor.querySelector('[data-advisor-newsletter-code]');
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code.textContent.trim());
+        copyButton.textContent = {% if localization.language.iso_code == 'en' %}'Copied'{% else %}'Kopyalandı'{% endif %};
+      } catch (error) {
+        copyButton.textContent = {% if localization.language.iso_code == 'en' %}'Select and copy the code'{% else %}'Kodu seçip kopyalayın'{% endif %};
+      }
+    });
+  })();
+</script>
+<script src="{{ 'fb-product-advisor.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "FB Ürün Bulucu",
+  "settings": [],
+  "presets": [
+    {
+      "name": "FB Ürün Bulucu"
+    }
+  ]
+}
+{% endschema %}

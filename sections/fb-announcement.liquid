@@ -1,0 +1,131 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Üst bant
+  ---------------------------------------------------------------------------
+  Dawn'ın announcement-bar bölümü birden fazla mesajı SLIDER olarak basıyor,
+  yani hep tek mesaj görünüyor. Referansta üçü de yan yana duruyor.
+
+  Bu yüzden ayrı bölüm yazıldı: mesajlar yan yana, her birinin başında ikon,
+  lacivert zemin üzerine beyaz yazı.
+
+  Mobilde yan yana sığmıyor — orada yatay kaydırılabilir hale geliyor,
+  üç mesaj da erişilebilir kalıyor.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-ann {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+  }
+</style>
+
+<div class="fb-ann">
+  <div class="fb-ann__inner page-width">
+    {%- for block in section.blocks -%}
+      <span class="fb-ann__item" {{ block.shopify_attributes }}>
+        <span class="fb-ann__icon" aria-hidden="true">
+          {%- case block.settings.icon -%}
+            {%- when 'shipping' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13" rx="1" />
+                <path d="M16 8h4l3 3v5h-7z" />
+                <circle cx="5.5" cy="18.5" r="2.5" />
+                <circle cx="18.5" cy="18.5" r="2.5" />
+              </svg>
+            {%- when 'return' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10" />
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              </svg>
+            {%- when 'medical' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2v7a6 6 0 0 0 12 0V2" />
+                <path d="M4 2h4M16 2h4" />
+                <path d="M12 15v2a4 4 0 0 0 8 0v-2" />
+                <circle cx="20" cy="12" r="2" />
+              </svg>
+            {%- when 'shield' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            {%- else -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+          {%- endcase -%}
+        </span>
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+        {%- else -%}
+          {{ block.settings.text | escape }}
+        {%- endif -%}
+      </span>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "FB Üst bant",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Zemin rengi",
+      "default": "#0e2a45"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Yazı rengi",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Mesaj",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "İkon",
+          "options": [
+            { "value": "shipping", "label": "Kargo" },
+            { "value": "return", "label": "İade" },
+            { "value": "medical", "label": "Medikal" },
+            { "value": "shield", "label": "Güvence" },
+            { "value": "check", "label": "Onay" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Metin",
+          "default": "Mesaj"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Bağlantı (isteğe bağlı)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FB Üst bant",
+      "blocks": [
+        { "type": "message", "settings": { "icon": "shipping", "text": "3.000 TL ve üzeri ücretsiz kargo" } },
+        { "type": "message", "settings": { "icon": "return", "text": "30 gün iade hakkı" } },
+        { "type": "message", "settings": { "icon": "medical", "text": "Medikal seviye ortopedik destek" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,281 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+  #main-cart-footer .fb-summary__shipping-note {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(var(--color-foreground), 0.7);
+  }
+{%- endstyle -%}
+
+<div
+  class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty{% endif %}"
+  id="main-cart-footer"
+  data-id="{{ section.id }}"
+>
+  <div class="page-width">
+    <div class="cart__footer isolate section-{{ section.id }}-padding">
+      {%- if settings.show_cart_note -%}
+        <cart-note class="cart__note field">
+          <label for="Cart-note">{{ 'sections.cart.note' | t }}</label>
+          <textarea
+            class="text-area field__input"
+            name="note"
+            form="cart"
+            id="Cart-note"
+            placeholder="{{ 'sections.cart.note' | t }}"
+          >{{ cart.note }}</textarea>
+        </cart-note>
+      {%- endif -%}
+
+      <div class="cart__blocks fb-summary">
+        {%- comment -%}
+          FootBalance: `.cart__blocks` referans tasarımdaki "Sipariş Özeti"
+          kartına dönüştü (stil: footbalance-custom.css → SEPET bölümü).
+          Blok yapısı Dawn'daki gibi bırakıldı — `.js-contents` cart.js'in
+          tazelediği yer, adı değişirse sepet güncellemesi kırılır.
+        {%- endcomment -%}
+        <h2 class="fb-summary__title">{% if localization.language.iso_code == 'en' and section.settings.summary_title == 'Sipariş Özeti' %}Order summary{% else %}{{ section.settings.summary_title | escape }}{% endif %}</h2>
+
+        {% for block in section.blocks %}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+            {%- when 'subtotal' -%}
+              <div class="js-contents" {{ block.shopify_attributes }}>
+                <div>
+                  {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
+                      {%- for discount in cart.cart_level_discount_applications -%}
+                        <li class="discounts__discount discounts__discount--position">
+                          {{- 'icon-discount.svg' | inline_asset_content -}}
+                          {{ discount.title | escape }}
+                          (-{{ discount.total_allocated_amount | money_without_trailing_zeros }} TL)
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+
+                {%- comment -%}
+                  Kargo tahmini: TRY siparişlerinde indirim sonrası 3.000 TL ve
+                  üzeri ücretsiz, altında 200 TL. Gerçek kargo ücretini değiştirmez.
+                  .js-contents içinde olduğundan sepetle birlikte güncellenir.
+                {%- endcomment -%}
+                {%- assign fb_currency = cart.currency.iso_code | default: shop.currency -%}
+                {%- assign fb_shipping = 0 -%}
+                {%- if fb_currency == 'TRY' and cart.requires_shipping and cart.item_count > 0 and cart.total_price < 300000 -%}
+                  {%- assign fb_shipping = 20000 -%}
+                {%- endif -%}
+                {%- assign fb_estimated_total = cart.total_price | plus: fb_shipping -%}
+                <div class="fb-summary__rows">
+                  <div class="fb-summary__row">
+                    <span>{% if localization.language.iso_code == 'en' %}Subtotal{% else %}Ara Toplam{% endif %}</span>
+                    <span>{{ cart.items_subtotal_price | money }}</span>
+                  </div>
+                  <div class="fb-summary__row">
+                    <span>{% if localization.language.iso_code == 'en' %}Shipping{% else %}Kargo{% endif %}</span>
+                    <span>
+                      {%- if cart.item_count == 0 or cart.requires_shipping == false -%}
+                        —
+                      {%- elsif fb_currency != 'TRY' -%}
+                        {% if localization.language.iso_code == 'en' %}Calculated at checkout{% else %}Ödeme adımında hesaplanır{% endif %}
+                      {%- elsif fb_shipping == 0 -%}
+                        {% if localization.language.iso_code == 'en' %}Free{% else %}Ücretsiz{% endif %}
+                      {%- else -%}
+                        {{ fb_shipping | money_with_currency }}
+                      {%- endif -%}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="totals fb-summary__total">
+                  <h2 class="totals__total">{% if localization.language.iso_code == 'en' %}Estimated total{% else %}Tahmini Toplam{% endif %}</h2>
+                  <p class="totals__total-value">{{ fb_estimated_total | money_with_currency }}</p>
+                </div>
+
+                <p class="fb-summary__shipping-note">{% if localization.language.iso_code == 'en' %}Final shipping cost and total are confirmed at checkout.{% else %}Kesin kargo ücreti ve toplam, ödeme adımında belirlenir.{% endif %}</p>
+
+                <small class="tax-note caption-large rte{% unless section.settings.show_tax_note %} fb-hidden{% endunless %}">
+                  {%- if cart.duties_included and cart.taxes_included -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      {{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_without_policy' | t }}
+                    {%- else -%}
+                      {{
+                        'sections.cart.duties_and_taxes_included_shipping_at_checkout_with_policy_html'
+                        | t: link: shop.shipping_policy.url
+                      }}
+                    {%- endif -%}
+                  {%- elsif cart.duties_included == false and cart.taxes_included -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      {{ 'sections.cart.taxes_included_shipping_at_checkout_without_policy' | t }}
+                    {%- else -%}
+                      {{
+                        'sections.cart.taxes_included_shipping_at_checkout_with_policy_html'
+                        | t: link: shop.shipping_policy.url
+                      }}
+                    {%- endif -%}
+                  {%- elsif cart.duties_included and cart.taxes_included == false -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      {{ 'sections.cart.duties_included_taxes_at_checkout_shipping_at_checkout_without_policy' | t }}
+                    {%- else -%}
+                      {{
+                        'sections.cart.duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html'
+                        | t: link: shop.shipping_policy.url
+                      }}
+                    {%- endif -%}
+                  {%- elsif cart.duties_included == false and cart.taxes_included == false -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      {{ 'sections.cart.taxes_at_checkout_shipping_at_checkout_without_policy' | t }}
+                    {%- else -%}
+                      {{
+                        'sections.cart.taxes_at_checkout_shipping_at_checkout_with_policy_html'
+                        | t: link: shop.shipping_policy.url
+                      }}
+                    {%- endif -%}
+                  {%- endif -%}
+                </small>
+              </div>
+            {%- else -%}
+              <div class="cart__ctas" {{ block.shopify_attributes }}>
+                <button
+                  type="submit"
+                  id="checkout"
+                  class="cart__checkout-button button"
+                  name="checkout"
+                  {% if cart == empty %}
+                    disabled
+                  {% endif %}
+                  form="cart"
+                >
+                  {{ 'sections.cart.checkout' | t }}
+                </button>
+              </div>
+
+              {%- if additional_checkout_buttons -%}
+                <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                  {{ content_for_additional_checkout_buttons }}
+                </div>
+              {%- endif -%}
+          {%- endcase -%}
+        {% endfor %}
+
+        {%- comment -%} Kartın altındaki güven satırları — referans tasarımdaki üçlü {%- endcomment -%}
+        {%- assign fb_trust = section.settings.trust_lines | newline_to_br | split: '<br />' -%}
+        {%- if fb_trust.size > 0 -%}
+          <ul class="fb-summary__trust" role="list">
+            {%- for line in fb_trust -%}
+              {%- assign line_text = line | strip -%}
+              {%- if line_text != blank -%}
+                <li>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  {% if localization.language.iso_code == 'en' %}
+                    {% case line_text %}
+                      {% when 'Hızlı kargo' %}Fast shipping
+                      {% when '30 gün koşulsuz iade garantisi' %}30-day unconditional return guarantee
+                      {% when 'Güvenli ödeme altyapısı' %}Secure payments
+                      {% else %}{{ line_text | escape }}
+                    {% endcase %}
+                  {% else %}{{ line_text | escape }}{% endif %}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div id="cart-errors"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-footer.name",
+  "class": "cart__footer-wrapper",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "summary_title",
+      "label": "Kart başlığı",
+      "default": "Sipariş Özeti"
+    },
+    {
+      "type": "textarea",
+      "id": "trust_lines",
+      "label": "Güven satırları",
+      "info": "Her satır ayrı madde olur. Boş bırakılırsa hiç gösterilmez.",
+      "default": "Hızlı kargo\n30 gün koşulsuz iade garantisi\nGüvenli ödeme altyapısı"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tax_note",
+      "label": "Vergi/kargo notunu göster",
+      "info": "Referans tasarımda yok. Kargo satırı zaten aynı bilgiyi veriyor.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart-footer.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-cart-footer.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

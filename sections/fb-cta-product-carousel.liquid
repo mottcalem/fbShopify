@@ -1,0 +1,577 @@
+{% comment %}
+  FootBalance — Çağrı alanı ve ürün carousel'i
+  Shopify dosya konumu: sections/fb-cta-product-carousel.liquid
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign selected_products = section.settings.products
+  assign button_url = section.settings.button_link
+
+  if button_url == blank
+    assign button_url = routes.all_products_collection_url
+  endif
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-cta-products {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__header {
+    max-width: 850px;
+    margin: 0 auto 38px;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__overline {
+    display: block;
+    margin-bottom: 12px;
+    color: #ff6b00;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__title {
+    margin: 0;
+    color: rgb(var(--color-foreground));
+    font-size: clamp(3rem, 4vw, 5.2rem);
+    line-height: 1.08;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__text {
+    margin: 18px 0 0;
+    color: rgba(var(--color-foreground), .62);
+    font-size: clamp(1.7rem, 2vw, 2.4rem);
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - ({{ section.settings.columns_desktop | minus: 1 }} * 24px)) / {{ section.settings.columns_desktop }});
+    gap: 24px;
+    margin: 0;
+    padding: 2px 2px 18px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-behavior: smooth;
+    scroll-snap-type: inline mandatory;
+    scrollbar-width: none;
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__slide {
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    flex-direction: column;
+    border: 1px solid rgba(10, 44, 70, .13);
+    border-radius: 22px;
+    background: #fff;
+    color: #0b2f4d;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(10, 44, 70, .05);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(10, 44, 70, .10);
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__media {
+    display: block;
+    overflow: hidden;
+    background: #f7f7f5;
+    aspect-ratio: 1 / 1;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform .35s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card:hover .fb-carousel-card__image {
+    transform: scale(1.025);
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__placeholder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: rgba(10, 44, 70, .35);
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__placeholder svg {
+    width: 42%;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__body {
+    display: flex;
+    flex: 1;
+    padding: 22px;
+    flex-direction: column;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__vendor {
+    margin-bottom: 7px;
+    color: #877b6b;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__name {
+    margin: 0;
+    color: #071c2c;
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__name a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__description {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 11px 0 0;
+    color: #877b6b;
+    font-size: 1.4rem;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__rating {
+    margin-top: 12px;
+    color: #725f46;
+    font-size: 1.25rem;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__stars {
+    margin-right: 6px;
+    color: #ffb400;
+    letter-spacing: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__price {
+    margin-top: auto;
+    padding-top: 17px;
+    color: #ff6b00;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__compare {
+    margin-right: 8px;
+    color: #8a8f94;
+    font-size: 1.35rem;
+    font-weight: 400;
+    text-decoration: line-through;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__currency {
+    margin-left: 4px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 16px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__actions form {
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__button {
+    display: flex;
+    width: 100%;
+    min-height: 43px;
+    padding: 9px 10px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #0b2f4d;
+    border-radius: 10px;
+    background: transparent;
+    color: #0b2f4d;
+    font: inherit;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__button--primary {
+    border-color: #ff6b00;
+    background: #ff6b00;
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .fb-carousel-card__button:hover {
+    filter: brightness(.96);
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__arrow {
+    position: absolute;
+    z-index: 2;
+    top: 42%;
+    display: grid;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 1px solid rgba(10, 44, 70, .15);
+    border-radius: 50%;
+    background: #fff;
+    color: #0b2f4d;
+    box-shadow: 0 8px 24px rgba(10, 44, 70, .12);
+    cursor: pointer;
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__arrow[disabled] {
+    visibility: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__arrow--prev { left: -23px; }
+  #shopify-section-{{ section.id }} .fb-product-carousel__arrow--next { right: -23px; }
+
+  #shopify-section-{{ section.id }} .fb-product-carousel__arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__footer {
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__button {
+    display: inline-flex;
+    min-height: 56px;
+    padding: 14px 34px;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    border-radius: 999px;
+    background: #0b2f4d;
+    color: #fff;
+    font-size: 1.7rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__button svg {
+    width: 18px;
+    transition: transform .2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__button:hover svg {
+    transform: translateX(4px);
+  }
+
+  #shopify-section-{{ section.id }} .fb-cta-products__empty {
+    padding: 45px 20px;
+    border: 1px dashed rgba(var(--color-foreground), .25);
+    text-align: center;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .fb-product-carousel__track {
+      grid-auto-columns: calc((100% - 18px) / 2);
+      gap: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .fb-product-carousel__arrow {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .fb-cta-products {
+      padding-top: {{ section.settings.padding_top | times: 0.65 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.65 | round }}px;
+    }
+
+    #shopify-section-{{ section.id }} .fb-cta-products__header {
+      margin-bottom: 26px;
+    }
+
+    #shopify-section-{{ section.id }} .fb-product-carousel__track {
+      grid-auto-columns: 82%;
+      gap: 14px;
+      margin-right: -1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    #shopify-section-{{ section.id }} .fb-carousel-card__body {
+      padding: 18px;
+    }
+  }
+</style>
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <section class="fb-cta-products page-width" aria-labelledby="FB-Cta-Title-{{ section.id }}">
+    <header class="fb-cta-products__header">
+      {%- if section.settings.overline != blank -%}
+        <span class="fb-cta-products__overline">{{ section.settings.overline | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="fb-cta-products__title" id="FB-Cta-Title-{{ section.id }}">{{ section.settings.title | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="fb-cta-products__text">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- if selected_products != blank -%}
+      <div class="fb-product-carousel" data-fb-carousel>
+        <button class="fb-product-carousel__arrow fb-product-carousel__arrow--prev" type="button" aria-label="{% if localization.language.iso_code == 'en' %}Previous products{% else %}Önceki ürünler{% endif %}" data-fb-prev disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+
+        <ul class="fb-product-carousel__track list-unstyled" data-fb-track>
+          {%- for product in selected_products -%}
+            {%- liquid
+              assign listing_image = product.metafields.custom.listing_image.value
+              if listing_image == blank
+                assign listing_image = product.featured_media.preview_image
+              endif
+              assign review_rating = product.metafields.reviews.rating.value
+              assign review_count = product.metafields.reviews.rating_count.value
+            -%}
+            <li class="fb-product-carousel__slide">
+              <div class="fb-carousel-card">
+                <a class="fb-carousel-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+                  {%- if listing_image != blank -%}
+                    {{ listing_image
+                      | image_url: width: 900
+                      | image_tag:
+                        class: 'fb-carousel-card__image',
+                        loading: 'lazy',
+                        widths: '320, 480, 640, 900',
+                        sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 82vw',
+                        alt: product.title
+                    }}
+                  {%- else -%}
+                    <span class="fb-carousel-card__placeholder">{{ 'product-1' | placeholder_svg_tag }}</span>
+                  {%- endif -%}
+                </a>
+
+                <span class="fb-carousel-card__body">
+                  {%- if section.settings.show_vendor and product.vendor != blank -%}
+                    <span class="fb-carousel-card__vendor">{{ product.vendor | escape }}</span>
+                  {%- endif -%}
+                  <h3 class="fb-carousel-card__name"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+
+                  {%- if section.settings.show_description and product.description != blank -%}
+                    <span class="fb-carousel-card__description">{{ product.description | strip_html | truncatewords: 18 }}</span>
+                  {%- endif -%}
+
+                  {%- if section.settings.show_rating and review_rating != blank -%}
+                    <span class="fb-carousel-card__rating">
+                      <span class="fb-carousel-card__stars" aria-hidden="true">★★★★★</span>
+                      {{ review_rating.rating | round: 1 }}{% if review_count != blank %} ({{ review_count }}){% endif %}
+                    </span>
+                  {%- endif -%}
+
+                  <span class="fb-carousel-card__price">
+                    {%- if product.compare_at_price_max > product.price -%}
+                      <span class="fb-carousel-card__compare">{{ product.compare_at_price_max | money_without_currency }}</span>
+                    {%- endif -%}
+                    {{ product.price_min | money_without_currency }}<small class="fb-carousel-card__currency">TRY</small>
+                  </span>
+
+                  <span class="fb-carousel-card__actions">
+                    <a class="fb-carousel-card__button" href="{{ product.url }}">{% if localization.language.iso_code == 'en' %}View product{% else %}Ürünü İncele{% endif %}</a>
+                    
+                  </span>
+                </span>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <button class="fb-product-carousel__arrow fb-product-carousel__arrow--next" type="button" aria-label="{% if localization.language.iso_code == 'en' %}Next products{% else %}Sonraki ürünler{% endif %}" data-fb-next>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    {%- else -%}
+      <div class="fb-cta-products__empty">{% if localization.language.iso_code == 'en' %}Select products to display in this section's settings.{% else %}Bu bölümün ayarlarından gösterilecek ürünleri seçin.{% endif %}</div>
+    {%- endif -%}
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="fb-cta-products__footer">
+        <a href="{{ button_url }}" class="fb-cta-products__button">
+          {{ section.settings.button_label | escape }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </section>
+</div>
+
+<script>
+  (() => {
+    const section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section || section.dataset.fbCarouselReady === 'true') return;
+
+    const carousel = section.querySelector('[data-fb-carousel]');
+    if (!carousel) return;
+
+    section.dataset.fbCarouselReady = 'true';
+    const track = carousel.querySelector('[data-fb-track]');
+    const previous = carousel.querySelector('[data-fb-prev]');
+    const next = carousel.querySelector('[data-fb-next]');
+
+    const step = () => {
+      const slide = track.querySelector('.fb-product-carousel__slide');
+      if (!slide) return track.clientWidth;
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return slide.getBoundingClientRect().width + gap;
+    };
+
+    const update = () => {
+      const end = track.scrollWidth - track.clientWidth;
+      previous.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= end - 2 || end <= 2;
+    };
+
+    previous.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "FB Ürün carousel",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "Turuncu üst etiket",
+      "default": "Tüm Ürünler"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Başlık",
+      "default": "İhtiyacına göre tüm ürünler"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Alt başlık",
+      "default": "Sağlığın ve performansın için."
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Gösterilecek ürünler",
+      "limit": 16
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Masaüstündeki sütun sayısı"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "default": true,
+      "label": "Kısa açıklamayı göster"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": true,
+      "label": "Markayı göster"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": true,
+      "label": "Puanı göster"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Buton metni",
+      "default": "Tüm Ürünleri Gör"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Buton bağlantısı"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Renk şeması",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Üst boşluk",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Alt boşluk",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "FB Ürün carousel"
+    }
+  ]
+}
+{% endschema %}

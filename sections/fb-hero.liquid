@@ -1,0 +1,323 @@
+{% comment %}
+  ---------------------------------------------------------------------------
+  FootBalance — Hero
+  ---------------------------------------------------------------------------
+  Dawn'ın image-banner bölümü yetmedi: en fazla 3 blok alıyor ve başlığın bir
+  satırına ayrı renk verilemiyor. Referanstaki hero'da 6 ayrı öğe var
+  (rozet, başlık, turuncu alt başlık, açıklama, iki buton, puan satırı),
+  bu yüzden kendi bölümümüz yazıldı.
+
+  DEVAM.md §2.5'te "Dawn'da yapılamıyor" diye bırakılan iş buydu.
+  ---------------------------------------------------------------------------
+{% endcomment %}
+
+{{ 'footbalance-custom.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-{{ section.id }} .fb-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: {{ section.settings.height }}px;
+  }
+
+  #shopify-section-{{ section.id }} .fb-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .fb-hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    background: linear-gradient(
+  90deg,
+  rgb(23 43 62 / 78%) 0%,
+  rgb(31 49 66 / 66%) 28%,
+  rgb(10 27 44 / 42%) 48%,
+  rgb(5 22 38 / 12%) 68%,
+  rgb(5 22 38 / 0%) 84%
+) !important;
+  }
+
+  #shopify-section-{{ section.id }} .fb-hero__inner {
+    position: relative;
+    z-index: 2;
+    padding-bottom: {{ section.settings.bottom_space }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .fb-hero {
+      min-height: {{ section.settings.height | times: 0.72 | round }}px;
+    }
+
+    #shopify-section-{{ section.id }} .fb-hero__overlay {
+      background: linear-gradient(
+        0deg,
+        rgba(5, 22, 38, 0.96) 0%,
+        rgba(5, 22, 38, 0.78) 50%,
+        rgba(5, 22, 38, 0.28) 100%
+      ) !important;
+    }
+  }
+</style>
+
+{%- comment -%}
+  Arka plan iki katmanlı:
+    alt katman → görsel (her zaman basılır, varsa)
+    üst katman → video (seçilmişse)
+
+  Video hiçbir sebeple görünmediğinde (mobilde kapatıldı, hareket azaltma
+  tercihi açık, tarayıcı oynatamadı) altındaki görsel ortaya çıkar. Bu yüzden
+  hero asla boş kalmaz. Hangisinin görüneceğine CSS karar verir — JS yok,
+  cihaz tespiti yok.
+
+  Görselin ayrıca video poster'ı olarak da kullanıldığına dikkat: tarayıcı
+  zaten indiriyor, iki katman ekstra yük getirmiyor.
+{%- endcomment -%}
+{%- assign fb_has_video = false -%}
+{%- if section.settings.video != blank -%}
+  {%- assign fb_has_video = true -%}
+{%- endif -%}
+
+{%- assign fb_video_class = 'fb-hero__media fb-hero__media--video' -%}
+{%- if section.settings.hide_video_mobile -%}
+  {%- assign fb_video_class = fb_video_class | append: ' fb-hero__media--desktop-only' -%}
+{%- endif -%}
+
+<section class="fb-hero">
+  {%- if section.settings.image != blank -%}
+    <img
+      src="{{ section.settings.image | image_url: width: 2400 }}"
+      srcset="
+        {{ section.settings.image | image_url: width: 750 }} 750w,
+        {{ section.settings.image | image_url: width: 1100 }} 1100w,
+        {{ section.settings.image | image_url: width: 1500 }} 1500w,
+        {{ section.settings.image | image_url: width: 2000 }} 2000w,
+        {{ section.settings.image | image_url: width: 2400 }} 2400w
+      "
+      sizes="100vw"
+      alt="{{ section.settings.image.alt | escape }}"
+      width="{{ section.settings.image.width }}"
+      height="{{ section.settings.image.height }}"
+      fetchpriority="high"
+      class="fb-hero__media"
+    >
+  {%- elsif fb_has_video == false -%}
+    <div class="fb-hero__media fb-hero__media--placeholder">
+      {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+  {%- endif -%}
+
+  {%- if fb_has_video -%}
+    {{
+      section.settings.video
+      | video_tag:
+        image_size: '2400x',
+        poster: section.settings.image,
+        autoplay: true,
+        loop: true,
+        muted: true,
+        controls: false,
+        playsinline: true,
+        preload: 'metadata',
+        class: fb_video_class
+    }}
+  {%- endif -%}
+
+  <div class="fb-hero__overlay"></div>
+
+  <div class="fb-hero__inner page-width">
+    <div class="fb-hero__content">
+      {%- if section.settings.badge != blank -%}
+        <span class="fb-hero__badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 2v7a6 6 0 0 0 12 0V2" />
+            <path d="M4 2h4M16 2h4" />
+            <path d="M12 15v2a4 4 0 0 0 8 0v-2" />
+            <circle cx="20" cy="12" r="2" />
+          </svg>
+          {% if localization.language.iso_code == 'en' and section.settings.badge == 'Medikal Seviye Ortopedik Destek' %}Medical-grade orthopedic support{% else %}{{ section.settings.badge | escape }}{% endif %}
+        </span>
+      {%- endif -%}
+
+      {%- comment -%}
+        Başlık textarea: satır sonları <br>'a çevrilir.
+        inline_richtext kullanılamıyor — Shopify o tipte <br> kabul etmiyor.
+      {%- endcomment -%}
+      {%- if section.settings.heading != blank -%}
+        <h1 class="fb-hero__heading">{% if localization.language.iso_code == 'en' and section.settings.heading contains 'performansına odaklan' %}Focus on performance,<br>not pain.{% else %}{{ section.settings.heading | escape | newline_to_br }}{% endif %}</h1>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="fb-hero__subheading">{% if localization.language.iso_code == 'en' and section.settings.subheading contains 'Tabanlık ve kompresyon' %}Let's find your ideal insoles and compression support together.{% else %}{{ section.settings.subheading | escape | newline_to_br }}{% endif %}</p>
+      {%- endif -%}
+
+      {%- if section.settings.text != blank -%}
+        <p class="fb-hero__text">{% if localization.language.iso_code == 'en' and section.settings.text == '30 saniyede kişisel öneri al.' %}Get personalized recommendations in 30 seconds.{% else %}{{ section.settings.text | escape }}{% endif %}</p>
+      {%- endif -%}
+
+      {%- if section.settings.button_label_1 != blank or section.settings.button_label_2 != blank -%}
+        <div class="fb-hero__buttons">
+          {%- if section.settings.button_label_1 != blank -%}
+            <a href="{{ section.settings.button_link_1 | default: '#' }}" class="fb-btn fb-btn--primary">
+              {% if localization.language.iso_code == 'en' and section.settings.button_label_1 == 'Doğru ürünü bul' %}Find the right product{% else %}{{ section.settings.button_label_1 | escape }}{% endif %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_label_2 != blank -%}
+            <a href="{{ section.settings.button_link_2 | default: '#' }}" class="fb-btn fb-btn--ghost">
+              {% if localization.language.iso_code == 'en' and section.settings.button_label_2 == 'Tüm Ürünler' %}All products{% else %}{{ section.settings.button_label_2 | escape }}{% endif %}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.rating_text != blank -%}
+        <div class="fb-hero__rating">
+          <span class="fb-hero__stars" aria-hidden="true">
+            {%- for i in (1..5) -%}
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            {%- endfor -%}
+          </span>
+          <span class="fb-hero__rating-text">{% if localization.language.iso_code == 'en' and section.settings.rating_text contains 'mutlu kullanıcı' %}250,000+ happy customers{% else %}{{ section.settings.rating_text | escape }}{% endif %}</span>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FB Hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Arka plan görseli",
+      "info": "Video seçilirse bu görsel poster (video yüklenene kadar görünen kare) olarak kullanılır."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Arka plan videosu",
+      "info": "Boş bırakılırsa yukarıdaki görsel kullanılır. Sessiz mp4, 8-12 sn, 1920×1080, tercihen 5 MB altı."
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_video_mobile",
+      "label": "Mobilde videoyu kapat",
+      "info": "Mobilde video yerine arka plan görseli gösterilir. Veri tüketimi ve açılış hızı için önerilir.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 400,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "label": "Yükseklik",
+      "default": 640
+    },
+    {
+      "type": "range",
+      "id": "bottom_space",
+      "min": 40,
+      "max": 240,
+      "step": 10,
+      "unit": "px",
+      "label": "İçerik alt boşluğu",
+      "info": "\"Hedefin ne?\" kartı hero'ya biniyorsa, binme miktarından büyük olmalı.",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Karartma",
+      "default": 80
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Üst rozet",
+      "default": "Medikal Seviye Ortopedik Destek"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Başlık",
+      "info": "Satır atlamak için Enter'a basın.",
+      "default": "Ağrıya değil,\nperformansına odaklan."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Turuncu alt başlık",
+      "default": "Tabanlık ve kompresyon destek ürünlerini birlikte bulalım."
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Açıklama",
+      "default": "30 saniyede kişisel öneri al."
+    },
+    {
+      "type": "header",
+      "content": "Butonlar"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "1. buton — dolu",
+      "default": "Doğru ürünü bul"
+    },
+    {
+      "type": "url",
+      "id": "button_link_1",
+      "label": "1. buton bağlantısı"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "2. buton — çerçeveli",
+      "default": "Tüm Ürünler"
+    },
+    {
+      "type": "url",
+      "id": "button_link_2",
+      "label": "2. buton bağlantısı"
+    },
+    {
+      "type": "header",
+      "content": "Puan satırı"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Metin",
+      "default": "250.000+ mutlu kullanıcı"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FB Hero"
+    }
+  ]
+}
+{% endschema %}
