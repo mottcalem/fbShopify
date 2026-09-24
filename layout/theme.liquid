@@ -586,6 +586,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const localizedCategoryValue = function (value) {
       return localizedCategoryValueByBase[value] || value;
     };
+    const localizedCategoryValues = function (value) {
+      // İngilizce mağazada eski Bunyon metafield çevirileri de aynı
+      // kategoriye aittir; Shopify bunları OR olarak değerlendirebilir.
+      if (isEnglishStorefront && value === 'Bunyon') {
+        return ['Bunyon', 'Bunion', 'Bunions'];
+      }
+      return [localizedCategoryValue(value)];
+    };
 
     const categories = {
   /* Ana gruplar */
@@ -705,10 +713,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       url.searchParams.delete(category.filter);
 
       category.values.forEach(function (value) {
-        url.searchParams.append(
-          category.filter,
-          localizedCategoryValue(value)
-        );
+        localizedCategoryValues(value).forEach(function (localizedValue) {
+          url.searchParams.append(category.filter, localizedValue);
+        });
       });
 
       return url.toString();

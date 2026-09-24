@@ -113,11 +113,22 @@
         'Kol': 'Arm'
       } : {};
       const toLocalizedCategoryValue = (value) => localizedCategoryValueByBase[value] || value;
-      const toBaseCategoryValue = (value) => Object.keys(localizedCategoryValueByBase)
+      const toLocalizedCategoryValues = (value) => {
+        // Shopify, daha önce kaydedilmiş İngilizce Bunyon değerlerini ayrı
+        // indeksleyebiliyor. Ürünlerin aynı kategori altında kalması için
+        // geçerli ve eski eşdeğerleri birlikte sorgulanır (OR).
+        if (isEnglish && value === 'Bunyon') return ['Bunyon', 'Bunion', 'Bunions'];
+        return [toLocalizedCategoryValue(value)];
+      };
+      const toBaseCategoryValue = (value) => {
+        if (isEnglish && ['Bunyon', 'Bunion', 'Bunions'].includes(value)) return 'Bunyon';
+        return Object.keys(localizedCategoryValueByBase)
         .find((baseValue) => localizedCategoryValueByBase[baseValue] === value) || value;
+      };
       const categoryValues = new Set([
         ...Object.values(baseCategoryByHandle),
-        ...Object.values(localizedCategoryValueByBase)
+        ...Object.values(localizedCategoryValueByBase),
+        ...(isEnglish ? ['Bunyon', 'Bunion'] : [])
       ]);
       const storageKey = `fb-clean-category-state:${collectionHandle}`;
       let selected = new Set(preservedCategories);
@@ -214,7 +225,11 @@
 
       const sourceUrl = () => {
         const url = new URL({{ routes.all_products_collection_url | json }}, window.location.origin);
-        [...selected].forEach((value) => url.searchParams.append(filterParam, toLocalizedCategoryValue(value)));
+        [...selected].forEach((value) => {
+          toLocalizedCategoryValues(value).forEach((localizedValue) => {
+            url.searchParams.append(filterParam, localizedValue);
+          });
+        });
         return url;
       };
 
