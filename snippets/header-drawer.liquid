@@ -31,7 +31,7 @@
                       class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
                       {% if link.current %}aria-current="page"{% endif %}
                     >
-                      {{ link.title | escape }}
+                      {% render 'fb-header-menu-title', link: link %}
                     </a>
                   </li>
                 {%- endif -%}
@@ -45,7 +45,7 @@
                         id="HeaderDrawer-{{ link.handle }}"
                         class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}"
                       >
-                        {{ link.title | escape }}
+                        {% render 'fb-header-menu-title', link: link %}
                         <span class="svg-wrapper">
                           {{- 'icon-arrow.svg' | inline_asset_content -}}
                         </span>
@@ -63,7 +63,7 @@
                             <span class="svg-wrapper">
                               {{- 'icon-arrow.svg' | inline_asset_content -}}
                             </span>
-                            {{ link.title | escape }}
+                            {% render 'fb-header-menu-title', link: link %}
                           </button>
                           <ul class="menu-drawer__menu list-menu" role="list" tabindex="-1">
                             {%- for childlink in link.links -%}
@@ -145,7 +145,7 @@
                         aria-current="page"
                       {% endif %}
                     >
-                      {{ link.title | escape }}
+                      {% render 'fb-header-menu-title', link: link %}
                     </a>
                   {%- endif -%}
                 </li>

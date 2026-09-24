@@ -1,0 +1,25 @@
+{% comment %}
+  Header navigation titles are managed in Shopify Navigation and are not
+  automatically translated by locale JSON files. Keep Turkish as the source
+  menu and provide the English storefront labels here until corresponding
+  Navigation translations are added in Shopify Admin.
+
+  Usage: {% render 'fb-header-menu-title', link: link %}
+{% endcomment %}
+
+{%- assign fb_menu_title = link.title -%}
+{%- if localization.language.iso_code == 'en' -%}
+  {%- case link.handle -%}
+    {%- when 'tabanliklar' -%}
+      {%- assign fb_menu_title = 'Insoles' -%}
+    {%- when 'destek-coraplari' -%}
+      {%- assign fb_menu_title = 'Support Socks' -%}
+    {%- when 'vucut-destekleri', 'vucut-destek-urunleri' -%}
+      {%- assign fb_menu_title = 'Body Supports' -%}
+    {%- when 'tum-urunler' -%}
+      {%- assign fb_menu_title = 'All Products' -%}
+    {%- when 'dogru-urun-bul' -%}
+      {%- assign fb_menu_title = 'Find the Right Product' -%}
+  {%- endcase -%}
+{%- endif -%}
+{{- fb_menu_title | escape -}}
