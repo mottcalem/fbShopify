@@ -95,7 +95,29 @@
 
       if (!baseCategory && !isCategoryHub) return;
 
-      const categoryValues = Object.values(baseCategoryByHandle);
+      // Shopify, filtre değerlerini yerelleştirilmiş dilde bekler. Temiz URL
+      // koleksiyonları ise ürün metafield'ının ana (Türkçe) değerlerini
+      // saklar. İngilizce vitrinde ana değeri doğrudan göndermek sonuçları
+      // boş döndürdüğü için iki değeri burada birbirine bağlıyoruz.
+      const isEnglish = {{ localization.language.iso_code | json }} === 'en';
+      const localizedCategoryValueByBase = isEnglish ? {
+        'Koşu ve Toparlanma': 'Running and Recovery',
+        'Topuk ve Taban Ağrısı': 'Heel and Sole Pain',
+        'Seyahat': 'Travel',
+        'Diyabet & Hassas Cilt': 'Diabetes & Sensitive Skin',
+        'Ayak Bileği': 'Ankle',
+        'Diz': 'Knee',
+        'El Bileği': 'Wrist',
+        'Dirsek': 'Elbow',
+        'Kol': 'Arm'
+      } : {};
+      const toLocalizedCategoryValue = (value) => localizedCategoryValueByBase[value] || value;
+      const toBaseCategoryValue = (value) => Object.keys(localizedCategoryValueByBase)
+        .find((baseValue) => localizedCategoryValueByBase[baseValue] === value) || value;
+      const categoryValues = new Set([
+        ...Object.values(baseCategoryByHandle),
+        ...Object.values(localizedCategoryValueByBase)
+      ]);
       const storageKey = `fb-clean-category-state:${collectionHandle}`;
       let selected = new Set(preservedCategories);
       let rendering = false;
@@ -151,7 +173,7 @@
       };
 
       const categoryInputs = () => [...document.querySelectorAll(`input[name="${filterParam}"]`)]
-        .filter((input) => categoryValues.includes(valueFor(input)));
+        .filter((input) => categoryValues.has(valueFor(input)));
 
       const loadSelection = () => {
         // Filtreler sayfa oturumları arasında hatırlanmaz. Eski sürümden kalan
@@ -168,7 +190,7 @@
 
       const syncCheckboxes = () => {
         categoryInputs().forEach((input) => {
-          const value = valueFor(input);
+          const value = toBaseCategoryValue(valueFor(input));
           // Destek Çorapları sayfasında da kendi alt kategorileri başlangıçta
           // seçili görünür ve başka bir seçim eklendiğinde korunur.
           const isSelected = selected.has(value);
@@ -179,7 +201,7 @@
 
       const sourceUrl = () => {
         const url = new URL({{ routes.all_products_collection_url | json }}, window.location.origin);
-        [...selected].forEach((value) => url.searchParams.append(filterParam, value));
+        [...selected].forEach((value) => url.searchParams.append(filterParam, toLocalizedCategoryValue(value)));
         return url;
       };
 
@@ -220,14 +242,17 @@
         }
       };
 
-      const labelIn = (text) => categoryValues.find((value) => text.includes(value));
+      const labelIn = (text) => {
+        const matchedValue = [...categoryValues].find((value) => text.includes(value));
+        return matchedValue ? toBaseCategoryValue(matchedValue) : null;
+      };
 
       document.addEventListener('change', (event) => {
         const input = event.target;
         if (!(input instanceof HTMLInputElement) || input.name !== filterParam) return;
 
-        const value = valueFor(input);
-        if (!categoryValues.includes(value)) return;
+        const value = toBaseCategoryValue(valueFor(input));
+        if (!categoryValues.has(valueFor(input))) return;
 
         event.stopImmediatePropagation();
         if (input.checked) selected.add(value);
