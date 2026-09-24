@@ -58,10 +58,10 @@
                         {% endif %}
                       >
                         {%- if fb_menu_desc != blank -%}
-                          <span class="fb-menu-item__title">{{ childlink.title | escape }}</span>
+                          <span class="fb-menu-item__title">{% render 'fb-header-menu-title', link: childlink %}</span>
                           <span class="fb-menu-item__desc">{{ fb_menu_desc }}</span>
                         {%- else -%}
-                          {{ childlink.title | escape }}
+                          {% render 'fb-header-menu-title', link: childlink %}
                         {%- endif -%}
                       </a>
                     {%- else -%}
@@ -70,7 +70,7 @@
                           id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
                           class="header__menu-item link link--text list-menu__item focus-inset caption-large"
                         >
-                          <span>{{ childlink.title | escape }}</span>
+                          <span>{% render 'fb-header-menu-title', link: childlink %}</span>
                           {{- 'icon-caret.svg' | inline_asset_content -}}
                         </summary>
                         <ul
@@ -87,7 +87,7 @@
                                   aria-current="page"
                                 {% endif %}
                               >
-                                {{ grandchildlink.title | escape }}
+                                {% render 'fb-header-menu-title', link: grandchildlink %}
                               </a>
                             </li>
                           {%- endfor -%}

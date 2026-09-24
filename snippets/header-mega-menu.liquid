@@ -44,7 +44,7 @@
                           aria-current="page"
                         {% endif %}
                       >
-                        {{ childlink.title | escape }}
+                        {% render 'fb-header-menu-title', link: childlink %}
                       </a>
                       {%- if childlink.links != blank -%}
                         <ul class="list-unstyled" role="list">
@@ -58,7 +58,7 @@
                                   aria-current="page"
                                 {% endif %}
                               >
-                                {{ grandchildlink.title | escape }}
+                                {% render 'fb-header-menu-title', link: grandchildlink %}
                               </a>
                             </li>
                           {%- endfor -%}

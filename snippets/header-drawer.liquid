@@ -77,7 +77,7 @@
                                       aria-current="page"
                                     {% endif %}
                                   >
-                                    {{ childlink.title | escape }}
+                                    {% render 'fb-header-menu-title', link: childlink %}
                                   </a>
                                 {%- else -%}
                                   <details id="Details-menu-drawer-{{ link.handle }}-{{ childlink.handle }}">
@@ -85,7 +85,7 @@
                                       id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
                                       class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
                                     >
-                                      {{ childlink.title | escape }}
+                                      {% render 'fb-header-menu-title', link: childlink %}
                                       <span class="svg-wrapper">
                                         {{- 'icon-arrow.svg' | inline_asset_content -}}
                                       </span>
@@ -104,7 +104,7 @@
                                         <span class="svg-wrapper">
                                           {{- 'icon-arrow.svg' | inline_asset_content -}}
                                         </span>
-                                        {{ childlink.title | escape }}
+                                        {% render 'fb-header-menu-title', link: childlink %}
                                       </button>
                                       <ul
                                         class="menu-drawer__menu list-menu"
@@ -121,7 +121,7 @@
                                                 aria-current="page"
                                               {% endif %}
                                             >
-                                              {{ grandchildlink.title | escape }}
+                                              {% render 'fb-header-menu-title', link: grandchildlink %}
                                             </a>
                                           </li>
                                         {%- endfor -%}
