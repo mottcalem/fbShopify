@@ -472,6 +472,7 @@
   or filter.param_name == 'filter.p.m.custom.destek_bolgesi'
   or filter.param_name == 'filter.p.m.custom.ozel_i_htiyac'
   or filter.label == 'Spor Dalı' or filter.label == 'Sport'
+  or localization.language.iso_code == 'en' and filter.label == 'Product type'
   or filter.type == 'price_range'
   or filter.param_name == 'filter.v.availability'
 -%}
@@ -1025,7 +1026,7 @@
 
                 {%- for filter in results.filters -%}
                   {%- if enable_filtering -%}
-                    {%- if filter.param_name == 'filter.p.tag' or filter.param_name == 'filter.p.m.custom.birlesik_kategori_filtresi' or filter.label == 'Kategori' or filter.label == 'Category' or filter.param_name == 'filter.p.m.custom.destek_bolgesi' or filter.param_name == 'filter.p.m.custom.ozel_i_htiyac' -%}
+                    {%- if filter.param_name == 'filter.p.tag' or filter.param_name == 'filter.p.m.custom.birlesik_kategori_filtresi' or filter.label == 'Kategori' or filter.label == 'Category' or filter.param_name == 'filter.p.m.custom.destek_bolgesi' or filter.param_name == 'filter.p.m.custom.ozel_i_htiyac' or localization.language.iso_code == 'en' and filter.label == 'Product type' -%}
                       {%- continue -%}
                     {%- endif -%}
                   {%- endif -%}
