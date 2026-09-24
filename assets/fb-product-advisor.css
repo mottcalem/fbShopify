@@ -1942,7 +1942,6 @@
 }
 #fb-product-advisor.has-results .fb-product-advisor__newsletter,
 #fb-product-advisor.is-preparing .fb-product-advisor__newsletter { display: none; }
-#fb-product-advisor .fb-product-advisor__newsletter { flex: 0 0 auto; }
 #fb-product-advisor .fb-product-advisor__newsletter-toggle { display: block; }
 #fb-product-advisor .fb-product-advisor__newsletter-toggle > summary { display: none; }
 #fb-product-advisor .fb-product-advisor__newsletter-content {
@@ -2065,14 +2064,6 @@
   #fb-product-advisor .fb-product-advisor__newsletter-fields button { width: 100%; }
 }
 
-/* The question panel is the only scrollable flex item. A zero flex basis
-   reserves space for the offer bar instead of pushing it below the modal. */
-@media screen and (max-width: 900px) {
-  #fb-product-advisor .fb-product-advisor__body { flex: 1 1 0 !important; }
-}
-@media screen and (min-width: 901px) {
-  #fb-product-advisor .fb-product-advisor__body { flex: 1 1 0; }
-}
 .fb-product-advisor__cart-status {
   margin: 12px 0 6px;
   font-size: 13px;

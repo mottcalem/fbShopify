@@ -465,7 +465,7 @@
 </p>
 
 <section class="fb-product-advisor__newsletter" data-advisor-newsletter>
-  <details class="fb-product-advisor__newsletter-toggle">
+  <details class="fb-product-advisor__newsletter-toggle" open>
     <summary>
       <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
       <strong>{% if localization.language.iso_code == 'en' %}Show my 5% discount{% else %}%5 indirim fırsatını göster{% endif %}</strong>
@@ -515,6 +515,11 @@
       {% endform %}
     </div>
   </details>
+  <script>
+    if (window.matchMedia('(max-width: 700px)').matches) {
+      document.currentScript.previousElementSibling.removeAttribute('open');
+    }
+  </script>
 </section>
 
 <div class="fb-product-advisor__footer">
