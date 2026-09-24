@@ -465,21 +465,13 @@
 </p>
 
 <section class="fb-product-advisor__newsletter" data-advisor-newsletter>
-  <details class="fb-product-advisor__newsletter-toggle" open>
-    <summary>
-      <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
-      <strong>{% if localization.language.iso_code == 'en' %}Show my 5% discount{% else %}%5 indirim fırsatını göster{% endif %}</strong>
-      <span class="fb-product-advisor__newsletter-toggle-icon" aria-hidden="true"></span>
-    </summary>
+  <div class="fb-product-advisor__newsletter-copy">
+    <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
+    <h3>{% if localization.language.iso_code == 'en' %}Subscribe for free and get 5% off{% else %}%5 indirim için ücretsiz abone olun{% endif %}</h3>
+    <p>{% if localization.language.iso_code == 'en' %}Leave your email to get your discount code right away.{% else %}E-posta adresini bırak, indirim kodunu hemen al.{% endif %}</p>
+  </div>
 
-    <div class="fb-product-advisor__newsletter-content">
-      <div class="fb-product-advisor__newsletter-copy">
-        <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
-        <h3>{% if localization.language.iso_code == 'en' %}Subscribe for free and get 5% off{% else %}%5 indirim için ücretsiz abone olun{% endif %}</h3>
-        <p>{% if localization.language.iso_code == 'en' %}Leave your email to get your discount code right away.{% else %}E-posta adresini bırak, indirim kodunu hemen al.{% endif %}</p>
-      </div>
-
-      {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
+  {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
     {% if form.posted_successfully? %}<span data-advisor-newsletter-posted hidden></span>{% endif %}
     <input type="hidden" name="contact[tags]" value="newsletter,wizard-yuzde-5">
     <div class="fb-product-advisor__newsletter-fields" data-advisor-newsletter-fields>
@@ -512,14 +504,7 @@
       <div><strong data-advisor-newsletter-code>HOSGELDIN5</strong><button type="button" data-advisor-newsletter-copy>{% if localization.language.iso_code == 'en' %}Copy code{% else %}Kodu kopyala{% endif %}</button></div>
       <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Apply discount{% else %}İndirimi uygula{% endif %}</a>
     </div>
-      {% endform %}
-    </div>
-  </details>
-  <script>
-    if (window.matchMedia('(max-width: 700px)').matches) {
-      document.currentScript.previousElementSibling.removeAttribute('open');
-    }
-  </script>
+  {% endform %}
 </section>
 
 <div class="fb-product-advisor__footer">
