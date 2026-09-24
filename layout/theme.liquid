@@ -567,6 +567,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script>
   (function () {
+    // Kategori metafield değerleri İngilizce vitrinde Shopify tarafından
+    // yerelleştirilmiş haliyle filtrelenir. Aşağıdaki menü grupları ise
+    // ürünlerin ana (Türkçe) değerlerini kullanır; URL üretilirken eşleştir.
+    const isEnglishStorefront = {{ localization.language.iso_code | json }} === 'en';
+    const localizedCategoryValueByBase = isEnglishStorefront ? {
+      'Koşu ve Toparlanma': 'Running and Recovery',
+      'Topuk ve Taban Ağrısı': 'Heel and Sole Pain',
+      'Seyahat': 'Travel',
+      'Diyabet & Hassas Cilt': 'Diabetes & Sensitive Skin',
+      'Ayak Bileği': 'Ankle',
+      'Diz': 'Knee',
+      'El Bileği': 'Wrist',
+      'Dirsek': 'Elbow',
+      'Kol': 'Arm'
+    } : {};
+    const localizedCategoryValue = function (value) {
+      return localizedCategoryValueByBase[value] || value;
+    };
+
     const categories = {
   /* Ana gruplar */
   tb: {
@@ -595,6 +614,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     values: [
       'Ayak Bileği',
       'Diz',
+      'Quadriceps',
       'El Bileği',
       'Dirsek',
       'Kol'
@@ -686,7 +706,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       category.values.forEach(function (value) {
         url.searchParams.append(
           category.filter,
-          value
+          localizedCategoryValue(value)
         );
       });
 
