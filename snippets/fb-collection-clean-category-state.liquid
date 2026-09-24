@@ -175,6 +175,18 @@
       const categoryInputs = () => [...document.querySelectorAll(`input[name="${filterParam}"]`)]
         .filter((input) => categoryValues.has(valueFor(input)));
 
+      // Dawn filtreleri `input` olayında URL'ye parametre ekler. Kategori
+      // sayfalarında sonuçları kendimiz /collections/all'dan aldığımız için
+      // bu olayı yakalayıp standart URL güncellemesini daha gerçekleşmeden
+      // durduruyoruz. Ardından `change` dinleyicisi aşağıda seçimi işler.
+      document.addEventListener('input', (event) => {
+        const input = event.target;
+        if (!(input instanceof HTMLInputElement) || input.name !== filterParam) return;
+        if (!categoryValues.has(valueFor(input))) return;
+
+        event.stopImmediatePropagation();
+      }, true);
+
       const loadSelection = () => {
         // Filtreler sayfa oturumları arasında hatırlanmaz. Eski sürümden kalan
         // kayıt varsa da ilk açılışta temizlenir.
@@ -291,6 +303,11 @@
       };
 
       loadSelection();
+      // Eski ya da doğrudan açılmış parametreli bağlantıları SEO koleksiyon
+      // adresine döndür. Ürün sonucu alttaki fetch işlemiyle korunur.
+      if (new URLSearchParams(window.location.search).has(filterParam)) {
+        window.history.replaceState(window.history.state, '', window.location.pathname);
+      }
       syncAfterThemeRender();
       window.addEventListener('load', syncAfterThemeRender, { once: true });
       window.addEventListener('pageshow', (event) => {
