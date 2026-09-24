@@ -117,7 +117,7 @@
         // Shopify, daha önce kaydedilmiş İngilizce Bunyon değerlerini ayrı
         // indeksleyebiliyor. Ürünlerin aynı kategori altında kalması için
         // geçerli ve eski eşdeğerleri birlikte sorgulanır (OR).
-        if (isEnglish && value === 'Bunyon') return ['Bunyon', 'Bunion', 'Bunions'];
+        if (isEnglish && value === 'Bunyon') return ['Bunyon', 'Bunion'];
         return [toLocalizedCategoryValue(value)];
       };
       const toBaseCategoryValue = (value) => {

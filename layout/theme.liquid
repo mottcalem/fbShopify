@@ -590,7 +590,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       // İngilizce mağazada eski Bunyon metafield çevirileri de aynı
       // kategoriye aittir; Shopify bunları OR olarak değerlendirebilir.
       if (isEnglishStorefront && value === 'Bunyon') {
-        return ['Bunyon', 'Bunion', 'Bunions'];
+        return ['Bunyon', 'Bunion'];
       }
       return [localizedCategoryValue(value)];
     };
