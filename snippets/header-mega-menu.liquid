@@ -21,7 +21,7 @@
                     class="header__active-menu-item"
                   {% endif %}
                 >
-                  {%- render 'fb-header-menu-title', link: link -%}
+                  {{- link.title | escape -}}
                 </span>
                 {{- 'icon-caret.svg' | inline_asset_content -}}
               </summary>
@@ -44,7 +44,7 @@
                           aria-current="page"
                         {% endif %}
                       >
-                        {% render 'fb-header-menu-title', link: childlink %}
+                        {{ childlink.title | escape }}
                       </a>
                       {%- if childlink.links != blank -%}
                         <ul class="list-unstyled" role="list">
@@ -58,7 +58,7 @@
                                   aria-current="page"
                                 {% endif %}
                               >
-                                {% render 'fb-header-menu-title', link: grandchildlink %}
+                                {{ grandchildlink.title | escape }}
                               </a>
                             </li>
                           {%- endfor -%}
@@ -84,7 +84,7 @@
                 class="header__active-menu-item"
               {% endif %}
             >
-              {%- render 'fb-header-menu-title', link: link -%}
+              {{- link.title | escape -}}
             </span>
           </a>
         {%- endif -%}
