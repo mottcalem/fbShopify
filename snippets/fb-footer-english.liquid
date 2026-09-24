@@ -1,0 +1,50 @@
+{%- if localization.language.iso_code == 'en' -%}
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var footer = document.querySelector('.fb-footer');
+      if (!footer) return;
+
+      var translations = {
+        "FOOTBALANCE'A ÖZEL FIRSAT": 'EXCLUSIVE FOOTBALANCE OFFER',
+        '%5 indirim için ücretsiz abone olun': 'Subscribe for free and get 5% off',
+        'E-posta listemize katılın, indirim kodunuzu hemen alın.': 'Join our email list and get your discount code right away.',
+        'E-posta adresiniz': 'Your email address',
+        '%5 indirimimi al': 'Get my 5% discount',
+        'Kampanya ve fırsatlardan e-posta ile haberdar olmayı kabul ediyorum.': 'I agree to receive emails about promotions and offers.',
+        'Gizlilik Politikası': 'Privacy Policy',
+        'Kurumsal': 'Company',
+        'Hesabım': 'My Account',
+        'Hakkımızda': 'About Us',
+        'Anasayfa': 'Home',
+        'Giriş Yap': 'Sign in',
+        'Kayıt Ol': 'Create account',
+        'İade Politikası': 'Return policy',
+        'Bize ulaşın': 'Contact us',
+        'Mesafeli Satış Sözleşmesi': 'Distance Sales Agreement',
+        'Tüm hakları saklıdır.': 'All rights reserved.'
+      };
+
+      footer.querySelectorAll('h2, h3, p, a, button, label, input[placeholder]').forEach(function (element) {
+        if (element.matches('input[placeholder]')) {
+          var placeholder = element.getAttribute('placeholder');
+          if (translations[placeholder]) element.setAttribute('placeholder', translations[placeholder]);
+          return;
+        }
+        var value = element.textContent.trim();
+        if (translations[value]) element.textContent = translations[value];
+      });
+
+      var brand = footer.querySelector('.fb-footer__brand p');
+      if (brand) brand.textContent = 'Medical-grade compression and support products built with biomechanical expertise. Foot health, athletic performance and everyday comfort.';
+      footer.querySelectorAll('.fb-footer__newsletter-consent span').forEach(function (consent) {
+        Array.prototype.forEach.call(consent.childNodes, function (node) {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.indexOf('Kampanya ve fırsatlardan') !== -1) {
+            node.textContent = 'I agree to receive emails about promotions and offers. ';
+          }
+        });
+      });
+      var copyright = footer.querySelector('.fb-footer__copyright');
+      if (copyright) copyright.textContent = copyright.textContent.replace('FootBalance Türkiye. Tüm hakları saklıdır.', 'FootBalance Türkiye. All rights reserved.');
+    });
+  </script>
+{%- endif -%}
