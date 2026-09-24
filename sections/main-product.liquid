@@ -897,25 +897,6 @@
       </div>
     </div>
   </div>
-{%- when 'fb_shipping_returns' -%}
-
-  
-  <div class="fb-product-benefits" {{ block.shopify_attributes }}>
-    <div class="fb-product-benefit">
-      <div class="fb-product-benefit__icon">↶</div>
-      <div class="fb-product-benefit__text">
-        {{ block.settings.return_text }}
-      </div>
-    </div>
-
-    <div class="fb-product-benefit">
-      <div class="fb-product-benefit__icon">🚚</div>
-      <div class="fb-product-benefit__text">
-        {{ block.settings.shipping_text }}
-      </div>
-    </div>
-  </div>
-
                 {%- when 'icon-with-text' -%}
                   {% render 'icon-with-text', block: block %}
               {%- endcase -%}
