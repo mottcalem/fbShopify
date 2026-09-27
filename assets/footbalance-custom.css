@@ -1999,6 +1999,53 @@
   --fb-font-scale: 0.94;
 }
 
+/* Footer abonelik bandı: kısa, tek odaklı ve footer bağlantılarından daha az
+   yer kaplayan bir düzen. Onay kutusu ve indirim akışı korunur. */
+.fb-footer__newsletter {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+  grid-template-columns: minmax(28rem, .8fr) minmax(42rem, 1.2fr) !important;
+  gap: 4rem !important;
+}
+
+.fb-footer__newsletter-kicker {
+  margin-bottom: .4rem !important;
+  font-size: 1.1rem !important;
+}
+
+.fb-footer__newsletter-copy h2 {
+  font-size: clamp(2.2rem, 1.7vw, 2.6rem) !important;
+}
+
+.fb-footer__newsletter-copy p {
+  display: none;
+}
+
+.fb-footer__newsletter-fields > input,
+.fb-footer__newsletter-fields > button {
+  min-height: 4.4rem !important;
+}
+
+.fb-footer__newsletter-consent {
+  margin-top: .6rem !important;
+  font-size: 1rem !important;
+  line-height: 1.3 !important;
+}
+
+@media screen and (max-width: 768px) {
+  .fb-footer__newsletter {
+    gap: 1.2rem !important;
+    padding-top: 2.2rem !important;
+    padding-bottom: 2.2rem !important;
+  }
+
+  .fb-footer__newsletter-copy p {
+    display: block;
+    margin-top: .5rem !important;
+    font-size: 1.2rem !important;
+  }
+}
+
 html {
   font-size: calc(var(--font-body-scale) * var(--fb-font-scale) * 62.5%);
 }
