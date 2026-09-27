@@ -1297,7 +1297,9 @@
   }
 
   body:has(#MainContent > [id$="__cart-footer"]) #MainContent .fb-cartbundle.page-width {
-    max-width: none;
+    /* Bandın sepet + özet için ayrılan tüm satıra yayılmasını engelle. */
+    max-width: 82rem;
+    margin-right: auto;
   }
 
   /* Dawn footer'ı kendi grid sütununa itiyordu — artık dış grid hallediyor */
@@ -1752,17 +1754,6 @@
   border: 0.1rem solid rgba(248, 121, 0, 0.28);
   border-radius: 2rem;
   background-color: rgba(248, 121, 0, 0.05);
-}
-
-/* Öneri bandı, sepet + sipariş özeti için ayrılan tüm satırı kaplamaz.
-   Böylece tek ya da az sayıda tamamlayıcı ürün olduğunda sağda büyük, boş
-   bir alan oluşmaz; daha fazla üründe kartlar yine rahatça iki sütuna geçer. */
-@media screen and (min-width: 990px) {
-  .fb-cartbundle {
-    width: 100%;
-    max-width: 82rem;
-    margin-right: auto;
-  }
 }
 
 /* Tek sütunlu düzende bandın `padding`i `.page-width`inkini eziyor, dolayısıyla
