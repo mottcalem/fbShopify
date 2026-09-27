@@ -6,6 +6,7 @@
 
       var translations = {
         "FOOTBALANCE'A ÖZEL FIRSAT": 'EXCLUSIVE FOOTBALANCE OFFER',
+        '%5 indirim için ücretsiz abone olun': 'Subscribe for free and get 5% off',
         'Subscribe for free and get a 5% discount!': 'Subscribe for free and get 5% off',
         'E-posta listemize katılın, indirim kodunuzu hemen alın.': 'Join our email list and get your discount code right away.',
         'E-posta adresiniz': 'Your email address',
@@ -24,7 +25,7 @@
         'Tüm hakları saklıdır.': 'All rights reserved.'
       };
 
-      footer.querySelectorAll('h2, h3, p, a, button, label, input[placeholder]').forEach(function (element) {
+      footer.querySelectorAll('h2, h3, p, span, a, button, label, input[placeholder]').forEach(function (element) {
         if (element.matches('input[placeholder]')) {
           var placeholder = element.getAttribute('placeholder');
           if (translations[placeholder]) element.setAttribute('placeholder', translations[placeholder]);
