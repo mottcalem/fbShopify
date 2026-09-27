@@ -20,6 +20,13 @@ body:has(.fb-product-advisor:not([hidden])) #supsis-actions {
   z-index: 2147483646 !important;
 }
 
+body.fb-advisor-open #ls-openButton,
+body.fb-advisor-open #ls-trigger,
+body.fb-advisor-open #ls-container,
+body.fb-advisor-open #supsis-actions {
+  display: none !important;
+}
+
 .fb-product-advisor__overlay {
   position: absolute;
   inset: 0;

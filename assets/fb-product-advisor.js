@@ -129,6 +129,24 @@ const detailProgress = advisor.querySelector(
   let currentStep = 0;
   let selectedPurpose = null;
   let selectedAreas = [];
+  const supsisSelector = '#ls-openButton, #ls-trigger, #ls-container, #supsis-actions';
+
+  function setSupsisVisibility(isWizardOpen) {
+    document.body.classList.toggle('fb-advisor-open', isWizardOpen);
+    document.querySelectorAll(supsisSelector).forEach(function (element) {
+      if (isWizardOpen) {
+        element.style.setProperty('display', 'none', 'important');
+      } else {
+        element.style.removeProperty('display');
+      }
+    });
+  }
+
+  /* Supsis geç yüklense veya kendi görünürlüğünü yenilese bile, wizard açıkken
+     düğmenin tekrar "Devam" butonunun üstüne gelmesini engelle. */
+  new MutationObserver(function () {
+    if (!advisor.hidden) setSupsisVisibility(true);
+  }).observe(document.body, { childList: true, subtree: true });
   let selectedUsageTime = null;
   let selectedActivity = null;
 
@@ -297,6 +315,7 @@ const detailProgress = advisor.querySelector(
       previousBodyOverflow = document.body.style.overflow;
       advisor.classList.toggle('has-shopify-preview-bar', Boolean(document.getElementById('PBarNextFrame')));
       advisor.hidden = false;
+      setSupsisVisibility(true);
       document.body.style.overflow = 'hidden';
       if (!isShowingResults) goToStep(currentStep);
       if (closeButton) closeButton.focus({ preventScroll: true });
@@ -306,6 +325,7 @@ const detailProgress = advisor.querySelector(
       clearTimeout(purposeTimer);
       if (advisor.dataset.preparing === 'true') restartAdvisor();
       advisor.hidden = true;
+      setSupsisVisibility(false);
       document.body.style.overflow = previousBodyOverflow;
       if (opener && opener.isConnected) opener.focus({ preventScroll: true });
     }
