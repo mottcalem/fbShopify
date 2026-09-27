@@ -2046,6 +2046,50 @@
   }
 }
 
+/* Abonelik formu marka açıklamasının altında yer alır. Bu kapsayıcı içinde
+   kendi sütununa sığar; mobilde de yatay taşma olmadan tek sütuna iner. */
+.fb-footer__brand .fb-footer__newsletter {
+  width: 100% !important;
+  max-width: 36.5rem !important;
+  display: block !important;
+  margin: 2.4rem 0 0 !important;
+  padding: 1.8rem 0 0 !important;
+  border-top: .1rem solid rgba(255, 255, 255, .14);
+  border-bottom: 0;
+}
+
+.fb-footer__brand .fb-footer__newsletter-copy p {
+  display: none;
+}
+
+.fb-footer__brand .fb-footer__newsletter-copy h2 {
+  font-size: 2rem !important;
+}
+
+.fb-footer__brand .fb-footer__newsletter-form {
+  margin-top: 1.2rem;
+}
+
+.fb-footer__brand .fb-footer__newsletter-fields {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+@media screen and (max-width: 520px) {
+  .fb-footer__brand .fb-footer__newsletter {
+    max-width: none !important;
+    margin-top: 2rem !important;
+  }
+
+  .fb-footer__brand .fb-footer__newsletter-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fb-footer__brand .fb-footer__newsletter-fields > input,
+  .fb-footer__brand .fb-footer__newsletter-fields > button {
+    width: 100%;
+  }
+}
+
 html {
   font-size: calc(var(--font-body-scale) * var(--fb-font-scale) * 62.5%);
 }
