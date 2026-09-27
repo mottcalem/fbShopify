@@ -1298,7 +1298,9 @@
 
   body:has(#MainContent > [id$="__cart-footer"]) #MainContent .fb-cartbundle.page-width {
     /* Bandın sepet + özet için ayrılan tüm satıra yayılmasını engelle. */
+    width: min(100%, 82rem);
     max-width: 82rem;
+    justify-self: start;
     margin-left: 0;
     margin-right: auto;
   }
