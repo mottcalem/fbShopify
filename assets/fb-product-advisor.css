@@ -7,8 +7,17 @@
 .fb-product-advisor {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  z-index: 2147483647;
   background: rgba(0, 0, 0, 0.65);
+}
+
+/* Supsis'in yüzen sohbet düğmesi wizard'ın alt katmanında kalmalı.
+   Aksi halde mobilde "Devam" düğmesinin üzerine geliyor. */
+body:has(.fb-product-advisor:not([hidden])) #ls-openButton,
+body:has(.fb-product-advisor:not([hidden])) #ls-trigger,
+body:has(.fb-product-advisor:not([hidden])) #ls-container,
+body:has(.fb-product-advisor:not([hidden])) #supsis-actions {
+  z-index: 2147483646 !important;
 }
 
 .fb-product-advisor__overlay {
