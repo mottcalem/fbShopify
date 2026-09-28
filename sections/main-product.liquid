@@ -124,19 +124,26 @@
   <button
     type="button"
     class="fb-product-back__button"
-    onclick='
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.href = {{ routes.all_products_collection_url | json }};
-      }
-    '
+    data-fb-back-fallback="{{ routes.all_products_collection_url }}"
     aria-label="{% if localization.language.iso_code == 'en' %}Return to previous page{% else %}Önceki sayfaya geri dön{% endif %}"
   >
     <span class="fb-product-back__arrow" aria-hidden="true">←</span>
     <span>{% if localization.language.iso_code == 'en' %}Go back{% else %}Geri dön{% endif %}</span>
   </button>
 </div>
+
+<script>
+  document.addEventListener('click', function (event) {
+    const button = event.target.closest('.fb-product-back__button');
+    if (!button) return;
+
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.assign(button.dataset.fbBackFallback);
+    }
+  });
+</script>
 
 <style>
   .fb-product-back {
