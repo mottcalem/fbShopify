@@ -124,13 +124,13 @@
   <button
     type="button"
     class="fb-product-back__button"
-    onclick="
+    onclick='
       if (window.history.length > 1) {
         window.history.back();
       } else {
         window.location.href = {{ routes.all_products_collection_url | json }};
       }
-    "
+    '
     aria-label="{% if localization.language.iso_code == 'en' %}Return to previous page{% else %}Önceki sayfaya geri dön{% endif %}"
   >
     <span class="fb-product-back__arrow" aria-hidden="true">←</span>
