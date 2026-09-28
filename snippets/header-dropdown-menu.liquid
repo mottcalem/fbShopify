@@ -17,9 +17,8 @@
                 class="header__menu-item list-menu__item link focus-inset"
               >
                 <span
-                  {%- if link.child_active %}
-                    class="header__active-menu-item"
-                  {% endif %}
+                  class="header__menu-link{% if link.child_active %} header__active-menu-item{% endif %}"
+                  data-menu-url="{{ link.url }}"
                 >
                   {{- link.title | escape -}}
                 </span>

@@ -520,6 +520,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         let closeTimer;
         const summary = menu.querySelector(':scope > summary');
 
+        /* Başlık metni kendi koleksiyon bağlantısına gider; caret menüyü açar. */
+        if (summary) {
+          summary.addEventListener('click', function (event) {
+            const menuLink = event.target.closest('.header__menu-link[data-menu-url]');
+            if (!menuLink || !menu.contains(menuLink)) return;
+
+            event.preventDefault();
+            window.location.assign(menuLink.dataset.menuUrl);
+          });
+        }
+
         menu.addEventListener('mouseenter', function () {
           if (!desktopHover.matches) return;
 
