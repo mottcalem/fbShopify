@@ -16,6 +16,14 @@ if (!customElements.get('localization-form')) {
           searchIcon: this.querySelector('.country-filter__search-icon'),
           liveRegion: this.querySelector('#sr-country-search-results'),
         };
+
+        // FootBalance header/footer uses direct language flags instead of a disclosure.
+        // These links still submit the standard Shopify localization form.
+        if (this.querySelector('.fb-language-flags')) {
+          this.querySelectorAll('a').forEach((item) => item.addEventListener('click', this.onItemClick.bind(this)));
+          return;
+        }
+
         this.addEventListener('keyup', this.onContainerKeyUp.bind(this));
         this.addEventListener('keydown', this.onContainerKeyDown.bind(this));
         this.addEventListener('focusout', this.closeSelector.bind(this));

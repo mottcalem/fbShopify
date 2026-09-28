@@ -5,57 +5,26 @@
     - localPosition: pass in the position in which the form is coming up to create specific IDs
 {%- endcomment -%}
 
-{%- assign fb_current_language_flag = '🌐' -%}
-{%- case localization.language.iso_code -%}
-  {%- when 'tr' -%}{%- assign fb_current_language_flag = '🇹🇷' -%}
-  {%- when 'en' -%}{%- assign fb_current_language_flag = '🇬🇧' -%}
-{%- endcase -%}
-
-<div class="disclosure">
-  <button
-    type="button"
-    class="disclosure__button localization-form__select localization-selector link link--text caption-large"
-    aria-expanded="false"
-    aria-controls="{{ localPosition }}List"
-    aria-describedby="{{ localPosition }}Label"
-  >
-    <span class="fb-language-option__label"><span class="fb-language-option__flag" aria-hidden="true">{{ fb_current_language_flag }}</span>{{ localization.language.endonym_name | capitalize }}</span>
-    {{ 'icon-caret.svg' | inline_asset_content }}
-  </button>
-  <div class="disclosure__list-wrapper language-selector" hidden>
-    <ul id="{{ localPosition }}List" role="list" class="disclosure__list list-unstyled">
-      {%- for language in localization.available_languages -%}
-        {%- assign fb_language_flag = '🌐' -%}
-        {%- case language.iso_code -%}
-          {%- when 'tr' -%}{%- assign fb_language_flag = '🇹🇷' -%}
-          {%- when 'en' -%}{%- assign fb_language_flag = '🇬🇧' -%}
-        {%- endcase -%}
-        <li class="disclosure__item" tabindex="-1">
-          <a
-            class="link link--text disclosure__link caption-large focus-inset"
-            href="#"
-            hreflang="{{ language.iso_code }}"
-            lang="{{ language.iso_code }}"
-            {% if language.iso_code == localization.language.iso_code %}
-              aria-current="true"
-            {% endif %}
-            data-value="{{ language.iso_code }}"
-          >
-            <span
-              {% if language.iso_code != localization.language.iso_code %}
-                class="visibility-hidden"
-              {% endif %}
-            >
-              {{- 'icon-checkmark.svg' | inline_asset_content -}}
-            </span>
-            <span class="fb-language-option__label">
-              <span class="fb-language-option__flag" aria-hidden="true">{{ fb_language_flag }}</span>
-              {{ language.endonym_name | capitalize }}
-            </span>
-          </a>
-        </li>
-      {%- endfor -%}
-    </ul>
-  </div>
+<div class="fb-language-flags" role="group" aria-labelledby="{{ localPosition }}Label">
+  {%- for language in localization.available_languages -%}
+    {%- assign fb_language_flag = '🌐' -%}
+    {%- case language.iso_code -%}
+      {%- when 'tr' -%}{%- assign fb_language_flag = '🇹🇷' -%}
+      {%- when 'en' -%}{%- assign fb_language_flag = '🇬🇧' -%}
+    {%- endcase -%}
+    <a
+      class="fb-language-flags__link focus-inset{% if language.iso_code == localization.language.iso_code %} is-active{% endif %}"
+      href="#"
+      hreflang="{{ language.iso_code }}"
+      lang="{{ language.iso_code }}"
+      {% if language.iso_code == localization.language.iso_code %}
+        aria-current="true"
+      {% endif %}
+      aria-label="{{ language.endonym_name | capitalize }}"
+      data-value="{{ language.iso_code }}"
+    >
+      <span aria-hidden="true">{{ fb_language_flag }}</span>
+    </a>
+  {%- endfor -%}
 </div>
 <input type="hidden" name="locale_code" value="{{ localization.language.iso_code }}">

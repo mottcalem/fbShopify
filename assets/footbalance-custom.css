@@ -2659,15 +2659,39 @@ body,
 }
 
 /* Başka kategoride kaldığı için 0 görünen seçenekler tıklanabilir */
-.fb-language-option__label {
+.fb-language-flags {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.8rem;
 }
 
-.fb-language-option__flag {
-  font-size: 1.2em;
+.fb-language-flags__link {
+  display: inline-flex;
+  width: 3.2rem;
+  height: 3.2rem;
+  align-items: center;
+  justify-content: center;
+  border: 0.1rem solid transparent;
+  border-radius: 50%;
+  color: inherit;
+  font-size: 2rem;
   line-height: 1;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.fb-language-flags__link:hover {
+  background: rgba(11, 43, 69, 0.06);
+  transform: translateY(-0.1rem);
+}
+
+.fb-language-flags__link.is-active {
+  border-color: #ff7100;
+}
+
+.fb-language-flags__link:focus-visible {
+  outline: 0.2rem solid #ff7100;
+  outline-offset: 0.2rem;
 }
 
 .fb-category-filter__item label:has(input:disabled) {
