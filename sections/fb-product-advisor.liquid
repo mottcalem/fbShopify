@@ -502,7 +502,7 @@
     <div class="fb-product-advisor__newsletter-success" data-advisor-newsletter-success hidden>
       <span>{% if localization.language.iso_code == 'en' %}Thank you! Your 5% discount code:{% else %}Teşekkürler! %5 indirim kodunuz:{% endif %}</span>
       <div><strong data-advisor-newsletter-code>HOSGELDIN5</strong><button type="button" data-advisor-newsletter-copy>{% if localization.language.iso_code == 'en' %}Copy code{% else %}Kodu kopyala{% endif %}</button></div>
-      <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Apply discount{% else %}İndirimi uygula{% endif %}</a>
+      <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Apply discount{% else %}Hemen Alışverişe Başla!{% endif %}</a>
     </div>
   {% endform %}
 </section>
