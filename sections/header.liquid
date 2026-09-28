@@ -66,6 +66,15 @@
     cursor: pointer;
   }
 
+  /* Açılır menü header akışını büyütmemeli; liste başlığın altında katmanlanır. */
+  .header__inline-menu header-menu > details {
+    position: relative;
+  }
+
+  .header__inline-menu .list-menu--disclosure {
+    position: absolute;
+  }
+
   .list-menu__item--link {
     text-decoration: none;
     padding-bottom: 1rem;
