@@ -547,14 +547,14 @@
         "taxes_not_included": "KDV Dahil Değil"
       },
       "order_summary": {
-        "total_savings": "Toplam kazancınız",
+        "total_savings": "​",
         "vat_label_html": "  "
       }
     }
   },
   "customer_accounts": {
     "order_details": {
-      "total_savings": "Toplam kazancınız"
+      "total_savings": "​"
     }
   }
 }
