@@ -2659,6 +2659,17 @@ body,
 }
 
 /* Başka kategoride kaldığı için 0 görünen seçenekler tıklanabilir */
+.fb-language-option__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.fb-language-option__flag {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
 .fb-category-filter__item label:has(input:disabled) {
   opacity: 1;
   cursor: pointer;
