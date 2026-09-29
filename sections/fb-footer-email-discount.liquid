@@ -46,7 +46,7 @@
                   class="fb-footer-email__apply"
                   href="/discount/{{ fb_discount_code | url_encode }}?redirect={{ routes.all_products_collection_url | url_encode }}"
                 >
-                  {% if localization.language.iso_code == 'en' %}Apply discount{% else %}Hemen Alışverişe Başla{% endif %}
+                  {% if localization.language.iso_code == 'en' %}Start Shopping Now{% else %}Hemen Alışverişe Başla{% endif %}
                 </a>
               {%- endif -%}
             </div>
