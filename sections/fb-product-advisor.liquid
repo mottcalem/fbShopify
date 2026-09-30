@@ -492,7 +492,7 @@
         spellcheck="false"
         required
       >
-      <button type="button" data-advisor-newsletter-submit>{% if localization.language.iso_code == 'en' %}Get my 5% discount{% else %}%5 indirimimi al{% endif %}</button>
+      <button type="submit" data-advisor-newsletter-submit>{% if localization.language.iso_code == 'en' %}Get my 5% discount{% else %}%5 indirimimi al{% endif %}</button>
     </div>
     <label class="fb-product-advisor__newsletter-consent" data-advisor-newsletter-fields>
       <input type="checkbox" required>
@@ -510,6 +510,7 @@
       <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Start Shopping Now{% else %}Hemen Alışverişe Başla{% endif %}</a>
     </div>
   {% endform %}
+  <iframe name="FbAdvisorNewsletterTarget" data-advisor-newsletter-target hidden title="Newsletter submission"></iframe>
 </section>
 
 <div class="fb-product-advisor__footer">
@@ -602,44 +603,27 @@
       } catch (error) {}
     });
 
-    /* Shopify müşteri formunu sayfadan ayrılmadan gönder. Başarılı dönüşte
-       wizard açık kalır ve indirim kodu aynı panelde gösterilir. */
-    async function submitNewsletter(event) {
-      if (event) event.preventDefault();
-      if (!form.reportValidity()) return;
-
-      var submitButton = form.querySelector('[data-advisor-newsletter-submit]');
-      var errorBox = advisor.querySelector('[data-advisor-newsletter-error]');
-      if (submitButton) submitButton.disabled = true;
-      if (errorBox) errorBox.hidden = true;
-
-      try {
-        var response = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          credentials: 'same-origin',
-          headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        });
-        var completed = response.ok && response.url.indexOf('customer_posted=true') !== -1;
-        if (!completed) throw new Error('newsletter-subscription-failed');
-
-        setNewsletterOpen(true);
-        showNewsletterSuccess();
-      } catch (error) {
-        if (errorBox) {
-          errorBox.textContent = {% if localization.language.iso_code == 'en' %}'Subscription could not be completed. Please try again.'{% else %}'Kayıt tamamlanmadı. Lütfen tekrar deneyin.'{% endif %};
-          errorBox.hidden = false;
-        }
-      } finally {
-        if (submitButton) submitButton.disabled = false;
-      }
-    }
-
-    /* Native submit yerine yalnızca bu wizard içi işlem çalışır; böylece
-       Shopify'ın başarı yönlendirmesi wizard'ı kapatamaz. */
-    form.addEventListener('submit', submitNewsletter);
+    /* Form, Shopify'a normal olarak gider; yanıt görünmez iframe'e yüklendiği
+       için wizard ve kullanıcının seçtiği adımlar sayfada kalır. */
+    var newsletterFrame = advisor.querySelector('[data-advisor-newsletter-target]');
     var newsletterSubmit = form.querySelector('[data-advisor-newsletter-submit]');
-    if (newsletterSubmit) newsletterSubmit.addEventListener('click', submitNewsletter);
+    var newsletterSubmissionPending = false;
+    form.target = 'FbAdvisorNewsletterTarget';
+    form.addEventListener('submit', function (event) {
+      if (!form.reportValidity()) {
+        event.preventDefault();
+        return;
+      }
+      newsletterSubmissionPending = true;
+      if (newsletterSubmit) newsletterSubmit.disabled = true;
+    });
+    if (newsletterFrame) newsletterFrame.addEventListener('load', function () {
+      if (!newsletterSubmissionPending) return;
+      newsletterSubmissionPending = false;
+      if (newsletterSubmit) newsletterSubmit.disabled = false;
+      setNewsletterOpen(true);
+      showNewsletterSuccess();
+    });
 
     window.addEventListener('load', function () {
       var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
