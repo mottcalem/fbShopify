@@ -492,7 +492,7 @@
         spellcheck="false"
         required
       >
-      <button type="submit">{% if localization.language.iso_code == 'en' %}Get my 5% discount{% else %}%5 indirimimi al{% endif %}</button>
+      <button type="button" data-advisor-newsletter-submit>{% if localization.language.iso_code == 'en' %}Get my 5% discount{% else %}%5 indirimimi al{% endif %}</button>
     </div>
     <label class="fb-product-advisor__newsletter-consent" data-advisor-newsletter-fields>
       <input type="checkbox" required>
@@ -604,11 +604,11 @@
 
     /* Shopify müşteri formunu sayfadan ayrılmadan gönder. Başarılı dönüşte
        wizard açık kalır ve indirim kodu aynı panelde gösterilir. */
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
+    async function submitNewsletter(event) {
+      if (event) event.preventDefault();
       if (!form.reportValidity()) return;
 
-      var submitButton = form.querySelector('button[type="submit"]');
+      var submitButton = form.querySelector('[data-advisor-newsletter-submit]');
       var errorBox = advisor.querySelector('[data-advisor-newsletter-error]');
       if (submitButton) submitButton.disabled = true;
       if (errorBox) errorBox.hidden = true;
@@ -633,7 +633,13 @@
       } finally {
         if (submitButton) submitButton.disabled = false;
       }
-    });
+    }
+
+    /* Native submit yerine yalnızca bu wizard içi işlem çalışır; böylece
+       Shopify'ın başarı yönlendirmesi wizard'ı kapatamaz. */
+    form.addEventListener('submit', submitNewsletter);
+    var newsletterSubmit = form.querySelector('[data-advisor-newsletter-submit]');
+    if (newsletterSubmit) newsletterSubmit.addEventListener('click', submitNewsletter);
 
     window.addEventListener('load', function () {
       var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
