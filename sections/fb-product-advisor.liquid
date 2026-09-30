@@ -464,7 +464,12 @@
   {% if localization.language.iso_code == 'en' %}Product recommendations are intended to help you choose and do not replace a diagnosis or treatment. Consult a healthcare professional if symptoms persist or worsen.{% else %}Ürün önerileri, ürün seçimini kolaylaştırmak amacıyla hazırlanmıştır. Tanı veya tedavi yerine geçmez. Devam eden ya da şiddetlenen şikâyetlerde bir sağlık uzmanına danışınız.{% endif %}
 </p>
 
-<section class="fb-product-advisor__newsletter" data-advisor-newsletter>
+<section
+  id="FbAdvisorNewsletterPanel"
+  class="fb-product-advisor__newsletter"
+  data-advisor-newsletter
+  hidden
+>
   <div class="fb-product-advisor__newsletter-copy">
     <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
     <h3>{% if localization.language.iso_code == 'en' %}Subscribe for free and get 5% off{% else %}%5 indirim alın!{% endif %}</h3>
@@ -510,6 +515,17 @@
 <div class="fb-product-advisor__footer">
   <button
     type="button"
+    class="fb-product-advisor__newsletter-toggle"
+    data-advisor-newsletter-toggle
+    aria-controls="FbAdvisorNewsletterPanel"
+    aria-expanded="false"
+  >
+    <span aria-hidden="true">%</span>
+    {% if localization.language.iso_code == 'en' %}Get 5% off{% else %}%5 İndirimi Yakala{% endif %}
+  </button>
+
+  <button
+    type="button"
     class="fb-product-advisor__back"
     data-advisor-back
   >
@@ -538,6 +554,28 @@
     if (!advisor) return;
     var form = advisor.querySelector('.fb-product-advisor__newsletter-form');
     if (!form) return;
+    var newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
+    var newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
+    var wizardFooter = advisor.querySelector('.fb-product-advisor__footer');
+
+    /* Form markup is kept outside the footer for Shopify's form handling, then
+       placed in the footer at runtime so it behaves as its expandable panel. */
+    if (newsletterPanel && wizardFooter) wizardFooter.prepend(newsletterPanel);
+
+    function setNewsletterOpen(isOpen, shouldFocus) {
+      if (!newsletterPanel || !newsletterToggle) return;
+      newsletterPanel.hidden = !isOpen;
+      newsletterPanel.classList.toggle('is-open', isOpen);
+      newsletterToggle.setAttribute('aria-expanded', String(isOpen));
+      if (isOpen && shouldFocus) {
+        var email = newsletterPanel.querySelector('input[type="email"]');
+        if (email) window.setTimeout(function () { email.focus(); }, 0);
+      }
+    }
+
+    if (newsletterToggle) newsletterToggle.addEventListener('click', function () {
+      setNewsletterOpen(newsletterPanel.hidden, newsletterPanel.hidden);
+    });
 
     var storageKey = 'fbAdvisorNewsletterPending';
     function showNewsletterSuccess() {
@@ -560,7 +598,10 @@
     window.addEventListener('load', function () {
       var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
         !!form.querySelector('[data-advisor-newsletter-posted]');
-      if (posted && window.location.hash === '#FbAdvisorNewsletter') showNewsletterSuccess();
+      if (posted && window.location.hash === '#FbAdvisorNewsletter') {
+        setNewsletterOpen(true);
+        showNewsletterSuccess();
+      }
 
       var pending;
       try {
@@ -576,8 +617,10 @@
       }
 
       if (posted) {
+        setNewsletterOpen(true);
         showNewsletterSuccess();
       } else {
+        setNewsletterOpen(true);
         var errorBox = advisor.querySelector('[data-advisor-newsletter-error]');
         if (errorBox) {
           errorBox.textContent = {% if localization.language.iso_code == 'en' %}'Subscription could not be completed. Please try again.'{% else %}'Kayıt tamamlanmadı. Lütfen tekrar deneyin.'{% endif %};

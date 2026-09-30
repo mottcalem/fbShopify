@@ -380,6 +380,7 @@ body.fb-advisor-open #supsis-actions {
 /* Wizard footer */
 
 .fb-product-advisor__footer {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -416,6 +417,47 @@ body.fb-advisor-open #supsis-actions {
   font-size: 25px;
   line-height: 1;
   font-weight: 400;
+}
+
+/* Footer'daki indirim kaydı, wizard adımlarını kaplamadan açılır. */
+#fb-product-advisor .fb-product-advisor__newsletter {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 1px);
+  left: 0;
+  z-index: 3;
+  display: block !important;
+  margin: 0;
+  padding: 18px 30px 16px;
+  border-top: 1px solid #e8e0d8;
+  background: #fffaf5;
+  box-shadow: 0 -10px 22px rgba(18, 54, 83, .12);
+}
+#fb-product-advisor .fb-product-advisor__newsletter[hidden] { display: none !important; }
+#fb-product-advisor .fb-product-advisor__newsletter-copy { margin-bottom: 12px; }
+#fb-product-advisor .fb-product-advisor__newsletter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 14px;
+  padding: 9px 12px;
+  border: 1px solid #ff7900;
+  border-radius: 8px;
+  background: #fff7f0;
+  color: #c95d00;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+#fb-product-advisor .fb-product-advisor__newsletter-toggle:hover,
+#fb-product-advisor .fb-product-advisor__newsletter-toggle[aria-expanded='true'] {
+  background: #ff7900;
+  color: #fff;
+}
+#fb-product-advisor .fb-product-advisor__newsletter-toggle > span {
+  font-size: 16px;
+  line-height: 1;
 }
 
 
@@ -1950,7 +1992,7 @@ body.fb-advisor-open #supsis-actions {
 
 /* İlk üç adımın altındaki e-posta aboneliği. Sonuç/yönlendirme ekranında görünmez. */
 #fb-product-advisor .fb-product-advisor__newsletter {
-  display: none !important;
+  display: block !important;
   flex: 0 0 auto;
   margin: 0;
 }
@@ -2031,6 +2073,21 @@ body.fb-advisor-open #supsis-actions {
   #fb-product-advisor .fb-product-advisor__newsletter h3 { font-size: 16px; }
   #fb-product-advisor .fb-product-advisor__newsletter-fields { flex-direction: column; }
   #fb-product-advisor .fb-product-advisor__newsletter-fields button { width: 100%; }
+}
+
+@media screen and (max-width: 900px) {
+  #fb-product-advisor .fb-product-advisor__newsletter {
+    max-height: min(420px, calc(100dvh - 86px));
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  #fb-product-advisor .fb-product-advisor__newsletter-toggle {
+    margin-left: 8px;
+    padding: 9px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
 }
 
 .fb-product-advisor__cart-status {
