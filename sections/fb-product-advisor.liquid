@@ -592,6 +592,11 @@
       });
       var successBox = advisor.querySelector('[data-advisor-newsletter-success]');
       if (successBox) successBox.hidden = false;
+      if (newsletterToggle) {
+        newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz';
+        newsletterToggle.classList.add('is-claimed');
+        newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
+      }
     }
     form.addEventListener('submit', function () {
       try {
@@ -625,7 +630,7 @@
       showNewsletterSuccess();
     });
 
-    window.addEventListener('load', function () {
+    function restoreNewsletterState() {
       var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
         !!form.querySelector('[data-advisor-newsletter-posted]');
       if (posted) {
@@ -658,7 +663,12 @@
           errorBox.hidden = false;
         }
       }
-    });
+    }
+    if (document.readyState === 'complete') {
+      restoreNewsletterState();
+    } else {
+      window.addEventListener('load', restoreNewsletterState, { once: true });
+    }
 
     var copyButton = advisor.querySelector('[data-advisor-newsletter-copy]');
     if (copyButton) copyButton.addEventListener('click', async function () {

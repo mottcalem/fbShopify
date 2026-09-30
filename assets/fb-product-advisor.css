@@ -459,6 +459,12 @@ body.fb-advisor-open #supsis-actions {
   background: #ff7900;
   color: #fff;
 }
+#fb-product-advisor .fb-product-advisor__newsletter-toggle.is-claimed {
+  border-color: #123653;
+  background: #123653;
+  color: #fff;
+  letter-spacing: .04em;
+}
 
 
 /* Wizard step bar */
