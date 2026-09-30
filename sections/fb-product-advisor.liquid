@@ -516,12 +516,18 @@
 <div class="fb-product-advisor__footer">
   <button
     type="button"
-    class="fb-product-advisor__newsletter-toggle"
+    class="fb-product-advisor__newsletter-toggle{% if request.query_string contains 'customer_posted=true' %} is-claimed{% endif %}"
     data-advisor-newsletter-toggle
     aria-controls="FbAdvisorNewsletterPanel"
-    aria-expanded="false"
+    aria-expanded="{% if request.query_string contains 'customer_posted=true' %}true{% else %}false{% endif %}"
   >
-    {% if localization.language.iso_code == 'en' %}Get 5% off{% else %}%5 İndirimi Yakala{% endif %}
+    {% if request.query_string contains 'customer_posted=true' %}
+      {% if localization.language.iso_code == 'en' %}HOSGELDIN5 · Your 5% discount code{% else %}HOSGELDIN5 · %5 indirim kodunuz{% endif %}
+    {% elsif localization.language.iso_code == 'en' %}
+      Get 5% off
+    {% else %}
+      %5 İndirimi Yakala
+    {% endif %}
   </button>
 
   <button
