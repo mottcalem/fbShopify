@@ -84,6 +84,16 @@ const footer = advisor.querySelector(
 );
 const newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
 const newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
+const hasNewsletterDiscount = new URLSearchParams(window.location.search).get('customer_posted') === 'true';
+function renderNewsletterDiscountCode() {
+  if (!hasNewsletterDiscount || !newsletterToggle) return;
+  newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz';
+  newsletterToggle.classList.add('is-claimed');
+  newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
+  newsletterToggle.setAttribute('aria-expanded', 'true');
+}
+renderNewsletterDiscountCode();
+window.setTimeout(renderNewsletterDiscountCode, 0);
 if (newsletterPanel && footer && newsletterPanel.parentElement !== footer) {
   footer.prepend(newsletterPanel);
 }
