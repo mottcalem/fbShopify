@@ -117,6 +117,9 @@ if (newsletterPanel && newsletterToggle && newsletterToggle.dataset.bound !== 't
     newsletterPanel.hidden = !willOpen;
     newsletterPanel.classList.toggle('is-open', willOpen);
     newsletterToggle.setAttribute('aria-expanded', String(willOpen));
+    newsletterToggle.textContent = willOpen
+      ? newsletterToggle.dataset.advisorNewsletterCloseLabel
+      : newsletterToggle.dataset.advisorNewsletterOpenLabel;
     if (willOpen) {
       const email = newsletterPanel.querySelector('input[type="email"]');
       if (email) window.setTimeout(function () { email.focus(); }, 0);

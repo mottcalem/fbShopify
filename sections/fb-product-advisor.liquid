@@ -473,7 +473,7 @@
   <div class="fb-product-advisor__newsletter-copy">
     <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
     <h3>{% if localization.language.iso_code == 'en' %}Subscribe for free and get 5% off{% else %}%5 indirim alın!{% endif %}</h3>
-    <p>{% if localization.language.iso_code == 'en' %}Leave your email to get your discount code right away.{% else %}E-posta adresini bırak, indirim kodunu hemen al.{% endif %}</p>
+    <p>{% if localization.language.iso_code == 'en' %}Leave your email; your discount code will appear here instantly.{% else %}E-posta adresini bırak; indirim kodun hemen burada görünsün.{% endif %}</p>
   </div>
 
   {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
@@ -492,7 +492,7 @@
         spellcheck="false"
         required
       >
-      <button type="submit" data-advisor-newsletter-submit>{% if localization.language.iso_code == 'en' %}Get my 5% discount{% else %}%5 indirimimi al{% endif %}</button>
+      <button type="submit" data-advisor-newsletter-submit>{% if localization.language.iso_code == 'en' %}Get code{% else %}Kodu Al{% endif %}</button>
     </div>
     <label class="fb-product-advisor__newsletter-consent" data-advisor-newsletter-fields>
       <input type="checkbox" required>
@@ -518,6 +518,8 @@
     type="button"
     class="fb-product-advisor__newsletter-toggle{% if request.query_string contains 'customer_posted=true' %} is-claimed{% endif %}"
     data-advisor-newsletter-toggle
+    data-advisor-newsletter-open-label="{% if localization.language.iso_code == 'en' %}Get 5% off{% else %}%5 İndirimi Yakala{% endif %}"
+    data-advisor-newsletter-close-label="{% if localization.language.iso_code == 'en' %}Close form{% else %}Formu Kapat{% endif %}"
     aria-controls="FbAdvisorNewsletterPanel"
     aria-expanded="{% if request.query_string contains 'customer_posted=true' %}true{% else %}false{% endif %}"
   >
@@ -573,6 +575,11 @@
       newsletterPanel.hidden = !isOpen;
       newsletterPanel.classList.toggle('is-open', isOpen);
       newsletterToggle.setAttribute('aria-expanded', String(isOpen));
+      if (!newsletterToggle.classList.contains('is-claimed')) {
+        newsletterToggle.textContent = isOpen
+          ? newsletterToggle.dataset.advisorNewsletterCloseLabel
+          : newsletterToggle.dataset.advisorNewsletterOpenLabel;
+      }
       if (isOpen && shouldFocus) {
         var email = newsletterPanel.querySelector('input[type="email"]');
         if (email) window.setTimeout(function () { email.focus(); }, 0);
