@@ -520,7 +520,6 @@
     aria-controls="FbAdvisorNewsletterPanel"
     aria-expanded="false"
   >
-    <span aria-hidden="true">%</span>
     {% if localization.language.iso_code == 'en' %}Get 5% off{% else %}%5 İndirimi Yakala{% endif %}
   </button>
 
@@ -572,10 +571,6 @@
         if (email) window.setTimeout(function () { email.focus(); }, 0);
       }
     }
-
-    if (newsletterToggle) newsletterToggle.addEventListener('click', function () {
-      setNewsletterOpen(newsletterPanel.hidden, newsletterPanel.hidden);
-    });
 
     var storageKey = 'fbAdvisorNewsletterPending';
     function showNewsletterSuccess() {

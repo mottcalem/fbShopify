@@ -82,6 +82,24 @@ const stepsContainer = advisor.querySelector(
 const footer = advisor.querySelector(
   '.fb-product-advisor__footer'
 );
+const newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
+const newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
+if (newsletterPanel && footer && newsletterPanel.parentElement !== footer) {
+  footer.prepend(newsletterPanel);
+}
+if (newsletterPanel && newsletterToggle && newsletterToggle.dataset.bound !== 'true') {
+  newsletterToggle.dataset.bound = 'true';
+  newsletterToggle.addEventListener('click', function () {
+    const willOpen = newsletterPanel.hidden;
+    newsletterPanel.hidden = !willOpen;
+    newsletterPanel.classList.toggle('is-open', willOpen);
+    newsletterToggle.setAttribute('aria-expanded', String(willOpen));
+    if (willOpen) {
+      const email = newsletterPanel.querySelector('input[type="email"]');
+      if (email) window.setTimeout(function () { email.focus(); }, 0);
+    }
+  });
+}
 const body = advisor.querySelector(
   '.fb-product-advisor__body'
 );

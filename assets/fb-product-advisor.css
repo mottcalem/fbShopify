@@ -382,6 +382,7 @@ body.fb-advisor-open #supsis-actions {
 .fb-product-advisor__footer {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
   min-height: 64px;
@@ -438,9 +439,12 @@ body.fb-advisor-open #supsis-actions {
 #fb-product-advisor .fb-product-advisor__newsletter-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  margin-left: 14px;
-  padding: 9px 12px;
+  justify-content: center;
+  flex: 0 0 100%;
+  width: 100%;
+  min-height: 46px;
+  margin: 0 0 10px;
+  padding: 10px 12px;
   border: 1px solid #ff7900;
   border-radius: 8px;
   background: #fff7f0;
@@ -454,10 +458,6 @@ body.fb-advisor-open #supsis-actions {
 #fb-product-advisor .fb-product-advisor__newsletter-toggle[aria-expanded='true'] {
   background: #ff7900;
   color: #fff;
-}
-#fb-product-advisor .fb-product-advisor__newsletter-toggle > span {
-  font-size: 16px;
-  line-height: 1;
 }
 
 
@@ -2083,7 +2083,7 @@ body.fb-advisor-open #supsis-actions {
   }
 
   #fb-product-advisor .fb-product-advisor__newsletter-toggle {
-    margin-left: 8px;
+    margin: 0 0 8px;
     padding: 9px 10px;
     font-size: 12px;
     white-space: nowrap;
