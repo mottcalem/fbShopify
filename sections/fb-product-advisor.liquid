@@ -572,6 +572,18 @@
       }
     }
 
+    function reopenAdvisorAfterNewsletter(attempt) {
+      if (window.FBProductAdvisor && window.FBProductAdvisor.open) {
+        window.FBProductAdvisor.open();
+        return;
+      }
+      if (attempt < 20) {
+        window.setTimeout(function () {
+          reopenAdvisorAfterNewsletter(attempt + 1);
+        }, 50);
+      }
+    }
+
     var storageKey = 'fbAdvisorNewsletterPending';
     function showNewsletterSuccess() {
       advisor.querySelectorAll('[data-advisor-newsletter-fields]').forEach(function (field) {
@@ -593,7 +605,8 @@
     window.addEventListener('load', function () {
       var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
         !!form.querySelector('[data-advisor-newsletter-posted]');
-      if (posted && window.location.hash === '#FbAdvisorNewsletter') {
+      if (posted) {
+        reopenAdvisorAfterNewsletter(0);
         setNewsletterOpen(true);
         showNewsletterSuccess();
       }
