@@ -602,6 +602,39 @@
       } catch (error) {}
     });
 
+    /* Shopify müşteri formunu sayfadan ayrılmadan gönder. Başarılı dönüşte
+       wizard açık kalır ve indirim kodu aynı panelde gösterilir. */
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+
+      var submitButton = form.querySelector('button[type="submit"]');
+      var errorBox = advisor.querySelector('[data-advisor-newsletter-error]');
+      if (submitButton) submitButton.disabled = true;
+      if (errorBox) errorBox.hidden = true;
+
+      try {
+        var response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          credentials: 'same-origin',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        var completed = response.ok && response.url.indexOf('customer_posted=true') !== -1;
+        if (!completed) throw new Error('newsletter-subscription-failed');
+
+        setNewsletterOpen(true);
+        showNewsletterSuccess();
+      } catch (error) {
+        if (errorBox) {
+          errorBox.textContent = {% if localization.language.iso_code == 'en' %}'Subscription could not be completed. Please try again.'{% else %}'Kayıt tamamlanmadı. Lütfen tekrar deneyin.'{% endif %};
+          errorBox.hidden = false;
+        }
+      } finally {
+        if (submitButton) submitButton.disabled = false;
+      }
+    });
+
     window.addEventListener('load', function () {
       var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
         !!form.querySelector('[data-advisor-newsletter-posted]');
