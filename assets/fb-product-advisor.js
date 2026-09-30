@@ -87,7 +87,7 @@ const newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]
 const hasNewsletterDiscount = new URLSearchParams(window.location.search).get('customer_posted') === 'true';
 function renderNewsletterDiscountCode() {
   if (!hasNewsletterDiscount || !newsletterToggle) return;
-  newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz';
+  newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz · Kopyalamak için tıklayın';
   newsletterToggle.classList.add('is-claimed');
   newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
   newsletterToggle.setAttribute('aria-expanded', 'true');
@@ -99,7 +99,20 @@ if (newsletterPanel && footer && newsletterPanel.parentElement !== footer) {
 }
 if (newsletterPanel && newsletterToggle && newsletterToggle.dataset.bound !== 'true') {
   newsletterToggle.dataset.bound = 'true';
-  newsletterToggle.addEventListener('click', function () {
+  newsletterToggle.addEventListener('click', async function () {
+    if (hasNewsletterDiscount) {
+      const originalText = newsletterToggle.textContent;
+      try {
+        await navigator.clipboard.writeText('HOSGELDIN5');
+        newsletterToggle.textContent = 'HOSGELDIN5 · Kod kopyalandı!';
+      } catch (error) {
+        newsletterToggle.textContent = 'HOSGELDIN5 · Kodu seçip kopyalayın';
+      }
+      window.setTimeout(function () {
+        newsletterToggle.textContent = originalText;
+      }, 2200);
+      return;
+    }
     const willOpen = newsletterPanel.hidden;
     newsletterPanel.hidden = !willOpen;
     newsletterPanel.classList.toggle('is-open', willOpen);
