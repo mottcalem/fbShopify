@@ -851,9 +851,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </script>
 
 <!-- Start of SUPSIS Embed Code -->
-<script>window.supsis=window.supsis||function(){(supsis.q=supsis.q||[]).push(arguments)};supsis.l=+new Date;</script>
+<script>
+    window.supsis = window.supsis || function () {
+        (supsis.q = supsis.q || []).push(arguments);
+    };
+    supsis.l = +new Date();
+
+    // Supsis SDK yüklendiğinde tetiklenir
+    supsis("ready", (supsis) => {
+        // Ziyaretçinin giriş formunu atlayıp sohbeti anında başlatması için (opsiyonel)
+        supsis.setUserData({
+            fullname: "Ziyaretçi", // İsteğe bağlı dinamik isim
+            email: "ziyaretci@email.com",
+            phone: "5XXXXXXXXX"
+        });
+
+        // Sohbet balonuna tıklama olayını dinler ve pencereyi açar
+        if (supsis.i && supsis.i.openButton) {
+            supsis.i.openButton.addEventListener("click", () => {
+                supsis.open(); // Sohbet penceresini anında açar
+            });
+        }
+    });
+</script>
+
 <script src="https://footbalance.visitor.supsis.live/static/js/loader.js" type="text/javascript" async defer></script>
 <!-- End of SUPSIS Embed Code -->
+
 {% render 'fb-footer-english' %}
   </body>
 </html>
