@@ -476,7 +476,7 @@
     <p>{% if localization.language.iso_code == 'en' %}Leave your email; your discount code will appear here instantly.{% else %}E-posta adresini bırak; indirim kodun hemen burada görünsün.{% endif %}</p>
   </div>
 
-  {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', target: 'FbAdvisorNewsletterTarget', return_to: 'back' %}
+  {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
     {% if form.posted_successfully? %}<span data-advisor-newsletter-posted hidden></span>{% endif %}
     {% if form.errors %}<div data-advisor-newsletter-server-error role="alert">{{ form.errors | default_errors }}</div>{% endif %}
     <input type="hidden" name="contact[tags]" value="newsletter,wizard-yuzde-5">
@@ -511,7 +511,6 @@
 
     </div>
   {% endform %}
-  <iframe name="FbAdvisorNewsletterTarget" data-advisor-newsletter-target hidden title="Newsletter submission"></iframe>
 </section>
 
 <div class="fb-product-advisor__footer">

@@ -71,9 +71,7 @@ function initAdvisorNewsletter(advisor) {
     }
     var newsletterSubmit = form.querySelector('[data-advisor-newsletter-submit]');
     var newsletterSubmissionPending = false;
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      event.stopPropagation();
+    async function sendNewsletter() {
       if (newsletterSubmissionPending || !form.reportValidity()) return;
       newsletterSubmissionPending = true;
       var errorBox = form.querySelector('[data-advisor-newsletter-error]');
@@ -113,7 +111,20 @@ function initAdvisorNewsletter(advisor) {
         if (newsletterSubmit) newsletterSubmit.disabled = false;
         form.removeAttribute('aria-busy');
       }
-    });
+    }
+    // Shopify wraps this method with token generation before calling it.
+    // Install the transport before CAPTCHA is wired by focus or submission.
+    form.submit = sendNewsletter;
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (newsletterSubmissionPending || !form.reportValidity()) return;
+      if (window.Shopify && window.Shopify.captcha && window.Shopify.captcha.protect) {
+        window.Shopify.captcha.protect(form, function () { form.submit(); });
+      } else {
+        sendNewsletter();
+      }
+    }, true);
 
     if (form.querySelector('[data-advisor-newsletter-posted]')) {
       setNewsletterOpen(true);
@@ -122,17 +133,6 @@ function initAdvisorNewsletter(advisor) {
     if (newsletterToggle) newsletterToggle.addEventListener('click', function () {
       setNewsletterOpen(newsletterPanel.hidden, true);
     });
-    var frame = advisor.querySelector('[data-advisor-newsletter-target]');
-    if (frame) frame.addEventListener('load', function () {
-      try {
-        var returned = frame.contentDocument.getElementById(form.id);
-        if (returned && returned.querySelector('[data-advisor-newsletter-posted]')) {
-          setNewsletterOpen(true);
-          showNewsletterSuccess();
-        }
-      } catch (error) { /* Cross-origin verification is not a confirmed subscription. */ }
-    });
-
     var copyButton = advisor.querySelector('[data-advisor-newsletter-copy]');
     if (copyButton) copyButton.addEventListener('click', async function () {
       var code = advisor.querySelector('[data-advisor-newsletter-code]');
