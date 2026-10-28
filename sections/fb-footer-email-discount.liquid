@@ -1,5 +1,5 @@
 {% comment %}
-  FootBalance — Footer e-posta aboneliği ve %5 indirim
+  FootBalance — Footer e-posta aboneliği ve %10 indirim
 
   Shopify'ın yerleşik customer formunu kullanır. API veya uygulama gerekmez.
   Başarılı kayıtlar Shopify Müşteriler > E-posta aboneleri listesine düşer ve
@@ -340,7 +340,7 @@
 
 {% schema %}
 {
-  "name": "FB %5 e-posta üyeliği",
+  "name": "FB %10 e-posta üyeliği",
   "tag": "section",
   "enabled_on": {
     "groups": ["footer"]
@@ -362,7 +362,7 @@
       "type": "text",
       "id": "heading",
       "label": "Başlık",
-      "default": "%5 indirim alın"
+      "default": "%10 indirim alın"
     },
     {
       "type": "textarea",
@@ -374,7 +374,7 @@
       "type": "text",
       "id": "button_label",
       "label": "Buton metni",
-      "default": "%5 indirimimi al"
+      "default": "%10 indirimimi al"
     },
     {
       "type": "text",
@@ -387,12 +387,12 @@
       "id": "discount_code",
       "label": "İndirim kodu",
       "info": "Shopify İndirimler bölümünde oluşturduğunuz kodla tamamen aynı olmalı.",
-      "default": "HOSGELDIN5"
+      "default": "hosgeldin10"
     }
   ],
   "presets": [
     {
-      "name": "FB %5 e-posta üyeliği"
+      "name": "FB %10 e-posta üyeliği"
     }
   ]
 }

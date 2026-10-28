@@ -8,7 +8,7 @@
 
     if (!document.documentElement.lang.toLowerCase().startsWith('en')) {
       var heading = newsletter.querySelector('.fb-footer__newsletter-copy h2');
-      if (heading) heading.textContent = '%5 indirim alın!';
+      if (heading) heading.textContent = '%10 indirim alın!';
     }
   }
 
