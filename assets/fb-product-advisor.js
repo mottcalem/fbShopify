@@ -27,6 +27,134 @@ function resolveRecommendations(areas, rules, activity) {
   }
   return result;
 }
+function initAdvisorNewsletter(advisor) {
+
+    if (!advisor || advisor.dataset.newsletterInitialized === 'true') return;
+    var form = advisor.querySelector('.fb-product-advisor__newsletter-form');
+    if (!form) return;
+    advisor.dataset.newsletterInitialized = 'true';
+    var isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
+    var newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
+    var newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
+    var wizardFooter = advisor.querySelector('.fb-product-advisor__footer');
+
+    /* Form markup is kept outside the footer for Shopify's form handling, then
+       placed in the footer at runtime so it behaves as its expandable panel. */
+    if (newsletterPanel && wizardFooter) wizardFooter.prepend(newsletterPanel);
+
+    function setNewsletterOpen(isOpen, shouldFocus) {
+      if (!newsletterPanel || !newsletterToggle) return;
+      newsletterPanel.hidden = !isOpen;
+      newsletterPanel.classList.toggle('is-open', isOpen);
+      newsletterToggle.setAttribute('aria-expanded', String(isOpen));
+      if (!newsletterToggle.classList.contains('is-claimed')) {
+        newsletterToggle.textContent = isOpen
+          ? newsletterToggle.dataset.advisorNewsletterCloseLabel
+          : newsletterToggle.dataset.advisorNewsletterOpenLabel;
+      }
+      if (isOpen && shouldFocus) {
+        var email = newsletterPanel.querySelector('input[type="email"]');
+        if (email) window.setTimeout(function () { email.focus(); }, 0);
+      }
+    }
+
+    function reopenAdvisorAfterNewsletter(attempt) {
+      if (window.FBProductAdvisor && window.FBProductAdvisor.open) {
+        window.FBProductAdvisor.open();
+        return;
+      }
+      if (attempt < 20) {
+        window.setTimeout(function () {
+          reopenAdvisorAfterNewsletter(attempt + 1);
+        }, 50);
+      }
+    }
+
+    function showNewsletterSuccess() {
+      advisor.querySelectorAll('[data-advisor-newsletter-fields]').forEach(function (field) {
+        field.hidden = true;
+      });
+      var successBox = advisor.querySelector('[data-advisor-newsletter-success]');
+      if (successBox) successBox.hidden = false;
+      if (newsletterToggle) {
+        newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz · Kopyalamak için tıklayın';
+        newsletterToggle.classList.add('is-claimed');
+        newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
+      }
+    }
+    var newsletterSubmit = form.querySelector('[data-advisor-newsletter-submit]');
+    var newsletterSubmissionPending = false;
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (newsletterSubmissionPending || !form.reportValidity()) return;
+      newsletterSubmissionPending = true;
+      var errorBox = form.querySelector('[data-advisor-newsletter-error]');
+      if (errorBox) errorBox.hidden = true;
+      if (newsletterSubmit) newsletterSubmit.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      var controller = new AbortController();
+      var timeout = window.setTimeout(function () { controller.abort(); }, 30000);
+      try {
+        var response = await fetch(form.action, {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: new URLSearchParams(new FormData(form)),
+          signal: controller.signal
+        });
+        var html = new DOMParser().parseFromString(await response.text(), 'text/html');
+        var returnedForm = html.getElementById(form.id);
+        var posted = returnedForm && returnedForm.querySelector('[data-advisor-newsletter-posted]');
+        if (!response.ok || !posted) {
+          var serverError = returnedForm && returnedForm.querySelector('[data-advisor-newsletter-server-error]');
+          throw new Error(serverError ? serverError.textContent.trim() : (
+            isEnglish ? 'Subscription could not be confirmed. Please try again.' : 'Abonelik doğrulanamadı. Lütfen tekrar deneyin.'
+          ));
+        }
+        setNewsletterOpen(true);
+        showNewsletterSuccess();
+      } catch (error) {
+        if (errorBox) {
+          errorBox.textContent = error.name === 'AbortError'
+            ? (isEnglish ? 'The request timed out. Please try again.' : 'İstek zaman aşımına uğradı. Lütfen tekrar deneyin.')
+            : (error.message || (isEnglish ? 'Please try again.' : 'Lütfen tekrar deneyin.'));
+          errorBox.hidden = false;
+        }
+      } finally {
+        window.clearTimeout(timeout);
+        newsletterSubmissionPending = false;
+        if (newsletterSubmit) newsletterSubmit.disabled = false;
+        form.removeAttribute('aria-busy');
+      }
+    });
+
+    function restoreNewsletterState() {
+      var posted = !!form.querySelector('[data-advisor-newsletter-posted]');
+      if (posted) {
+        reopenAdvisorAfterNewsletter(0);
+        setNewsletterOpen(true);
+        showNewsletterSuccess();
+      }
+
+    }
+    if (document.readyState === 'complete') {
+      restoreNewsletterState();
+    } else {
+      window.addEventListener('load', restoreNewsletterState, { once: true });
+    }
+
+    var copyButton = advisor.querySelector('[data-advisor-newsletter-copy]');
+    if (copyButton) copyButton.addEventListener('click', async function () {
+      var code = advisor.querySelector('[data-advisor-newsletter-code]');
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code.textContent.trim());
+        copyButton.textContent = isEnglish ? 'Copied' : 'Kopyalandı';
+      } catch (error) {
+        copyButton.textContent = isEnglish ? 'Select and copy the code' : 'Kodu seçip kopyalayın';
+      }
+    });
+}
 function initAdvisor(advisor) {
   if (!advisor || advisor.dataset.initialized === 'true') return;
   advisor.dataset.initialized = 'true';
@@ -84,7 +212,7 @@ const footer = advisor.querySelector(
 );
 const newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
 const newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
-const hasNewsletterDiscount = new URLSearchParams(window.location.search).get('customer_posted') === 'true';
+const hasNewsletterDiscount = !!advisor.querySelector('[data-advisor-newsletter-posted]');
 function renderNewsletterDiscountCode() {
   if (!hasNewsletterDiscount || !newsletterToggle) return;
   newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz · Kopyalamak için tıklayın';
@@ -100,7 +228,7 @@ if (newsletterPanel && footer && newsletterPanel.parentElement !== footer) {
 if (newsletterPanel && newsletterToggle && newsletterToggle.dataset.bound !== 'true') {
   newsletterToggle.dataset.bound = 'true';
   newsletterToggle.addEventListener('click', async function () {
-    if (hasNewsletterDiscount) {
+    if (newsletterToggle.classList.contains('is-claimed')) {
       const originalText = newsletterToggle.textContent;
       try {
         await navigator.clipboard.writeText('HOSGELDIN5');
@@ -981,6 +1109,7 @@ if (restartButton) {
   updateActivitySelection();
   updateActivityStepVisibility();
   goToStep(0);
+  initAdvisorNewsletter(advisor);
 }
 function initAllAdvisors() {
   document.querySelectorAll('.fb-product-advisor').forEach(initAdvisor);

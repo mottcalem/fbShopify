@@ -478,6 +478,7 @@
 
   {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
     {% if form.posted_successfully? %}<span data-advisor-newsletter-posted hidden></span>{% endif %}
+    {% if form.errors %}<div data-advisor-newsletter-server-error role="alert">{{ form.errors | default_errors }}</div>{% endif %}
     <input type="hidden" name="contact[tags]" value="newsletter,wizard-yuzde-5">
     <div class="fb-product-advisor__newsletter-fields" data-advisor-newsletter-fields>
       <label class="visually-hidden" for="FbAdvisorNewsletterEmail">{% if localization.language.iso_code == 'en' %}Your email address{% else %}E-posta adresiniz{% endif %}</label>
@@ -510,22 +511,19 @@
       <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Start Shopping Now{% else %}Hemen Alışverişe Başla{% endif %}</a>
     </div>
   {% endform %}
-  <iframe name="FbAdvisorNewsletterTarget" data-advisor-newsletter-target hidden title="Newsletter submission"></iframe>
 </section>
 
 <div class="fb-product-advisor__footer">
   <button
     type="button"
-    class="fb-product-advisor__newsletter-toggle{% if request.query_string contains 'customer_posted=true' %} is-claimed{% endif %}"
+    class="fb-product-advisor__newsletter-toggle"
     data-advisor-newsletter-toggle
     data-advisor-newsletter-open-label="{% if localization.language.iso_code == 'en' %}Get 5% off{% else %}%5 İndirimi Yakala{% endif %}"
     data-advisor-newsletter-close-label="{% if localization.language.iso_code == 'en' %}Close form{% else %}Formu Kapat{% endif %}"
     aria-controls="FbAdvisorNewsletterPanel"
-    aria-expanded="{% if request.query_string contains 'customer_posted=true' %}true{% else %}false{% endif %}"
+    aria-expanded="false"
   >
-    {% if request.query_string contains 'customer_posted=true' %}
-      {% if localization.language.iso_code == 'en' %}HOSGELDIN5 · Your 5% discount code{% else %}HOSGELDIN5 · %5 indirim kodunuz{% endif %}
-    {% elsif localization.language.iso_code == 'en' %}
+    {% if localization.language.iso_code == 'en' %}
       Get 5% off
     {% else %}
       %5 İndirimi Yakala
@@ -556,146 +554,7 @@
 </div>
 
 {% render 'fb-personal-widget' %}
-<script>
-  (function () {
-    var advisor = document.getElementById('fb-product-advisor');
-    if (!advisor) return;
-    var form = advisor.querySelector('.fb-product-advisor__newsletter-form');
-    if (!form) return;
-    var newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
-    var newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
-    var wizardFooter = advisor.querySelector('.fb-product-advisor__footer');
 
-    /* Form markup is kept outside the footer for Shopify's form handling, then
-       placed in the footer at runtime so it behaves as its expandable panel. */
-    if (newsletterPanel && wizardFooter) wizardFooter.prepend(newsletterPanel);
-
-    function setNewsletterOpen(isOpen, shouldFocus) {
-      if (!newsletterPanel || !newsletterToggle) return;
-      newsletterPanel.hidden = !isOpen;
-      newsletterPanel.classList.toggle('is-open', isOpen);
-      newsletterToggle.setAttribute('aria-expanded', String(isOpen));
-      if (!newsletterToggle.classList.contains('is-claimed')) {
-        newsletterToggle.textContent = isOpen
-          ? newsletterToggle.dataset.advisorNewsletterCloseLabel
-          : newsletterToggle.dataset.advisorNewsletterOpenLabel;
-      }
-      if (isOpen && shouldFocus) {
-        var email = newsletterPanel.querySelector('input[type="email"]');
-        if (email) window.setTimeout(function () { email.focus(); }, 0);
-      }
-    }
-
-    function reopenAdvisorAfterNewsletter(attempt) {
-      if (window.FBProductAdvisor && window.FBProductAdvisor.open) {
-        window.FBProductAdvisor.open();
-        return;
-      }
-      if (attempt < 20) {
-        window.setTimeout(function () {
-          reopenAdvisorAfterNewsletter(attempt + 1);
-        }, 50);
-      }
-    }
-
-    var storageKey = 'fbAdvisorNewsletterPending';
-    function showNewsletterSuccess() {
-      advisor.querySelectorAll('[data-advisor-newsletter-fields]').forEach(function (field) {
-        field.hidden = true;
-      });
-      var successBox = advisor.querySelector('[data-advisor-newsletter-success]');
-      if (successBox) successBox.hidden = false;
-      if (newsletterToggle) {
-        newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz · Kopyalamak için tıklayın';
-        newsletterToggle.classList.add('is-claimed');
-        newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
-      }
-    }
-    form.addEventListener('submit', function () {
-      try {
-        sessionStorage.setItem(storageKey, JSON.stringify({
-          savedAt: Date.now(),
-          state: window.FBProductAdvisor && window.FBProductAdvisor.snapshot
-            ? window.FBProductAdvisor.snapshot() : null
-        }));
-      } catch (error) {}
-    });
-
-    /* Form, Shopify'a normal olarak gider; yanıt görünmez iframe'e yüklendiği
-       için wizard ve kullanıcının seçtiği adımlar sayfada kalır. */
-    var newsletterFrame = advisor.querySelector('[data-advisor-newsletter-target]');
-    var newsletterSubmit = form.querySelector('[data-advisor-newsletter-submit]');
-    var newsletterSubmissionPending = false;
-    form.target = 'FbAdvisorNewsletterTarget';
-    form.addEventListener('submit', function (event) {
-      if (!form.reportValidity()) {
-        event.preventDefault();
-        return;
-      }
-      newsletterSubmissionPending = true;
-      if (newsletterSubmit) newsletterSubmit.disabled = true;
-    });
-    if (newsletterFrame) newsletterFrame.addEventListener('load', function () {
-      if (!newsletterSubmissionPending) return;
-      newsletterSubmissionPending = false;
-      if (newsletterSubmit) newsletterSubmit.disabled = false;
-      setNewsletterOpen(true);
-      showNewsletterSuccess();
-    });
-
-    function restoreNewsletterState() {
-      var posted = new URLSearchParams(window.location.search).get('customer_posted') === 'true' ||
-        !!form.querySelector('[data-advisor-newsletter-posted]');
-      if (posted) {
-        reopenAdvisorAfterNewsletter(0);
-        setNewsletterOpen(true);
-        showNewsletterSuccess();
-      }
-
-      var pending;
-      try {
-        pending = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
-        sessionStorage.removeItem(storageKey);
-      } catch (error) { return; }
-      if (!pending || Date.now() - pending.savedAt > 15 * 60 * 1000) return;
-      if (!window.FBProductAdvisor) return;
-
-      window.FBProductAdvisor.open();
-      if (pending.state && window.FBProductAdvisor.restore) {
-        window.FBProductAdvisor.restore(pending.state);
-      }
-
-      if (posted) {
-        setNewsletterOpen(true);
-        showNewsletterSuccess();
-      } else {
-        setNewsletterOpen(true);
-        var errorBox = advisor.querySelector('[data-advisor-newsletter-error]');
-        if (errorBox) {
-          errorBox.textContent = {% if localization.language.iso_code == 'en' %}'Subscription could not be completed. Please try again.'{% else %}'Kayıt tamamlanmadı. Lütfen tekrar deneyin.'{% endif %};
-          errorBox.hidden = false;
-        }
-      }
-    }
-    if (document.readyState === 'complete') {
-      restoreNewsletterState();
-    } else {
-      window.addEventListener('load', restoreNewsletterState, { once: true });
-    }
-
-    var copyButton = advisor.querySelector('[data-advisor-newsletter-copy]');
-    if (copyButton) copyButton.addEventListener('click', async function () {
-      var code = advisor.querySelector('[data-advisor-newsletter-code]');
-      if (!code) return;
-      try {
-        await navigator.clipboard.writeText(code.textContent.trim());
-        copyButton.textContent = {% if localization.language.iso_code == 'en' %}'Copied'{% else %}'Kopyalandı'{% endif %};
-      } catch (error) {
-        copyButton.textContent = {% if localization.language.iso_code == 'en' %}'Select and copy the code'{% else %}'Kodu seçip kopyalayın'{% endif %};
-      }
-    });
-  })();
-</script>
 <script src="{{ 'fb-product-advisor.js' | asset_url }}" defer></script>
 
 {% schema %}
