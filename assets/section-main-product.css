@@ -1587,3 +1587,27 @@ a.product__text {
     cursor: default;
   }
 }
+
+/* Pin the original product submit button on mobile to retain variant, quantity,
+   loading, validation and cart drawer behavior without a second purchase form. */
+@media screen and (max-width: 989px) {
+  product-info[id^="MainProduct-"] .fb-mobile-add-to-cart {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #e8e0d8;
+    background: #fff;
+    box-shadow: 0 -4px 20px rgb(18 54 83 / 10%);
+  }
+  product-info[id^="MainProduct-"] .fb-mobile-add-to-cart .product-form__submit {
+    width: 100%;
+    min-height: 50px;
+    margin: 0;
+  }
+  body:has(product-info[id^="MainProduct-"] .fb-mobile-add-to-cart) {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
