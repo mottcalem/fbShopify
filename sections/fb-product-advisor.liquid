@@ -470,13 +470,13 @@
   data-advisor-newsletter
   hidden
 >
-  <div class="fb-product-advisor__newsletter-copy">
+  <div class="fb-product-advisor__newsletter-copy" data-advisor-newsletter-fields>
     <span>{% if localization.language.iso_code == 'en' %}EXCLUSIVE FOOTBALANCE OFFER{% else %}FOOTBALANCE'A ÖZEL FIRSAT{% endif %}</span>
     <h3>{% if localization.language.iso_code == 'en' %}Subscribe for free and get 5% off{% else %}%5 indirim alın!{% endif %}</h3>
     <p>{% if localization.language.iso_code == 'en' %}Leave your email; your discount code will appear here instantly.{% else %}E-posta adresini bırak; indirim kodun hemen burada görünsün.{% endif %}</p>
   </div>
 
-  {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', return_to: 'back' %}
+  {% form 'customer', id: 'FbAdvisorNewsletter', class: 'fb-product-advisor__newsletter-form', target: 'FbAdvisorNewsletterTarget', return_to: 'back' %}
     {% if form.posted_successfully? %}<span data-advisor-newsletter-posted hidden></span>{% endif %}
     {% if form.errors %}<div data-advisor-newsletter-server-error role="alert">{{ form.errors | default_errors }}</div>{% endif %}
     <input type="hidden" name="contact[tags]" value="newsletter,wizard-yuzde-5">
@@ -506,11 +506,12 @@
     </label>
     <p class="fb-product-advisor__newsletter-error" data-advisor-newsletter-error role="alert" hidden></p>
     <div class="fb-product-advisor__newsletter-success" data-advisor-newsletter-success hidden>
-      <span>{% if localization.language.iso_code == 'en' %}Thank you! Your 5% discount code:{% else %}Teşekkürler! %5 indirim kodunuz:{% endif %}</span>
+      <span>{% if localization.language.iso_code == 'en' %}Your 5% discount is ready{% else %}%5 indirimin hazır{% endif %}</span>
       <div><strong data-advisor-newsletter-code>HOSGELDIN5</strong><button type="button" data-advisor-newsletter-copy>{% if localization.language.iso_code == 'en' %}Copy code{% else %}Kodu kopyala{% endif %}</button></div>
-      <a href="/discount/HOSGELDIN5?redirect={{ routes.all_products_collection_url | url_encode }}">{% if localization.language.iso_code == 'en' %}Start Shopping Now{% else %}Hemen Alışverişe Başla{% endif %}</a>
+
     </div>
   {% endform %}
+  <iframe name="FbAdvisorNewsletterTarget" data-advisor-newsletter-target hidden title="Newsletter submission"></iframe>
 </section>
 
 <div class="fb-product-advisor__footer">

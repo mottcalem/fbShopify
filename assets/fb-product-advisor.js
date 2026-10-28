@@ -58,29 +58,16 @@ function initAdvisorNewsletter(advisor) {
       }
     }
 
-    function reopenAdvisorAfterNewsletter(attempt) {
-      if (window.FBProductAdvisor && window.FBProductAdvisor.open) {
-        window.FBProductAdvisor.open();
-        return;
-      }
-      if (attempt < 20) {
-        window.setTimeout(function () {
-          reopenAdvisorAfterNewsletter(attempt + 1);
-        }, 50);
-      }
-    }
-
     function showNewsletterSuccess() {
       advisor.querySelectorAll('[data-advisor-newsletter-fields]').forEach(function (field) {
         field.hidden = true;
       });
       var successBox = advisor.querySelector('[data-advisor-newsletter-success]');
       if (successBox) successBox.hidden = false;
-      if (newsletterToggle) {
-        newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz · Kopyalamak için tıklayın';
-        newsletterToggle.classList.add('is-claimed');
-        newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
-      }
+      if (newsletterPanel) newsletterPanel.classList.add('is-claimed');
+      if (newsletterToggle) newsletterToggle.hidden = true;
+      var copy = advisor.querySelector('[data-advisor-newsletter-copy]');
+      if (copy && window.self === window.top) copy.focus({ preventScroll: true });
     }
     var newsletterSubmit = form.querySelector('[data-advisor-newsletter-submit]');
     var newsletterSubmissionPending = false;
@@ -128,20 +115,23 @@ function initAdvisorNewsletter(advisor) {
       }
     });
 
-    function restoreNewsletterState() {
-      var posted = !!form.querySelector('[data-advisor-newsletter-posted]');
-      if (posted) {
-        reopenAdvisorAfterNewsletter(0);
-        setNewsletterOpen(true);
-        showNewsletterSuccess();
-      }
-
+    if (form.querySelector('[data-advisor-newsletter-posted]')) {
+      setNewsletterOpen(true);
+      showNewsletterSuccess();
     }
-    if (document.readyState === 'complete') {
-      restoreNewsletterState();
-    } else {
-      window.addEventListener('load', restoreNewsletterState, { once: true });
-    }
+    if (newsletterToggle) newsletterToggle.addEventListener('click', function () {
+      setNewsletterOpen(newsletterPanel.hidden, true);
+    });
+    var frame = advisor.querySelector('[data-advisor-newsletter-target]');
+    if (frame) frame.addEventListener('load', function () {
+      try {
+        var returned = frame.contentDocument.getElementById(form.id);
+        if (returned && returned.querySelector('[data-advisor-newsletter-posted]')) {
+          setNewsletterOpen(true);
+          showNewsletterSuccess();
+        }
+      } catch (error) { /* Cross-origin verification is not a confirmed subscription. */ }
+    });
 
     var copyButton = advisor.querySelector('[data-advisor-newsletter-copy]');
     if (copyButton) copyButton.addEventListener('click', async function () {
@@ -210,50 +200,6 @@ const stepsContainer = advisor.querySelector(
 const footer = advisor.querySelector(
   '.fb-product-advisor__footer'
 );
-const newsletterPanel = advisor.querySelector('[data-advisor-newsletter]');
-const newsletterToggle = advisor.querySelector('[data-advisor-newsletter-toggle]');
-const hasNewsletterDiscount = !!advisor.querySelector('[data-advisor-newsletter-posted]');
-function renderNewsletterDiscountCode() {
-  if (!hasNewsletterDiscount || !newsletterToggle) return;
-  newsletterToggle.textContent = 'HOSGELDIN5 · %5 indirim kodunuz · Kopyalamak için tıklayın';
-  newsletterToggle.classList.add('is-claimed');
-  newsletterToggle.setAttribute('aria-label', 'İndirim kodunuz: HOSGELDIN5');
-  newsletterToggle.setAttribute('aria-expanded', 'true');
-}
-renderNewsletterDiscountCode();
-window.setTimeout(renderNewsletterDiscountCode, 0);
-if (newsletterPanel && footer && newsletterPanel.parentElement !== footer) {
-  footer.prepend(newsletterPanel);
-}
-if (newsletterPanel && newsletterToggle && newsletterToggle.dataset.bound !== 'true') {
-  newsletterToggle.dataset.bound = 'true';
-  newsletterToggle.addEventListener('click', async function () {
-    if (newsletterToggle.classList.contains('is-claimed')) {
-      const originalText = newsletterToggle.textContent;
-      try {
-        await navigator.clipboard.writeText('HOSGELDIN5');
-        newsletterToggle.textContent = 'HOSGELDIN5 · Kod kopyalandı!';
-      } catch (error) {
-        newsletterToggle.textContent = 'HOSGELDIN5 · Kodu seçip kopyalayın';
-      }
-      window.setTimeout(function () {
-        newsletterToggle.textContent = originalText;
-      }, 2200);
-      return;
-    }
-    const willOpen = newsletterPanel.hidden;
-    newsletterPanel.hidden = !willOpen;
-    newsletterPanel.classList.toggle('is-open', willOpen);
-    newsletterToggle.setAttribute('aria-expanded', String(willOpen));
-    newsletterToggle.textContent = willOpen
-      ? newsletterToggle.dataset.advisorNewsletterCloseLabel
-      : newsletterToggle.dataset.advisorNewsletterOpenLabel;
-    if (willOpen) {
-      const email = newsletterPanel.querySelector('input[type="email"]');
-      if (email) window.setTimeout(function () { email.focus(); }, 0);
-    }
-  });
-}
 const body = advisor.querySelector(
   '.fb-product-advisor__body'
 );
