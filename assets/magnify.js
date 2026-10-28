@@ -44,6 +44,7 @@ function moveWithHover(image, event, zoomRatio) {
 }
 
 function magnify(image, zoomRatio) {
+  if (!window.matchMedia('(min-width: 990px)').matches) return;
   const overlay = createOverlay(image);
   overlay.onclick = () => overlay.remove();
   overlay.onmousemove = (event) => moveWithHover(image, event, zoomRatio);
@@ -54,6 +55,7 @@ function enableZoomOnHover(zoomRatio) {
   const images = document.querySelectorAll('.image-magnify-hover');
   images.forEach((image) => {
     image.onclick = (event) => {
+      if (!window.matchMedia('(min-width: 990px)').matches) return;
       magnify(image, zoomRatio);
       moveWithHover(image, event, zoomRatio);
     };

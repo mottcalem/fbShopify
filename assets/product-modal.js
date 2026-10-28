@@ -11,6 +11,8 @@ if (!customElements.get('product-modal')) {
       }
 
       show(opener) {
+        if (window.matchMedia('(max-width: 989px)').matches &&
+            opener.closest('.product__modal-opener--image')) return;
         super.show(opener);
         this.showActiveMedia();
       }

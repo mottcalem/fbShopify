@@ -1575,3 +1575,15 @@ a.product__text {
     grid-template-columns: 1fr;
   }
 }
+/* Image zoom is available on desktop only; mobile gallery swiping stays active. */
+@media screen and (max-width: 989px) {
+  .product__modal-opener--image .product__media-toggle,
+  .product__modal-opener--image .product__media-icon,
+  .product__modal-opener--image .image-magnify-full-size {
+    display: none !important;
+  }
+  .product__modal-opener--image .product__media,
+  .product__modal-opener--image .product__media img {
+    cursor: default;
+  }
+}
