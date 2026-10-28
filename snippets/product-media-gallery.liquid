@@ -12,6 +12,10 @@
 {% endcomment %}
 
 {%- liquid
+  assign initial_media = product.selected_or_first_available_variant.featured_media
+  if respect_media_order
+    assign initial_media = product.media.first
+  endif
   if section.settings.hide_variants and variant_images.size == product.media.size
     assign single_media_visible = true
   endif
@@ -61,8 +65,8 @@
       class="product__media-list contains-media grid grid--peek list-unstyled slider slider--mobile"
       role="list"
     >
-      {%- if product.selected_or_first_available_variant.featured_media != null -%}
-        {%- assign featured_media = product.selected_or_first_available_variant.featured_media -%}
+      {%- if initial_media != null -%}
+        {%- assign featured_media = initial_media -%}
         <li
           id="Slide-{{ section.id }}-{{ featured_media.id }}"
           class="product__media-item grid__item slider__slide is-active{% if single_media_visible %} product__media-item--single{% endif %}{% if featured_media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
@@ -94,10 +98,10 @@
           {% continue %}
         {% endif %}
 
-        {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+        {%- unless media.id == initial_media.id -%}
           <li
             id="Slide-{{ section.id }}-{{ media.id }}"
-            class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if product.selected_or_first_available_variant.featured_media == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+            class="product__media-item grid__item slider__slide{% if single_media_visible %} product__media-item--single{% endif %}{% if initial_media == nil and forloop.index == 1 %} is-active{% endif %}{% if media.media_type != 'image' %} product__media-item--full{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
             data-media-id="{{ section.id }}-{{ media.id }}"
           >
             {%- liquid
@@ -227,6 +231,11 @@
             data-target="{{ section.id }}-{{ featured_media.id }}"
             data-media-position="{{ media_index }}"
           >
+            {%- if featured_media.media_type == 'video' or featured_media.media_type == 'external_video' -%}
+              <span class="thumbnail__badge" aria-hidden="true"><span class="svg-wrapper">{{- 'icon-play.svg' | inline_asset_content -}}</span></span>
+            {%- elsif featured_media.media_type == 'model' -%}
+              <span class="thumbnail__badge" aria-hidden="true"><span class="svg-wrapper">{{- 'icon-3d-model.svg' | inline_asset_content -}}</span></span>
+            {%- endif -%}
             {%- capture thumbnail_id -%}
               Thumbnail-{{ section.id }}-0
             {%- endcapture -%}
@@ -252,7 +261,7 @@
           </li>
         {%- endif -%}
         {%- for media in product.media -%}
-          {%- unless media.id == product.selected_or_first_available_variant.featured_media.id -%}
+          {%- unless media.id == initial_media.id -%}
             {%- liquid
               capture media_index
                 if media.media_type == 'model'
@@ -290,8 +299,8 @@
               <button
                 class="thumbnail global-media-settings global-media-settings--no-shadow"
                 aria-label="{%- if media.media_type == 'image' -%}{{ 'products.product.media.load_image' | t: index: media_index }}{%- elsif media.media_type == 'model' -%}{{ 'products.product.media.load_model' | t: index: media_index }}{%- elsif media.media_type == 'video' or media.media_type == 'external_video' -%}{{ 'products.product.media.load_video' | t: index: media_index }}{%- endif -%}"
-                {% if media == product.selected_or_first_available_variant.featured_media
-                  or product.selected_or_first_available_variant.featured_media == null
+                {% if media == initial_media
+                  or initial_media == null
                   and forloop.index == 1
                 %}
                   aria-current="true"
